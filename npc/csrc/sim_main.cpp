@@ -47,28 +47,7 @@ int main(int argc, char** argv) {
     
     while(!contextp->gotFinish() && sim_time >= 0){   
             
-        top->alu_command = 0;top->inA = 1;top->inB = 1;dump_wave();
-        top->inA = -1;top->inB = -1;dump_wave(); 
-        top->inA = -7;top->inB = -7;dump_wave();
 
-        top->alu_command = 1;top->inA = 1;top->inB = 1;dump_wave();
-        top->inA = -7;top->inB = 7;dump_wave(); 
-        top->inA = 7;top->inB = 1;dump_wave();
-
-        top->alu_command = 2;top->inA = 7;top->inB = 0;dump_wave();
-        top->alu_command = 3;top->inA = 3;top->inB = 5;dump_wave();
-        top->alu_command = 4;top->inA = 4;top->inB = -3;dump_wave();
-        top->alu_command = 5;top->inA = -7;top->inB = -1;dump_wave();
-
-        top->alu_command = 6;top->inA = 7;top->inB = 5;dump_wave();
-        top->inA = 7;top->inB = -5;dump_wave();
-        top->inA = -7;top->inB = 7;dump_wave();
-        top->inA = -5;top->inB = -7;dump_wave();
-        top->inA = 1;top->inB = -5;dump_wave();
-        top->inA = -1;top->inB = -1;dump_wave();
-
-        top->alu_command = 7;top->inA = 3;top->inB = 3;dump_wave();
-        top->inA = -7;top->inB = 3;dump_wave();
     }   
     tfp->close();                                     
     return 0;                                         
