@@ -23,8 +23,8 @@ void sim_init(int argc, char** argv){
     tfp->open("wave/wave.fst");
 }
 
-void dump_wave(void){
-    SIM_MODULE_NAME->eval();
+void dump_wave(Vtop* top){
+    top->eval();
     tfp->dump(contextp->time());
     contextp->timeInc(1);
     sim_time--;
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     reset(SIM_MODULE_NAME,10);
     while(!contextp->gotFinish() && sim_time >= 0){   
         single_cycle(SIM_MODULE_NAME);
-        dump_wave();
+        dump_wave(SIM_MODULE_NAME);
     }   
     tfp->close();
     return 0;
