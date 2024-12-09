@@ -44,8 +44,6 @@ int main(int argc, char** argv) {
     
     sim_init(argc, argv);                                                     
     
-    reset(RandomGen, 10);
-    
     while(!contextp->gotFinish() && sim_time >= 0){   
         single_cycle(RandomGen);
         dump_wave();
