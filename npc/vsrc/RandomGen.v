@@ -16,7 +16,7 @@ always @(posedge clk or negedge rst) begin
     end
 end
 
-assign buttom_posedge = buttom || (~buttom_reg1); 
+assign buttom_posedge = buttom | (~buttom_reg1); 
 
 always @(posedge clk or negedge rst) begin
     if(rst) shift_reg <= 8'b11111111;

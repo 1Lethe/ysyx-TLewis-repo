@@ -33,8 +33,8 @@ void dump_wave(void){
 }
 
 void single_cycle(Vtop* top){
-    top->buttom = 0;top->eval();dump_wave();
-    top->buttom = 1;top->eval();dump_wave();
+    top->clk = 0;top->eval();
+    top->clk = 1;top->eval();
 }
 
 void reset(Vtop* top, int n){
@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
     
     while(!contextp->gotFinish() && sim_time >= 0){   
         single_cycle(SIM_MODULE_NAME);
+        dump_wave();
     }   
     tfp->close();                                     
     return 0;                                         
