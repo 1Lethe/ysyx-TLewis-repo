@@ -20,7 +20,7 @@ assign buttom_posedge = buttom || (~buttom_reg1);
 
 always @(posedge clk or negedge rst) begin
     if(rst) shift_reg <= 8'b11111111;
-    else if(buttom_posedge) begin
+    else if(buttom_posedge == 1'b1) begin
         shift_reg <= {shift_reg[4]^shift_reg[3]^shift_reg[2]^shift_reg[0],shift_reg[7:1]};
     end
     else
