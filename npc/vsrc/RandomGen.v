@@ -6,7 +6,7 @@ module RandomGen (
 
 reg[7:0] shift_reg;
 
-always @(posedge clk or negedge rst) begin
+always @(negedge clk or negedge rst) begin
     if(rst) shift_reg <= 8'b1111_1111;
     else begin
         shift_reg <= {shift_reg[4]^shift_reg[3]^shift_reg[2]^shift_reg[0],shift_reg[7:1]};
