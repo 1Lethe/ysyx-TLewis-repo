@@ -42,12 +42,13 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
+SIM_TOPNAME = top
 VER_SIM_C_PATH = csrc/sim_main.cpp
 VER_SIM_CFLAGS = -cc --exe -trace-fst --build
 sim:$(VSRCS) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
 	$(call git_commit, "sim RTL")
-	verilator -cc --exe --trace-fst --build $^ \
+	verilator -cc --exe --trace-fst --build --top-module $(SIM_TOPNAME) $^ \
 	--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 	./build/top
 	@echo "Sim Complete."
@@ -60,7 +61,7 @@ run: $(BIN)
 clean:
 	rm -rf $(BUILD_DIR)
 
-WAVE_DIR = ./wave/*
+WAVE_DIR = wave/*
 
 clean_wave:
 	rm -rf $(WAVE_DIR)
