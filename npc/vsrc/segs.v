@@ -22,7 +22,7 @@ assign segs[13] = 8'b01111000;
 assign segs[14] = 8'b10011110;
 assign segs[15] = 8'b10001110;
 
-assign seg0_output = segs[segs_input[3:0]];
-assign seg1_output = segs[segs_input[7:4]];
+assign seg0_output = ~segs[segs_input[3:0]];
+assign seg1_output = ~segs[segs_input[7:4]];
 
 endmodule
