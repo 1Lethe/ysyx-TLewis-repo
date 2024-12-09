@@ -9,13 +9,13 @@ module top(
 wire [7:0] random_output;
 
 RandomGen RandomGen(
-    .clk(buttom),
+    .clk(clk),
     .rst(rst),
     .RandomGen_output(random_output)
 );
 
 segs segs(
-    .clk(buttom),
+    .clk(clk),
     .rst(rst),
     .segs_input(random_output),
     .seg0_output(seg0),

@@ -50,7 +50,8 @@ int main(int argc, char** argv) {
     reset(SIM_MODULE_NAME,10);                                                 
     
     while(!contextp->gotFinish() && sim_time >= 0){   
-        top->buttom = 1;dump_wave();top->buttom = 0;dump_wave();
+        single_cycle(SIM_MODULE_NAME);
+        dump_wave();
     }   
     tfp->close();                                     
     return 0;                                         
