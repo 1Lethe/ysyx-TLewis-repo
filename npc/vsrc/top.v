@@ -9,6 +9,7 @@ module top(
 wire [7:0] random_output;
 
 RandomGen RandomGen(
+    .clk(clk),
     .buttom(buttom),
     .rst(rst),
     .RandomGen_output(random_output)
