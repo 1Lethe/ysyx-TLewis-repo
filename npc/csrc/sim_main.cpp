@@ -23,7 +23,7 @@ void sim_init(int argc, char** argv){
 }
 
 void dump_wave(void){
-    top->eval();
+    RandomGen->eval();
     tfp->dump(contextp->time());                  
     contextp->timeInc(1);                         
     sim_time--;                                   
