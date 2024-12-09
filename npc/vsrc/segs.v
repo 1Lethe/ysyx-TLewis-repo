@@ -1,6 +1,4 @@
 module segs(
-    input clk,
-    input rst,
     input [7:0] segs_input,
     output wire [7:0] seg0_output,
     output wire [7:0] seg1_output
