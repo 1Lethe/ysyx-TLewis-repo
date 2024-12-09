@@ -18,7 +18,7 @@ assign segs[9] = 8'b11110110;
 assign segs[10] = 8'b11101100;
 assign segs[11] = 8'b00111110;
 assign segs[12] = 8'b10011100;
-assign segs[13] = 8'b01111000;
+assign segs[13] = 8'b01111010;
 assign segs[14] = 8'b10011110;
 assign segs[15] = 8'b10001110;
 
