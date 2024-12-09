@@ -7,23 +7,23 @@
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
-Vtop* top;
+Vtop* RandomGen;
 
 int sim_time = 50;
 
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;                 
     contextp->commandArgs(argc, argv);                                 
-    top = new Vtop{contextp};                                    
+    RandomGen = new Vtop{contextp};                                    
                                                                        
     tfp = new VerilatedFstC;                            
     contextp->traceEverOn(true);                                       
-    top->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
+    RandomGen->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
     tfp->open("wave/wave.fst");                                             
 }
 
 void dump_wave(void){
-    top->eval();
+    RandomGen->eval();
     tfp->dump(contextp->time());                  
     contextp->timeInc(1);                         
     sim_time--;                                   
@@ -44,9 +44,10 @@ int main(int argc, char** argv) {
     
     sim_init(argc, argv);                                                     
     
+    reset(RandomGen, 10);
     
     while(!contextp->gotFinish() && sim_time >= 0){   
-        single_cycle(top);
+        single_cycle(RandomGen);
         dump_wave();
     }   
     tfp->close();                                     
