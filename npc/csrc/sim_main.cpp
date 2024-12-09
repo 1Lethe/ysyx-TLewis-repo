@@ -5,7 +5,7 @@
 #include <stdlib.h>                                                    
 #include <assert.h>                   
 
-#define SIM_MODULE_NAME RandomGen:
+#define SIM_MODULE_NAME RandomGen
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
