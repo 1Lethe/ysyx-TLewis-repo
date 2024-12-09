@@ -1,18 +1,25 @@
-module RandomGen (
+module top(
     input clk,
+    input buttom,
     input rst,
-    output[7:0] RandomGen_output 
+    output wire[7:0] seg0,
+    output wire[7:0] seg1
 );
 
-reg[7:0] shift_reg;
+wire [7:0] random_output;
 
-always @(posedge clk or negedge rst) begin
-    if(rst) shift_reg <= 8'b1111_1111;
-    else begin
-        shift_reg <= {shift_reg[4]^shift_reg[3]^shift_reg[2]^shift_reg[0],shift_reg[7:1]};
-    end
-end
+RandomGen RandomGen(
+    .clk(buttom),
+    .rst(rst),
+    .RandomGen_output(random_output)
+);
 
-assign RandomGen_output = shift_reg; 
+segs segs(
+    .clk(buttom),
+    .rst(rst),
+    .segs_input(random_output),
+    .seg0_output(seg0),
+    .seg1_output(seg1)
+);
 
 endmodule
