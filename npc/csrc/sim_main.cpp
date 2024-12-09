@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     
     sim_init(argc, argv);
 
-    reset(SIM_MODULE_NAME,10);                                                 
+    reset(SIM_MODULE_NAME,1);                                                 
     
     while(!contextp->gotFinish() && sim_time >= 0){   
         top->buttom = 1;dump_wave();top->buttom = 0;dump_wave();
