@@ -5,26 +5,24 @@
 #include <stdlib.h>                                                    
 #include <assert.h>                   
 
-#define SIM_MODULE_NAME RandomGen;
-
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
-Vtop* SIM_MODULE_NAME;
+Vtop* RandomGen;
 
-int sim_time = 500;
+int sim_time = 50;
 
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;                 
     contextp->commandArgs(argc, argv);                                 
-    SIM_MODULE_NAME = new Vtop{contextp};                                    
+    RandomGen = new Vtop{contextp};                                    
                                                                        
     tfp = new VerilatedFstC;                            
     contextp->traceEverOn(true);                                       
-    SIM_MODULE_NAME->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
+    RandomGen->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
     tfp->open("wave/wave.fst");                                             
 }
 
-void dump_wave(Vtop *top){
+void dump_wave(void){
     top->eval();
     tfp->dump(contextp->time());                  
     contextp->timeInc(1);                         
@@ -48,8 +46,8 @@ int main(int argc, char** argv) {
     
     
     while(!contextp->gotFinish() && sim_time >= 0){   
-        single_cycle(SIM_MODULE_NAME);
-        dump_wave(SIM_MODULE_NAME);
+            
+
     }   
     tfp->close();                                     
     return 0;                                         
