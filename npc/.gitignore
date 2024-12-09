@@ -9,6 +9,5 @@
 !*.cpp
 !.gitignore
 !README.md
-!constr/
 build/
 wave/
