@@ -60,7 +60,7 @@ run: $(BIN)
 clean:
 	rm -rf $(BUILD_DIR)
 
-WAVE_DIR = ./wave/*
+WAVE_DIR = wave/*
 
 clean_wave:
 	rm -rf $(WAVE_DIR)
