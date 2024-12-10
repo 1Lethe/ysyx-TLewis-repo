@@ -51,16 +51,15 @@ always @(posedge clk or negedge rst) begin
                 end
             end
             BREAK_KEY : begin
-                if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h12))
-                    kb_state <= MAKE_SHIFT;
-                else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h14))
-                    kb_state <= MAKE_CTRL;
-                else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0))
+                if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
                     kb_state <= BREAK;
-                else if(ps2dis_recFlag == 1'b1)
+                    if(shift_flag) shift_flag <= 1'b0;
+                    if(ctrl_flag) ctrl_flag <= 1'b0;
+                end else if(ps2dis_recFlag == 1'b1)
                     kb_state <= MAKE;
-                else
+                else begin
                     kb_state <= kb_state;
+                end
             end
             MAKE_SHIFT : begin
                 if((ps2dis_recFlag == 1'b1) && (ps2dis_data != 8'hF0)) begin
