@@ -67,7 +67,7 @@ always @(posedge clk or negedge rst) begin
                     shift_flag <= 1'b1;
                     kb_state <= MAKE;
                 end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
-                    shift_reg <= 1'b0;
+                    shift_flag <= 1'b0;
                     kb_state <= BREAK;
                 end else begin
                     shift_flag <= 1'b1;
