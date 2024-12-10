@@ -27,32 +27,35 @@ ps2_keyboard inst(
     .overflow(overflow)
 );
 
+reg[7:0] dataget;
+
 initial begin /* clock driver */
     clk = 0;
     forever
         #(clock_period/2) clk = ~clk;
 end
 
+
+always @(posedge clk or negedge rst) begin
+    if(rst) nextdata_n <= 1'b1;
+    else nextdata_n <= ~ready;
+end
+
 always @(posedge clk or negedge rst) begin
     if(rst) dataget <= 8'b0;
     else if(ready) begin
         dataget <= data;
-        nextdata_n <= 1'b0;
         $display("receive: %x",dataget[7:0]);
-    end else nextdata_n <= 1'b1;
+    end
 end
+
 initial begin
     clrn = 1'b0;  #20;
     clrn = 1'b1;  #20;
     model.kbd_sendcode(8'h1C); // press 'A'
-    #20 nextdata_n =1'b0; #20 nextdata_n =1'b1;//read data
     model.kbd_sendcode(8'hF0); // break code
-    #20 nextdata_n =1'b0; #20 nextdata_n =1'b1; //read data
     model.kbd_sendcode(8'h1C); // release 'A'
-    #20 nextdata_n =1'b0; #20 nextdata_n =1'b1; //read data
     model.kbd_sendcode(8'h1B); // press 'S'
-    #20 model.kbd_sendcode(8'h1B); // keep pressing 'S'
-    #20 model.kbd_sendcode(8'h1B); // keep pressing 'S'
     model.kbd_sendcode(8'hF0); // break code
     model.kbd_sendcode(8'h1B); // release 'S'
     #20;
