@@ -2,7 +2,7 @@ module keyboard_display(
     input clk,
     input rst,
     input [7:0] ps2dis_data,
-    input ps2dis_recFlag, 
+    input ps2dis_recFlag
 );
 
 parameter IDLE = 4'b0001;
