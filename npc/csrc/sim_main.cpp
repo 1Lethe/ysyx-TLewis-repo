@@ -26,14 +26,14 @@ void sim_init(int argc, char** argv){
     SIM_MODULE_NAME->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
     tfp->open("wave/wave.fst");
 }
-#if 0
+
 void dump_wave(SIM_MODULE* top){
     top->eval();
     tfp->dump(contextp->time());
     contextp->timeInc(1);
     sim_time--;
 }
-
+#if 0
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();
     top->clk = 1;top->eval();
@@ -48,7 +48,6 @@ void reset(SIM_MODULE* top, int n){
 int main(int argc, char** argv) {                                      
     
     sim_init(argc, argv);
-    reset(SIM_MODULE_NAME,10);
     while(!contextp->gotFinish() && sim_time >= 0){   
         dump_wave(SIM_MODULE_NAME);
     }   
