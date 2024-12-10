@@ -31,7 +31,7 @@ void dump_wave(SIM_MODULE* top){
     top->eval();
     tfp->dump(contextp->time());
     contextp->timeInc(1);
-    sim_time--;
+    //sim_time--;
 }
 #if 0
 void single_cycle(SIM_MODULE* top){
