@@ -37,11 +37,7 @@ initial begin /* clock driver */
 end
 
 assign rst = ~clrn;
-
-always @(posedge clk or negedge rst) begin
-    if(rst) nextdata_n <= 1'b1;
-    else nextdata_n <= ~ready;
-end
+assign nextdata_n = ~ready;
 
 always @(posedge clk or negedge rst) begin
     if(rst) dataget <= 8'b0;
