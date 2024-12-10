@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-//If want to use testbench just keep this #define
+//If you want to use testbench just keep this #define otherwise delete it
 #define USE_TESTBENCH
 #define SIM_MODULE Vkeyboard_sim
 #define SIM_MODULE_NAME keyboard_sim
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
     #endif
     //if not use testbench HERE
     #ifndef USE_TESTBENCH
-    while(!contextp->getFinish() || sim_time >= 0){
+    while(!contextp->getFinish() && sim_time >= 0){
         dump_wave(SIM_MODULE_NAME);
     }
     #endif

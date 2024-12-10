@@ -1,7 +1,39 @@
-`timescale 1ns / 1ps
 module top(
     input clk,
-    input rst
+    input rst,
+    input ps2_clk,
+    input ps2_data,
+    input ps2data_get_p,
+    output ready,
+    output overflow
+);
+
+reg nextdata_n;
+wire [7:0] data;
+reg[7:0] dataget
+
+always @(posedge clk or negedge rst) begin
+    if(rst) dataget <= 8'b0;
+    else if(ps2data_get_p) begin
+        if(ready) begin
+            dataget <= data;
+            nextdata_n <= 1'b0;
+            $display("receive: %x",dataget[7:0]);
+        end
+    end else begin
+        nextdata_n <= 1'b1;
+    end
+end
+
+ps2_keyboard ps2_keyboard(
+    .clk(clk),
+    .clrn(rst),
+    .ps2_clk(ps2_clk),
+    .ps2_data(ps2_data),
+    .data(data),
+    .ready(ready),
+    .nextdata_n(nextdata_n),
+    .overflow(overflow)
 );
 
 endmodule

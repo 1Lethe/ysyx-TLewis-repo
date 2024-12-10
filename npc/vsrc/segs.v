@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 module segs(
     input [7:0] segs_input,
     output wire [7:0] seg0_output,
