@@ -22,7 +22,12 @@ always @(posedge clk or negedge rst) begin
         kb_state <= IDLE;
     end else
         case(kb_state)
-            IDLE : kb_state <= MAKE;
+            IDLE : begin
+                if(ps2dis_recFlag == 1'b1)
+                    kb_state <= MAKE;
+                else
+                    kb_state <= kb_state;
+            end
             MAKE : begin
                 if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0))
                     kb_state <= BREAK;
