@@ -63,7 +63,7 @@ always @(posedge clk or negedge rst) begin
     if(rst) begin
         ps2dis_seg2_3 <= 8'b0;
     end else if(kb_state == MAKE) begin
-        case(ps2dis_data)
+        case(ps2dis_data) //ASCII 
             8'h16 : ps2dis_seg2_3 <= 8'h31;
             8'h1E : ps2dis_seg2_3 <= 8'h32;
             8'h26 : ps2dis_seg2_3 <= 8'h33;
