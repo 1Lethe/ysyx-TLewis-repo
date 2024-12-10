@@ -1,8 +1,14 @@
 module segs(
-    input [7:0] segs_input0_2,
+    input [7:0] segs_input0_1,
+    input [7:0] segs_input4_5,
     input segs_enable,
     output wire [7:0] seg0_output,
-    output wire [7:0] seg1_output
+    output wire [7:0] seg1_output,
+    output wire [7:0] seg2_output,
+    output wire [7:0] seg3_output,
+    output wire [7:0] seg4_output,
+    output wire [7:0] seg5_output
+    
 );
 
 wire [7:0] segs [15:0];
@@ -26,5 +32,9 @@ assign segs[15] = 8'b10001110;
 //tips : dont forget the ~!!
 assign seg0_output = segs_enable == 1'b1 ? ~segs[segs_input0_2[3:0]] : 8'b11111111;
 assign seg1_output = segs_enable == 1'b1 ? ~segs[segs_input0_2[7:4]] : 8'b11111111;
+
+
+assign seg4_output = segs_enable == 1'b1 ? ~segs[segs_input4_5[3:0]] : 8'b11111111;
+assign seg5_output = segs_enable == 1'b1 ? ~segs[segs_input4_5[7:4]] : 8'b11111111;
 
 endmodule

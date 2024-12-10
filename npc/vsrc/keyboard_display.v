@@ -4,7 +4,8 @@ module keyboard_display(
     input [7:0] ps2dis_data,
     input ps2dis_recFlag,
     output wire segs_enable,
-    output reg [7:0] ps2dis_seg0_2
+    output reg [7:0] ps2dis_seg0_1,
+    output reg [7:0] keytime_cnt
 );
 
 parameter IDLE = 4'b0001;
@@ -47,8 +48,10 @@ end
 always @(posedge clk or negedge rst) begin
     if(rst) begin
         ps2dis_seg0_2 <= 8'b0;
+        keytime_cnt <= 8'b0;
     end else if(kb_state == MAKE) begin
         ps2dis_seg0_2 <= ps2dis_data;
+        keytime_cnt <= keytime_cnt + 1'b1;
     end
 end
 
