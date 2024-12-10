@@ -31,7 +31,8 @@ keyboard_display keyboard_display(
     .clk(clk),
     .rst(rst),
     .ps2dis_data(dataget),
-    .ps2dis_recFlag(datarec_flag)
+    .ps2dis_recFlag(datarec_flag),
+    .ps2dis_seg0_2()
 );
 
 wire rst;
