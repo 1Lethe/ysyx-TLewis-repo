@@ -34,7 +34,8 @@ keyboard_display keyboard_display(
     .ps2dis_recFlag(datarec_flag),
     .segs_enable(),
     .keytime_cnt(),
-    .ps2dis_seg0_1()
+    .ps2dis_seg0_1(),
+    .ps2dis_seg2_3()
 );
 
 wire rst;
