@@ -9,8 +9,11 @@ module top(
 );
 
 reg nextdata_n;
+wire ps2_ready;
 wire [7:0] data;
 reg[7:0] dataget;
+
+assign ready = ps2_ready;
 
 always @(posedge clk or negedge rst) begin
     if(rst) dataget <= 8'b0;
@@ -31,7 +34,7 @@ ps2_keyboard ps2_keyboard(
     .ps2_clk(ps2_clk),
     .ps2_data(ps2_data),
     .data(data),
-    .ready(ready),
+    .ready(ps2_ready),
     .nextdata_n(nextdata_n),
     .overflow(overflow)
 );
