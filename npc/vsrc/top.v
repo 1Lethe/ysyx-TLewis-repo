@@ -30,7 +30,7 @@ end
 
 ps2_keyboard ps2_keyboard(
     .clk(clk),
-    .clrn(rst),
+    .clrn(~rst),
     .ps2_clk(ps2_clk),
     .ps2_data(ps2_data),
     .data(data),
