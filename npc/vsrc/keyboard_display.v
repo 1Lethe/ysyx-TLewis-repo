@@ -7,7 +7,7 @@ module keyboard_display(
     output reg [7:0] ps2dis_seg0_1,
     output reg [7:0] ps2dis_seg2_3,
     output reg [7:0] keytime_cnt,
-    output reg shift_flag,
+    output reg shift_flag
 );
 
 parameter IDLE = 6'b000001;
