@@ -74,6 +74,10 @@ end
 initial begin
     clrn = 1'b0;  #20;
     clrn = 1'b1;  #20;
+    model.kbd_sendcode(8'h12); // press 'A'
+    model.kbd_sendcode(8'hF0); // press 'A'
+    model.kbd_sendcode(8'h12); // press 'A'
+    model.kbd_sendcode(8'h1C); // press 'A'
     model.kbd_sendcode(8'h1C); // press 'A'
     model.kbd_sendcode(8'hF0); // break code
     model.kbd_sendcode(8'h1C); // release 'A'
