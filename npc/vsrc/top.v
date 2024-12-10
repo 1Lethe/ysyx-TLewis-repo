@@ -24,6 +24,7 @@ wire [7:0]seg4_5;
 
 segs segs(
     .segs_input0_1(seg0_1),
+    .segs_input4_5(seg4_5),
     .segs_enable(segs_enable),
     .seg0_output(o_seg0),
     .seg1_output(o_seg1),
