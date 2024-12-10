@@ -34,7 +34,7 @@ assign seg0_output = segs_enable == 1'b1 ? ~segs[segs_input0_1[3:0]] : 8'b111111
 assign seg1_output = segs_enable == 1'b1 ? ~segs[segs_input0_1[7:4]] : 8'b11111111;
 
 
-assign seg4_output = ~segs[segs_input4_5[3:0]]
-assign seg5_output = ~segs[segs_input4_5[7:4]]
+assign seg4_output = ~segs[segs_input4_5[3:0]];
+assign seg5_output = ~segs[segs_input4_5[7:4]];
 
 endmodule
