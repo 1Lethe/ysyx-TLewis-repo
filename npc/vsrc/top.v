@@ -17,11 +17,13 @@ wire [7:0] data;
 wire nextdata_n;
 wire [7:0]dataget;
 wire datarec;
+wire segs_enable;
 wire [7:0]seg0_2;
 
 
 segs segs(
     .segs_input0_2(seg0_2),
+    .segs_enable(segs_enable),
     .seg0_output(o_seg0),
     .seg1_output(o_seg1)
 );
@@ -31,6 +33,7 @@ keyboard_display keyboard_display(
     .rst(rst),
     .ps2dis_data(dataget),
     .ps2dis_recFlag(datarec),
+    .segs_enable(segs_enable),
     .ps2dis_seg0_2(seg0_2)
 );
 

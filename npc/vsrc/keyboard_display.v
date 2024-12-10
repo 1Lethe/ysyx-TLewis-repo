@@ -3,6 +3,7 @@ module keyboard_display(
     input rst,
     input [7:0] ps2dis_data,
     input ps2dis_recFlag,
+    output wire segs_enable,
     output reg [7:0] ps2dis_seg0_2
 );
 
@@ -12,6 +13,8 @@ parameter BREAK = 4'b0100;
 parameter BREAK_KEY = 4'b1000;
 
 reg[3:0] kb_state;
+
+assign segs_enable = kb_state == MAKE ? 1'b1 : 1'b0;
 
 always @(posedge clk or negedge rst) begin
     if(rst) begin
