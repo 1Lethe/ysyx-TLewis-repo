@@ -24,7 +24,7 @@ assign segs[14] = 8'b10011110;
 assign segs[15] = 8'b10001110;
 
 //tips : dont forget the ~!!
-assign seg0_output = segs_enable == 1'b1 ? ~segs[segs_input0_2[3:0]] : 8'b00000000;
-assign seg1_output = segs_enable == 1'b1 ? ~segs[segs_input0_2[7:4]] : 8'b00000000;
+assign seg0_output = segs_enable == 1'b1 ? ~segs[segs_input0_2[3:0]] : 8'b11111111;
+assign seg1_output = segs_enable == 1'b1 ? ~segs[segs_input0_2[7:4]] : 8'b11111111;
 
 endmodule
