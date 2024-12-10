@@ -29,6 +29,7 @@ ps2_keyboard inst(
 
 wire rst;
 reg[7:0] dataget;
+reg datarec_flag;
 
 initial begin /* clock driver */
     clk = 0;
@@ -39,11 +40,21 @@ end
 assign rst = ~clrn;
 assign nextdata_n = ~ready;
 
-always @(posedge clk or negedge rst) begin
-    if(rst) dataget <= 8'b0;
-    else if(ready) begin
-        dataget <= data;
+always @(*) begin
+    if(datarec_flag) begin
         $display("receive: %x",dataget[7:0]);
+    end
+end
+
+always @(posedge clk or negedge rst) begin
+    if(rst) begin 
+        dataget <= 8'b0;
+        datarec_flag <= 1'b0;
+    end else if(ready) begin
+        dataget <= data;
+        datarec_flag <= 1'b1;
+    end else begin
+        datarec_flag <= 1'b0;
     end
 end
 
