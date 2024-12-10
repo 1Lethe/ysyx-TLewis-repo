@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 module keyboard_read(
     input clk,
     input rst,
