@@ -32,6 +32,7 @@ keyboard_display keyboard_display(
     .rst(rst),
     .ps2dis_data(dataget),
     .ps2dis_recFlag(datarec_flag),
+    .segs_enable(),
     .ps2dis_seg0_2()
 );
 
