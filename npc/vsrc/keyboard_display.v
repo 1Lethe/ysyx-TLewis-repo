@@ -38,11 +38,7 @@ always @(posedge clk or negedge rst) begin
                     kb_state <= kb_state;
             end
             MAKE : begin
-                if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h12))
-                    kb_state <= MAKE_SHIFT;
-                else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h14))
-                    kb_state <= MAKE_CTRL;
-                else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0))
+                if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0))
                     kb_state <= BREAK;
                 else
                     kb_state <= kb_state;
