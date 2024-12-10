@@ -52,9 +52,9 @@ always @(posedge clk or negedge rst) begin
             end
             BREAK_KEY : begin
                 if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
-                    kb_state <= BREAK;
                     if(shift_flag) begin shift_flag <= 1'b0; end
                     if(ctrl_flag) begin ctrl_flag <= 1'b0; end
+                    kb_state <= BREAK;
                 end else if(ps2dis_recFlag == 1'b1)
                     kb_state <= MAKE;
                 else begin
