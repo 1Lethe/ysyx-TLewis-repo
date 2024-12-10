@@ -3,6 +3,7 @@ module top(
     input rst,
     input ps2_clk,
     input ps2_data,
+    output ready,
     output overflow
 );
 
