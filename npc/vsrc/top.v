@@ -8,9 +8,10 @@ module top(
     output wire [7:0] o_seg2,
     output wire [7:0] o_seg3,
     output wire [7:0] o_seg4,
-    output wire [7:0] o_seg5,
+    output wire [7:0] o_seg5
 );
 
+wire overflow;
 wire ps2_ready;
 wire [7:0] data;
 wire nextdata_n;
@@ -18,7 +19,6 @@ wire [7:0]dataget;
 wire datarec;
 wire [7:0]seg0_2;
 
-assign ready = ps2_ready;
 
 segs segs(
     .segs_input0_2(seg0_2),
