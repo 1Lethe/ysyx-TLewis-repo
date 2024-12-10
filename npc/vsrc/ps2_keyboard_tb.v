@@ -37,14 +37,14 @@ initial begin
     clrn = 1'b0;  #20;
     clrn = 1'b1;  #20;
     model.kbd_sendcode(8'h1C); // press 'A'
-    #20 nextdata_n =1'b0; #20 nextdata_n =1'b1;//read data
+    #200 nextdata_n =1'b0; #20 nextdata_n =1'b1;//read data
     model.kbd_sendcode(8'hF0); // break code
-    #20 nextdata_n =1'b0; #20 nextdata_n =1'b1; //read data
+    #200 nextdata_n =1'b0; #20 nextdata_n =1'b1; //read data
     model.kbd_sendcode(8'h1C); // release 'A'
-    #20 nextdata_n =1'b0; #20 nextdata_n =1'b1; //read data
+    #200 nextdata_n =1'b0; #20 nextdata_n =1'b1; //read data
     model.kbd_sendcode(8'h1B); // press 'S'
-    #20 model.kbd_sendcode(8'h1B); // keep pressing 'S'
-    #20 model.kbd_sendcode(8'h1B); // keep pressing 'S'
+    #200 model.kbd_sendcode(8'h1B); // keep pressing 'S'
+    #200 model.kbd_sendcode(8'h1B); // keep pressing 'S'
     model.kbd_sendcode(8'hF0); // break code
     model.kbd_sendcode(8'h1B); // release 'S'
     #200;
