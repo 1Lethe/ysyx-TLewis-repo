@@ -10,7 +10,7 @@ module top(
 
 reg nextdata_n;
 wire [7:0] data;
-reg[7:0] dataget
+reg[7:0] dataget;
 
 always @(posedge clk or negedge rst) begin
     if(rst) dataget <= 8'b0;
