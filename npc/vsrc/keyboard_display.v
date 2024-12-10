@@ -8,7 +8,6 @@ module keyboard_display(
     output reg [7:0] ps2dis_seg2_3,
     output reg [7:0] keytime_cnt,
     output reg shift_flag,
-    output reg ctrl_flag
 );
 
 parameter IDLE = 6'b000001;
@@ -16,7 +15,6 @@ parameter MAKE = 6'b000010;
 parameter BREAK = 6'b000100;
 parameter BREAK_KEY = 6'b001000;
 parameter MAKE_SHIFT = 6'b010000;
-parameter MAKE_CTRL = 6'b100000;
 
 reg[5:0] kb_state;
 
@@ -69,17 +67,6 @@ always @(posedge clk or negedge rst) begin
                     kb_state <= BREAK;
                 end else begin
                     shift_flag <= 1'b1;
-                    kb_state <= kb_state;
-                end
-            end
-            MAKE_CTRL : begin
-                if((ps2dis_recFlag == 1'b1) && (ps2dis_data != 8'hF0)) begin
-                    ctrl_flag <= 1'b1;
-                    kb_state <= MAKE;
-                end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
-                    kb_state <= BREAK;
-                end else begin
-                    ctrl_flag <= 1'b1;
                     kb_state <= kb_state;
                 end
             end
