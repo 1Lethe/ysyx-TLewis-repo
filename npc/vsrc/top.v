@@ -22,9 +22,7 @@ always @(posedge clk or negedge rst) begin
             dataget <= data;
             nextdata_n <= 1'b0;
             $display("receive: %x",dataget[7:0]);
-        end
-    end else begin
-        nextdata_n <= 1'b1;
+        end else nextdata_n <= 1'b1;
     end
 end
 
