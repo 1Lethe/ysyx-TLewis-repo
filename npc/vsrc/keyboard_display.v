@@ -51,8 +51,9 @@ always @(posedge clk or negedge rst) begin
         keytime_cnt <= 8'b0;
     end else if(kb_state == MAKE) begin
         ps2dis_seg0_1 <= ps2dis_data;
+    end else if(kb_state == BREAK) begin
         keytime_cnt <= keytime_cnt + 1'b1;
-    end
+    end 
 end
 
 
