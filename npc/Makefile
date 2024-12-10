@@ -43,9 +43,10 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 
 #For sim
 SIM_TOPNAME = keyboard_sim
+VER_SIM_V_PATH = vsrc/ps2_keyboard.v vsrc/ps2_keyboard_model.v vsrc/ps2_keyboard_tb.v
 VER_SIM_C_PATH = csrc/sim_main.cpp
 VER_SIM_CFLAGS = -cc --exe -trace-fst --build
-sim:$(VSRCS) $(VER_SIM_C_PATH)
+sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
 	$(call git_commit, "sim RTL")
 	verilator -cc --exe --trace-fst --build --timing --top-module $(SIM_TOPNAME) $^ \
