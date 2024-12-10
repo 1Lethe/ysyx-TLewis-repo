@@ -47,7 +47,6 @@ keyboard_display keyboard_display(
     .ps2dis_seg0_1(seg0_1),
     .ps2dis_seg2_3(seg2_3),
     .keytime_cnt(seg4_5),
-    .shift_reg(shift),
     .ctrl_flag(ctrl),
     .shift_flag(shift)
 );
