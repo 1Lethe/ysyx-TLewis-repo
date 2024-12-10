@@ -100,7 +100,7 @@ always @(posedge clk or negedge rst) begin
             8'h22 : ps2dis_seg2_3 <= 8'h78;
             8'h35 : ps2dis_seg2_3 <= 8'h79;
             8'h1A : ps2dis_seg2_3 <= 8'h7A;
-            default : ps2dis_seg2_3 <= 8'00;
+            default : ps2dis_seg2_3 <= 8'h00;
         endcase
     end
 end
