@@ -2,7 +2,8 @@ module keyboard_display(
     input clk,
     input rst,
     input [7:0] ps2dis_data,
-    input ps2dis_recFlag 
+    input ps2dis_recFlag,
+    output reg [7:0] ps2dis_seg0_2
 );
 
 parameter IDLE = 4'b0001;
@@ -39,5 +40,14 @@ always @(posedge clk or negedge rst) begin
             default : kb_state <= IDLE;
         endcase
 end
+
+always @(posedge clk or negedge rst) begin
+    if(rst) begin
+        ps2dis_seg0_2 <= 8'b0;
+    end else if(kb_state == MAKE) begin
+        ps2dis_seg0_2 <= ps2dis_data;
+    end
+end
+
 
 endmodule
