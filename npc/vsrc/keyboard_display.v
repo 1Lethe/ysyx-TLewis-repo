@@ -76,7 +76,7 @@ always @(posedge clk or negedge rst) begin
             MAKE_CTRL : begin
                 if((ps2dis_recFlag == 1'b1) && (ps2dis_data != 8'hF0)) begin
                     ctrl_flag <= 1'b1;
-                    kb_state <= MAKE_CTRL;
+                    kb_state <= MAKE;
                 end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
                     kb_state <= BREAK;
                 end else begin
