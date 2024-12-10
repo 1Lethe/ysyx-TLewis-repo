@@ -8,7 +8,7 @@ module top(
 
 wire ps2_ready;
 wire [7:0] data;
-wire nextdata_n
+wire nextdata_n;
 
 assign ready = ps2_ready;
 
