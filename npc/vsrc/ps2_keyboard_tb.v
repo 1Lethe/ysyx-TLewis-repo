@@ -36,8 +36,7 @@ keyboard_display keyboard_display(
     .keytime_cnt(),
     .ps2dis_seg0_1(),
     .ps2dis_seg2_3(),
-    .shift_flag(),
-    .ctrl_flag()
+    .shift_flag()
 );
 
 wire rst;
