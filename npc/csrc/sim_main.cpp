@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-//Still need to change SIM_TOPNAME in makefile!
+//Still need to change SIM_TOPNAME in makefile!i
+#define SIM_MODULE Vkeyboard_sim
 #define SIM_MODULE_NAME keyboard_sim
 
 //sim time
@@ -13,12 +14,12 @@ int sim_time = 50;
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
-Vtop* top;
+SIM_MODULE* top;
 
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
-    SIM_MODULE_NAME = new Vtop{contextp};
+    SIM_MODULE_NAME = new SIM_MODULE{contextp};
 
     tfp = new VerilatedFstC;
     contextp->traceEverOn(true);
@@ -26,19 +27,19 @@ void sim_init(int argc, char** argv){
     tfp->open("wave/wave.fst");
 }
 
-void dump_wave(Vtop* top){
+void dump_wave(SIM_MODULE* top){
     top->eval();
     tfp->dump(contextp->time());
     contextp->timeInc(1);
     sim_time--;
 }
 
-void single_cycle(Vtop* top){
+void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();
     top->clk = 1;top->eval();
 }
 
-void reset(Vtop* top, int n){
+void reset(SIM_MODULE* top, int n){
     top->rst = 1;
     while(n-- > 0) single_cycle(top);
     top->rst = 0;
