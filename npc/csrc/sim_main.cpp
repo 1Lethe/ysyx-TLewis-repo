@@ -14,7 +14,7 @@ int sim_time = 50;
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
-SIM_MODULE* top;
+SIM_MODULE* SIM_MODULE_NAME;
 
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;
