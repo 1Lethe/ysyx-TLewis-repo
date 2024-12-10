@@ -48,7 +48,7 @@ VER_SIM_CFLAGS = -cc --exe -trace-fst --build
 sim:$(VSRCS) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
 	$(call git_commit, "sim RTL")
-	verilator -cc --exe --trace-fst --build --top-module $(SIM_TOPNAME) $^ \
+	verilator -cc --exe --trace-fst --build --timing --top-module $(SIM_TOPNAME) $^ \
 	--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 	./build/top
 	@echo "Sim Complete."
