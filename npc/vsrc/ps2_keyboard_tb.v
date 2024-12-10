@@ -46,6 +46,18 @@ always @(*) begin
     end
 end
 
+always @(posedge clk or negedge rst) begin
+    if(rst) begin 
+        dataget <= 8'b0;
+        datarec_flag <= 1'b0;
+    end else if(ready) begin
+        dataget <= data;
+        datarec_flag <= 1'b1;
+    end else begin
+        datarec_flag <= 1'b0;
+    end
+end
+
 initial begin
     clrn = 1'b0;  #20;
     clrn = 1'b1;  #20;
