@@ -30,7 +30,7 @@ ps2_keyboard inst(
 keyboard_display keyboard_display(
     .clk(clk),
     .rst(rst),
-    .ps2dis_data(data),
+    .ps2dis_data(dataget),
     .ps2dis_recFlag(datarec_flag)
 );
 
