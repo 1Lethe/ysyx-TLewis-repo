@@ -14,7 +14,6 @@ reg[7:0] dataget;
 wire ps2_ready;
 wire [7:0] data;
 
-assign rst = ~clrn;
 assign nextdata_n = ~ready;
 
 always @(*) begin
