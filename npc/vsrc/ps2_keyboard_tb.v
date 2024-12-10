@@ -20,7 +20,7 @@ ps2_keyboard inst(
     .clk(clk),
     .clrn(clrn),
     .ps2_clk(kbd_clk),
-    .ps2_data(kbd_data),
+    .ps2_data(kbd_data), 
     .data(data),
     .ready(ready),
     .nextdata_n(nextdata_n),
@@ -46,31 +46,21 @@ always @(*) begin
     end
 end
 
-always @(posedge clk or negedge rst) begin
-    if(rst) begin 
-        dataget <= 8'b0;
-        datarec_flag <= 1'b0;
-    end else if(ready) begin
-        dataget <= data;
-        datarec_flag <= 1'b1;
-    end else begin
-        datarec_flag <= 1'b0;
-    end
-end
-
 initial begin
     clrn = 1'b0;  #20;
     clrn = 1'b1;  #20;
-    #20 model.kbd_sendcode(8'h1C); // press 'A'
-    #20 model.kbd_sendcode(8'hF0); // break code
-    #20 model.kbd_sendcode(8'h1C); // release 'A'
-    #20 model.kbd_sendcode(8'h1B); // press 'S'
-    #20 model.kbd_sendcode(8'hF0); // break code
-    #20 model.kbd_sendcode(8'h1B); // release 'S'
-    #20 model.kbd_sendcode(8'h1B); // press 'S'
-    #20 model.kbd_sendcode(8'hF0); // break code
-    #20 model.kbd_sendcode(8'h1B); // release 'S'
-    #200;
+    model.kbd_sendcode(8'h1C); // press 'A'
+    #20 nextdata_n =1'b0; #20 nextdata_n =1'b1;//read data
+    model.kbd_sendcode(8'hF0); // break code
+    #20 nextdata_n =1'b0; #20 nextdata_n =1'b1; //read data
+    model.kbd_sendcode(8'h1C); // release 'A'
+    #20 nextdata_n =1'b0; #20 nextdata_n =1'b1; //read data
+    model.kbd_sendcode(8'h1B); // press 'S'
+    #20 model.kbd_sendcode(8'h1B); // keep pressing 'S'
+    #20 model.kbd_sendcode(8'h1B); // keep pressing 'S'
+    model.kbd_sendcode(8'hF0); // break code
+    model.kbd_sendcode(8'h1B); // release 'S'
+    #20;
     $finish;
 end
 
