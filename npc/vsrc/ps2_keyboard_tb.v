@@ -26,7 +26,7 @@ ps2_keyboard inst(
     .nextdata_n(nextdata_n),
     .overflow(overflow)
 );
-
+/*
 keyboard_display keyboard_display(
     .clk(clk),
     .rst(rst),
@@ -35,7 +35,7 @@ keyboard_display keyboard_display(
     .segs_enable(),
     .ps2dis_seg0_2()
 );
-
+*/
 wire rst;
 reg[7:0] dataget;
 reg datarec_flag;
