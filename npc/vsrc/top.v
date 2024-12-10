@@ -18,7 +18,7 @@ assign ready = ps2_ready;
 always @(posedge clk or negedge rst) begin
     if(rst) dataget <= 8'b0;
     else if(ps2data_get_p) begin
-        if(ready) begin
+        if(ps2_ready) begin
             dataget <= data;
             nextdata_n <= 1'b0;
             $display("receive: %x",dataget[7:0]);
