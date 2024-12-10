@@ -80,7 +80,7 @@ always @(posedge clk or negedge rst) begin
                 end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
                     kb_state <= BREAK;
                 end else begin
-                    shift_flag <= 1'b1;
+                    ctrl_flag <= 1'b1;
                     kb_state <= kb_state;
                 end
             end
