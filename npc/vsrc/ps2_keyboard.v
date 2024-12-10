@@ -42,7 +42,7 @@ module ps2_keyboard(clk,clrn,ps2_clk,ps2_data,data,
                     w_ptr <= w_ptr+3'b1;
                     ready <= 1'b1;
                     overflow <= overflow | (r_ptr == (w_ptr + 3'b1));
-                    $display("receive here: %x",data[7:0])
+                    $display("receive here: %x",data[7:0]);
                 end
                 count <= 0;     // for next
               end else begin
