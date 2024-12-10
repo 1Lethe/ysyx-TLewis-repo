@@ -27,6 +27,13 @@ ps2_keyboard inst(
     .overflow(overflow)
 );
 
+keyboard_display keyboard_display(
+    .clk(clk),
+    .rst(rst),
+    .ps2dis_data(data),
+    .ps2dis_recFlag(datarec_flag)
+);
+
 wire rst;
 reg[7:0] dataget;
 reg datarec_flag;
