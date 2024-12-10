@@ -51,9 +51,9 @@ always @(posedge clk or negedge rst) begin
                 end
             end
             BREAK_KEY : begin
-                if((ps2dis_recFlag == 1'b1) && (shift_flag == 1'b1))
+                if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h12))
                     kb_state <= MAKE_SHIFT;
-                else if((ps2dis_recFlag == 1'b1) && (ctrl_flag == 1'b1))
+                else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h14))
                     kb_state <= MAKE_CTRL;
                 else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0))
                     kb_state <= BREAK;
@@ -67,7 +67,6 @@ always @(posedge clk or negedge rst) begin
                     shift_flag <= 1'b1;
                     kb_state <= MAKE;
                 end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
-                    shift_flag <= 1'b0;
                     kb_state <= BREAK;
                 end else begin
                     shift_flag <= 1'b1;
@@ -79,7 +78,6 @@ always @(posedge clk or negedge rst) begin
                     ctrl_flag <= 1'b1;
                     kb_state <= MAKE;
                 end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
-                    ctrl_flag <= 1'b0;
                     kb_state <= BREAK;
                 end else begin
                     ctrl_flag <= 1'b1;
