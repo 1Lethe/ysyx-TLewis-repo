@@ -1,3 +1,4 @@
+//Still need to change this #include and SIM_TOPNAME in makefile to change sim module.
 #include "Vkeyboard_sim.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
@@ -5,7 +6,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
-//Still need to change SIM_TOPNAME in makefile!
+//If want to use testbench just keep this #define
+#define USE_TESTBENCH
 #define SIM_MODULE Vkeyboard_sim
 #define SIM_MODULE_NAME keyboard_sim
 
@@ -31,9 +33,12 @@ void dump_wave(SIM_MODULE* top){
     top->eval();
     tfp->dump(contextp->time());
     contextp->timeInc(1);
-    //sim_time--;
+    #ifndef USE_TESTBENCH
+    sim_time--;
+    #endif
 }
-#if 0
+
+#ifndef USE_TESTBENCH
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();
     top->clk = 1;top->eval();
@@ -45,12 +50,23 @@ void reset(SIM_MODULE* top, int n){
     top->rst = 0;
 }
 #endif
+
 int main(int argc, char** argv) {                                      
     
     sim_init(argc, argv);
+
+    #ifdef USE_TESTBENCH
     while(!contextp->gotFinish()){   
         dump_wave(SIM_MODULE_NAME);
-    }   
+    }
+    #endif
+    //if not use testbench HERE
+    #ifndef USE_TESTBENCH
+    while(!contextp->getFinish() || sim_time >= 0){
+        dump_wave(SIM_MODULE_NAME);
+    }
+    #endif
+
     tfp->close();
     return 0;
 }                                                     
