@@ -63,7 +63,7 @@ initial begin
     #20 model.kbd_sendcode(8'h1B); // press 'S'
     #20 model.kbd_sendcode(8'hF0); // break code
     #20 model.kbd_sendcode(8'h1B); // release 'S'
-    #200;
+    #20000;
     $finish;
 end
 
