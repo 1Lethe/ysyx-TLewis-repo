@@ -19,11 +19,13 @@ wire [7:0]dataget;
 wire datarec;
 wire segs_enable;
 wire [7:0]seg0_1;
+wire [7:0]seg2_3;
 wire [7:0]seg4_5;
 
 
 segs segs(
     .segs_input0_1(seg0_1),
+    .segs_input2_3(seg2_3),
     .segs_input4_5(seg4_5),
     .segs_enable(segs_enable),
     .seg0_output(o_seg0),
@@ -41,6 +43,7 @@ keyboard_display keyboard_display(
     .ps2dis_recFlag(datarec),
     .segs_enable(segs_enable),
     .ps2dis_seg0_1(seg0_1),
+    .ps2dis_seg2_3(seg2_3),
     .keytime_cnt(seg4_5)
 );
 
