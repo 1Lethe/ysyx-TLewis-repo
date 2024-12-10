@@ -38,12 +38,12 @@ end
 
 assign rst = ~clrn;
 
-always @(posedge kbd_clk or negedge rst) begin
+always @(posedge clk or negedge rst) begin
     if(rst) nextdata_n <= 1'b1;
     else nextdata_n <= ~ready;
 end
 
-always @(posedge kbd_clk or negedge rst) begin
+always @(posedge clk or negedge rst) begin
     if(rst) dataget <= 8'b0;
     else if(ready) begin
         dataget <= data;
