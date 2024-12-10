@@ -48,9 +48,14 @@ end
 always @(posedge clk or negedge rst) begin
     if(rst) begin
         ps2dis_seg0_1 <= 8'b0;
-        keytime_cnt <= 8'b0;
     end else if(kb_state == MAKE) begin
         ps2dis_seg0_1 <= ps2dis_data;
+    end
+end
+
+always @(posedge clk or negedge rst) begin
+    if(rst) begin
+        keytime_cnt <= 8'b0;
     end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
         keytime_cnt <= keytime_cnt + 1'b1;
     end
