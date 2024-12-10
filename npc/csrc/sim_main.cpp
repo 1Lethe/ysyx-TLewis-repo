@@ -48,7 +48,7 @@ void reset(SIM_MODULE* top, int n){
 int main(int argc, char** argv) {                                      
     
     sim_init(argc, argv);
-    while(!contextp->gotFinish() && sim_time >= 0){   
+    while(!contextp->gotFinish()){   
         dump_wave(SIM_MODULE_NAME);
     }   
     tfp->close();
