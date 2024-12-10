@@ -67,6 +67,6 @@ int main(int argc, char** argv) {
     }
     #endif
 
-//    tfp->close();
+    tfp->close();
     return 0;
 }                                                     
