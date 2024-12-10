@@ -27,6 +27,7 @@ ps2_keyboard inst(
     .overflow(overflow)
 );
 
+wire rst;
 reg[7:0] dataget;
 
 initial begin /* clock driver */
@@ -35,6 +36,7 @@ initial begin /* clock driver */
         #(clock_period/2) clk = ~clk;
 end
 
+assign rst = ~clrn;
 
 always @(posedge clk or negedge rst) begin
     if(rst) nextdata_n <= 1'b1;
