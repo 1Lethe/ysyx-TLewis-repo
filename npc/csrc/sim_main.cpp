@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-//Still need to change SIM_TOPNAME in makefile!i
+//Still need to change SIM_TOPNAME in makefile!
 #define SIM_MODULE Vkeyboard_sim
 #define SIM_MODULE_NAME keyboard_sim
 
@@ -26,7 +26,7 @@ void sim_init(int argc, char** argv){
     SIM_MODULE_NAME->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
     tfp->open("wave/wave.fst");
 }
-
+#if 0
 void dump_wave(SIM_MODULE* top){
     top->eval();
     tfp->dump(contextp->time());
@@ -44,7 +44,7 @@ void reset(SIM_MODULE* top, int n){
     while(n-- > 0) single_cycle(top);
     top->rst = 0;
 }
-
+#endif
 int main(int argc, char** argv) {                                      
     
     sim_init(argc, argv);
