@@ -77,7 +77,9 @@ initial begin
     model.kbd_sendcode(8'h12); // press 'A'
     model.kbd_sendcode(8'hF0); // press 'A'
     model.kbd_sendcode(8'h12); // press 'A'
-    model.kbd_sendcode(8'h1C); // press 'A'
+    model.kbd_sendcode(8'h14); // press 'A'
+    model.kbd_sendcode(8'hF0); // press 'A'
+    model.kbd_sendcode(8'h14); // press 'A'
     model.kbd_sendcode(8'h1C); // press 'A'
     model.kbd_sendcode(8'hF0); // break code
     model.kbd_sendcode(8'h1C); // release 'A'
