@@ -33,6 +33,14 @@ initial begin /* clock driver */
         #(clock_period/2) clk = ~clk;
 end
 
+always @(posedge clk or negedge rst) begin
+    if(rst) dataget <= 8'b0;
+    else if(ready) begin
+        dataget <= data;
+        nextdata_n <= 1'b0;
+        $display("receive: %x",dataget[7:0]);
+    end else nextdata_n <= 1'b1;
+end
 initial begin
     clrn = 1'b0;  #20;
     clrn = 1'b1;  #20;
