@@ -20,7 +20,7 @@ always @(posedge clk or negedge rst) begin
     if(rst) begin 
         ps2read_dataget <= 8'b0;
         ps2read_datarec <= 1'b0;
-    end else if(ready) begin
+    end else if(ps2read_ready) begin
         ps2read_dataget <= ps2read_data;
         ps2read_datarec <= 1'b1;
     end else begin
