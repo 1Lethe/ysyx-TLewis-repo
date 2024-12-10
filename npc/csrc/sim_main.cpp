@@ -6,12 +6,15 @@
 #include <assert.h>
 
 //Still need to change SIM_TOPNAME in makefile!
-#define SIM_MODULE_NAME top
+#define SIM_MODULE_NAME ps2_keyboard
+
+//sim time
+int sim_time = 50;
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
 Vtop* top;
-int sim_time = 50;
+
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
