@@ -26,16 +26,17 @@ ps2_keyboard inst(
     .nextdata_n(nextdata_n),
     .overflow(overflow)
 );
-/*
+
 keyboard_display keyboard_display(
     .clk(clk),
     .rst(rst),
     .ps2dis_data(dataget),
     .ps2dis_recFlag(datarec_flag),
     .segs_enable(),
-    .ps2dis_seg0_2()
+    .keytime_cnt(),
+    .ps2dis_seg0_1()
 );
-*/
+
 wire rst;
 reg[7:0] dataget;
 reg datarec_flag;
