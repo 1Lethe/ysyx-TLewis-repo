@@ -6,7 +6,7 @@
 #include <assert.h>
 
 //Still need to change SIM_TOPNAME in makefile!
-#define SIM_MODULE_NAME ps2_keyboard
+#define SIM_MODULE_NAME keyboard_sim
 
 //sim time
 int sim_time = 50;

@@ -8,7 +8,7 @@ VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
 				-O3 --x-assign fast --x-initial fast --noassert
 
-BUILD_DIR = ./build
+BUILD_DIR = ./build ./obj_dir
 OBJ_DIR = $(BUILD_DIR)/obj_dir
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
@@ -42,7 +42,7 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
-SIM_TOPNAME = ps2_keyboard
+SIM_TOPNAME = keyboard_sim
 VER_SIM_C_PATH = csrc/sim_main.cpp
 VER_SIM_CFLAGS = -cc --exe -trace-fst --build
 sim:$(VSRCS) $(VER_SIM_C_PATH)
