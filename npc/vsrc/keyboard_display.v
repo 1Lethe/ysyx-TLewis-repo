@@ -18,7 +18,7 @@ parameter BREAK_KEY = 6'b001000;
 parameter MAKE_SHIFT = 6'b010000;
 parameter MAKE_CTRL = 6'b100000;
 
-reg[3:0] kb_state;
+reg[5:0] kb_state;
 
 assign segs_enable = kb_state == MAKE ? 1'b1 : 1'b0;
 
