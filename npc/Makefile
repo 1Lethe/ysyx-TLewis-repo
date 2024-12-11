@@ -1,4 +1,4 @@
-.PHONY = all run sim clean clean_wave clean_all
+.PHONY = all run sim clean clean_wave clean_all syn fix-fanout sta clean_sta
 
 TOPNAME = top
 NXDC_FILES = constr/top.nxdc
@@ -43,7 +43,7 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 
 #For sim
 SIM_TOPNAME = keyboard_sim
-VER_SIM_V_PATH = vsrc/ps2_keyboard.v vsrc/ps2_keyboard_model.v vsrc/ps2_keyboard_tb.v vsrc/keyboard_display.v
+VER_SIM_V_PATH = vsrc/ps2_keyboard.v vsrc_tb/ps2_keyboard_model.v vsrc_tb/ps2_keyboard_tb.v vsrc/keyboard_display.v
 VER_SIM_C_PATH = csrc/sim_main.cpp
 VER_SIM_CFLAGS = -cc --exe -trace-fst --build
 sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
@@ -54,20 +54,56 @@ sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	./build/top
 	@echo "Sim Complete."
 
-all: default
 
+# For sta
+PROJ_PATH = $(NPC_HOME)
+
+DESIGN ?= top
+SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
+RTL_FILES ?= $(VSRCS)
+export CLK_FREQ_MHZ ?= 100
+
+RESULT_DIR = $(PROJ_PATH)/sta_result/$(DESIGN)-$(CLK_FREQ_MHZ)MHz
+SCRIPT_DIR = $(PROJ_PATH)/scripts
+NETLIST_SYN_V   = $(RESULT_DIR)/$(DESIGN).netlist.syn.v
+NETLIST_FIXED_V = $(RESULT_DIR)/$(DESIGN).netlist.fixed.v
+TIMING_RPT = $(RESULT_DIR)/$(DESIGN).rpt
+
+init:
+	bash -c "$$(wget -O - https://ysyx.oscc.cc/slides/resources/scripts/init-yosys-sta.sh)"
+
+syn: $(NETLIST_SYN_V)
+$(NETLIST_SYN_V): $(RTL_FILES) $(SCRIPT_DIR)/yosys.tcl
+	mkdir -p $(@D)
+	echo tcl $(SCRIPT_DIR)/yosys.tcl $(DESIGN) \"$(RTL_FILES)\" $@ | yosys -l $(@D)/yosys.log -s -
+
+fix-fanout: $(NETLIST_FIXED_V)
+$(NETLIST_FIXED_V): $(SCRIPT_DIR)/fix-fanout.tcl $(SDC_FILE) $(NETLIST_SYN_V)
+	./bin/iEDA -script $^ $(DESIGN) $@ 2>&1 | tee $(RESULT_DIR)/fix-fanout.log
+
+sta: $(TIMING_RPT)
+$(TIMING_RPT): $(SCRIPT_DIR)/sta.tcl $(SDC_FILE) $(NETLIST_FIXED_V)
+	./bin/iEDA -script $^ $(DESIGN) 2>&1 | tee $(RESULT_DIR)/sta.log
+
+# For NVBoard
 run: $(BIN)
+	@echo "Link in NVBoard."
 	@$^
 
+# For clean build files
 clean:
 	rm -rf $(BUILD_DIR)
 
-WAVE_DIR = wave/*
+WAVE_DIR = wave
+STA_DIR = $(PROJ_PATH)/sta_result
 
 clean_wave:
-	rm -rf $(WAVE_DIR)
+	rm -rf $(WAVE_DIR)/*
 
-clean_all: clean clean_wave
+clean_sta:
+	rm -rf $(STA_DIR)/*
+
+clean_all: clean clean_wave clean_sta
 	@echo "Clean all complete."
 
 include ../Makefile

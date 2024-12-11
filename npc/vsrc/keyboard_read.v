@@ -17,7 +17,7 @@ always @(*) begin
     end
 end
 
-always @(posedge clk or negedge rst) begin
+always @(posedge clk) begin
     if(rst) begin 
         ps2read_dataget <= 8'b0;
         ps2read_datarec <= 1'b0;

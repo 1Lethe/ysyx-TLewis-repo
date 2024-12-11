@@ -20,7 +20,7 @@ reg[3:0] kb_state;
 
 assign segs_enable = kb_state == MAKE ? 1'b1 : 1'b0;
 
-always @(posedge clk or negedge rst) begin
+always @(posedge clk) begin
     if(rst) begin
         kb_state <= IDLE;
     end else
@@ -55,7 +55,7 @@ always @(posedge clk or negedge rst) begin
         endcase
 end
 
-always @(posedge clk or negedge rst) begin
+always @(posedge clk) begin
     if(rst) begin
         ps2dis_seg0_1 <= 8'b0;
     end else if(kb_state == MAKE) begin
@@ -63,7 +63,7 @@ always @(posedge clk or negedge rst) begin
     end
 end
 
-always @(posedge clk or negedge rst) begin
+always @(posedge clk) begin
     if(rst) begin
         ps2dis_seg2_3 <= 8'b0;
     end else if((kb_state == MAKE) && (shift_flag == 1'b0)) begin
@@ -150,7 +150,7 @@ always @(posedge clk or negedge rst) begin
     end
 end
 
-always @(posedge clk or negedge rst) begin
+always @(posedge clk) begin
     if(rst) begin
         keytime_cnt <= 8'b0;
     end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
@@ -158,7 +158,7 @@ always @(posedge clk or negedge rst) begin
     end
 end
 
-always @(posedge clk or negedge rst) begin
+always @(posedge clk) begin
     if(rst) begin
         shift_flag <= 1'b0;
     end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h12)) begin
@@ -168,7 +168,7 @@ always @(posedge clk or negedge rst) begin
     end        
 end
 
-always @(posedge clk or negedge rst) begin
+always @(posedge clk) begin
     if(rst) begin
         ctrl_flag <= 1'b0;
     end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h14)) begin

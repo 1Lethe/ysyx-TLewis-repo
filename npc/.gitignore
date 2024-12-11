@@ -10,5 +10,6 @@
 !.gitignore
 !README.md
 !constr/
+sta_result/
 build/
 wave/
