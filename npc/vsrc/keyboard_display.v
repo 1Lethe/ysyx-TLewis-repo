@@ -6,7 +6,9 @@ module keyboard_display(
     output wire segs_enable,
     output reg [7:0] ps2dis_seg0_1,
     output reg [7:0] ps2dis_seg2_3,
-    output reg [7:0] keytime_cnt
+    output reg [7:0] keytime_cnt,
+    output reg shift_flag,
+    output reg ctrl_flag
 );
 
 parameter IDLE = 4'b0001;
@@ -111,6 +113,26 @@ always @(posedge clk or negedge rst) begin
     end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
         keytime_cnt <= keytime_cnt + 1'b1;
     end
+end
+
+always @(posedge clk or negedge rst) begin
+    if(rst) begin
+        shift_flag <= 1'b0;
+    end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h12)) begin
+        shift_flag <= 1'b1;
+    end else if((kb_state == BREAK_KEY) && (ps2dis_data == 8'h12)) begin
+        shift_flag <= 1'b0;
+    end        
+end
+
+always @(posedge clk or negedge rst) begin
+    if(rst) begin
+        ctrl_flag <= 1'b0;
+    end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h14)) begin
+        ctrl_flag <= 1'b1;
+    end else if((kb_state == BREAK_KEY) && (ps2dis_data == 8'h14)) begin
+        ctrl_flag <= 1'b0;
+    end        
 end
 
 endmodule
