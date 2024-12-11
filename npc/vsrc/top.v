@@ -8,7 +8,9 @@ module top(
     output wire [7:0] o_seg2,
     output wire [7:0] o_seg3,
     output wire [7:0] o_seg4,
-    output wire [7:0] o_seg5
+    output wire [7:0] o_seg5,
+    output wire shift,
+    output wire ctrl
 );
 
 wire overflow;
@@ -21,7 +23,6 @@ wire segs_enable;
 wire [7:0]seg0_1;
 wire [7:0]seg2_3;
 wire [7:0]seg4_5;
-
 
 segs segs(
     .segs_input0_1(seg0_1),
@@ -44,7 +45,9 @@ keyboard_display keyboard_display(
     .segs_enable(segs_enable),
     .ps2dis_seg0_1(seg0_1),
     .ps2dis_seg2_3(seg2_3),
-    .keytime_cnt(seg4_5)
+    .keytime_cnt(seg4_5),
+    .shift_flag(shift),
+    .ctrl_flag(ctrl)
 );
 
 keyboard_read keyboard_read(

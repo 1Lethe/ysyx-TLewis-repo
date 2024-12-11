@@ -6,7 +6,9 @@ module keyboard_display(
     output wire segs_enable,
     output reg [7:0] ps2dis_seg0_1,
     output reg [7:0] ps2dis_seg2_3,
-    output reg [7:0] keytime_cnt
+    output reg [7:0] keytime_cnt,
+    output reg shift_flag,
+    output reg ctrl_flag
 );
 
 parameter IDLE = 4'b0001;
@@ -42,8 +44,10 @@ always @(posedge clk or negedge rst) begin
                     kb_state <= kb_state;     
             end
             BREAK_KEY : begin
-                if(ps2dis_recFlag == 1'b1)
+                if((ps2dis_recFlag == 1'b1) && (ps2dis_data != 8'hF0))
                     kb_state <= MAKE;
+                else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0))
+                    kb_state <= BREAK;
                 else
                     kb_state <= kb_state;
             end
@@ -62,7 +66,7 @@ end
 always @(posedge clk or negedge rst) begin
     if(rst) begin
         ps2dis_seg2_3 <= 8'b0;
-    end else if(kb_state == MAKE) begin
+    end else if((kb_state == MAKE) && (shift_flag == 1'b0)) begin
         case(ps2dis_data) //ASCII 
             8'h16 : ps2dis_seg2_3 <= 8'h31;
             8'h1E : ps2dis_seg2_3 <= 8'h32;
@@ -102,6 +106,47 @@ always @(posedge clk or negedge rst) begin
             8'h1A : ps2dis_seg2_3 <= 8'h7A;
             default : ps2dis_seg2_3 <= 8'h00;
         endcase
+    end else if((kb_state == MAKE) && (shift_flag == 1'b1)) begin
+        case(ps2dis_data) //ASCII 
+            8'h16 : ps2dis_seg2_3 <= 8'h31;
+            8'h1E : ps2dis_seg2_3 <= 8'h32;
+            8'h26 : ps2dis_seg2_3 <= 8'h33;
+            8'h25 : ps2dis_seg2_3 <= 8'h34;
+            8'h2E : ps2dis_seg2_3 <= 8'h35;
+            8'h36 : ps2dis_seg2_3 <= 8'h36;
+            8'h3D : ps2dis_seg2_3 <= 8'h37;
+            8'h3E : ps2dis_seg2_3 <= 8'h38;
+            8'h46 : ps2dis_seg2_3 <= 8'h39;
+            8'h45 : ps2dis_seg2_3 <= 8'h30;
+            8'h1C : ps2dis_seg2_3 <= 8'h41;
+            8'h32 : ps2dis_seg2_3 <= 8'h42;
+            8'h21 : ps2dis_seg2_3 <= 8'h43;
+            8'h23 : ps2dis_seg2_3 <= 8'h44;
+            8'h24 : ps2dis_seg2_3 <= 8'h45;
+            8'h2B : ps2dis_seg2_3 <= 8'h46;
+            8'h34 : ps2dis_seg2_3 <= 8'h47;
+            8'h33 : ps2dis_seg2_3 <= 8'h48;
+            8'h43 : ps2dis_seg2_3 <= 8'h49;
+            8'h3B : ps2dis_seg2_3 <= 8'h4A;
+            8'h42 : ps2dis_seg2_3 <= 8'h4B;
+            8'h4B : ps2dis_seg2_3 <= 8'h4C;
+            8'h3A : ps2dis_seg2_3 <= 8'h4D;
+            8'h31 : ps2dis_seg2_3 <= 8'h4E;
+            8'h44 : ps2dis_seg2_3 <= 8'h4F;
+            8'h4D : ps2dis_seg2_3 <= 8'h50;
+            8'h15 : ps2dis_seg2_3 <= 8'h51;
+            8'h2D : ps2dis_seg2_3 <= 8'h52;
+            8'h1B : ps2dis_seg2_3 <= 8'h53;
+            8'h2C : ps2dis_seg2_3 <= 8'h54;
+            8'h3C : ps2dis_seg2_3 <= 8'h55;
+            8'h2A : ps2dis_seg2_3 <= 8'h56;
+            8'h1D : ps2dis_seg2_3 <= 8'h57;
+            8'h22 : ps2dis_seg2_3 <= 8'h58;
+            8'h35 : ps2dis_seg2_3 <= 8'h59;
+            8'h1A : ps2dis_seg2_3 <= 8'h5A;
+            default : ps2dis_seg2_3 <= 8'h00;
+        endcase
+
     end
 end
 
@@ -111,6 +156,26 @@ always @(posedge clk or negedge rst) begin
     end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0)) begin
         keytime_cnt <= keytime_cnt + 1'b1;
     end
+end
+
+always @(posedge clk or negedge rst) begin
+    if(rst) begin
+        shift_flag <= 1'b0;
+    end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h12)) begin
+        shift_flag <= 1'b1;
+    end else if((kb_state == BREAK_KEY) && (ps2dis_data == 8'h12)) begin
+        shift_flag <= 1'b0;
+    end        
+end
+
+always @(posedge clk or negedge rst) begin
+    if(rst) begin
+        ctrl_flag <= 1'b0;
+    end else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'h14)) begin
+        ctrl_flag <= 1'b1;
+    end else if((kb_state == BREAK_KEY) && (ps2dis_data == 8'h14)) begin
+        ctrl_flag <= 1'b0;
+    end        
 end
 
 endmodule
