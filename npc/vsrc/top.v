@@ -24,7 +24,6 @@ wire [7:0]seg0_1;
 wire [7:0]seg2_3;
 wire [7:0]seg4_5;
 
-
 segs segs(
     .segs_input0_1(seg0_1),
     .segs_input2_3(seg2_3),
