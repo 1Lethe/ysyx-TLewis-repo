@@ -47,7 +47,7 @@ always @(posedge clk or negedge rst) begin
                 if((ps2dis_recFlag == 1'b1) && (ps2dis_data != 8'hF0))
                     kb_state <= MAKE;
                 else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0))
-                    kb_state <= BREAK
+                    kb_state <= BREAK;
                 else
                     kb_state <= kb_state;
             end
