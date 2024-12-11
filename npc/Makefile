@@ -87,8 +87,8 @@ $(TIMING_RPT): $(SCRIPT_DIR)/sta.tcl $(SDC_FILE) $(NETLIST_FIXED_V)
 
 # For NVBoard
 run: $(BIN)
+	@echo "Link in NVBoard."
 	@$^
-	@echo "Linkin ro NVBoard."
 
 # For clean build files
 clean:
