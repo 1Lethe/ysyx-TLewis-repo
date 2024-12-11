@@ -44,7 +44,9 @@ keyboard_display keyboard_display(
     .segs_enable(segs_enable),
     .ps2dis_seg0_1(seg0_1),
     .ps2dis_seg2_3(seg2_3),
-    .keytime_cnt(seg4_5)
+    .keytime_cnt(seg4_5),
+    .shift_flag(),
+    .ctrl_flag()
 );
 
 keyboard_read keyboard_read(
