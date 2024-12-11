@@ -1,4 +1,4 @@
-.PHONY = all run sim clean clean_wave clean_all
+.PHONY = all run sim clean clean_wave clean_all syn fix-fanout sta clean_sta
 
 TOPNAME = top
 NXDC_FILES = constr/top.nxdc
@@ -54,6 +54,32 @@ sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	./build/top
 	@echo "Sim Complete."
 
+PROJ_PATH = $(shell pwd)
+
+DESIGN ?=top
+SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
+RTL_FILES ?= $(shell find $(PROJ_PATH)/vsrc -name "*.v")
+export CLK_FREQ_MHZ ?= 500
+
+RESULT_DIR = $(PROJ_PATH)/sta_result/$(DESIGN)-$(CLK_FREQ_MHZ)MHz
+SCRIPT_DIR = $(PROJ_PATH)/scripts
+NETLIST_SYN_V   = $(RESULT_DIR)/$(DESIGN).netlist.syn.v
+NETLIST_FIXED_V = $(RESULT_DIR)/$(DESIGN).netlist.fixed.v
+TIMING_RPT = $(RESULT_DIR)/$(DESIGN).rpt
+
+syn: $(NETLIST_SYN_V)
+$(NETLIST_SYN_V): $(RTL_FILES) $(SCRIPT_DIR)/yosys.tcl
+	mkdir -p $(@D)
+	echo tcl $(SCRIPT_DIR)/yosys.tcl $(DESIGN) \"$(RTL_FILES)\" $@ | yosys -l $(@D)/yosys.log -s -
+
+fix-fanout: $(NETLIST_FIXED_V)
+$(NETLIST_FIXED_V): $(SCRIPT_DIR)/fix-fanout.tcl $(SDC_FILE) $(NETLIST_SYN_V)
+	./bin/iEDA -script $^ $(DESIGN) $@ 2>&1 | tee $(RESULT_DIR)/fix-fanout.log
+
+sta: $(TIMING_RPT)
+$(TIMING_RPT): $(SCRIPT_DIR)/sta.tcl $(SDC_FILE) $(NETLIST_FIXED_V)
+	./bin/iEDA -script $^ $(DESIGN) 2>&1 | tee $(RESULT_DIR)/sta.log
+
 all: default
 
 run: $(BIN)
@@ -62,12 +88,16 @@ run: $(BIN)
 clean:
 	rm -rf $(BUILD_DIR)
 
-WAVE_DIR = wave/*
+WAVE_DIR = wave
+STA_DIR = $(PROJ_PATH)/sta_result
 
 clean_wave:
-	rm -rf $(WAVE_DIR)
+	rm -rf $(WAVE_DIR)/*
 
-clean_all: clean clean_wave
+clean_sta:
+	rm -rf $(STA_DIR)/*
+
+clean_all: clean clean_wave clean_sta
 	@echo "Clean all complete."
 
 include ../Makefile
