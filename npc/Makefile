@@ -43,7 +43,7 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 
 #For sim
 SIM_TOPNAME = keyboard_sim
-VER_SIM_V_PATH = vsrc/ps2_keyboard.v vsrc/ps2_keyboard_model.v vsrc/ps2_keyboard_tb.v vsrc/keyboard_display.v
+VER_SIM_V_PATH = vsrc/ps2_keyboard.v vsrc_tb/ps2_keyboard_model.v vsrc_tb/ps2_keyboard_tb.v vsrc/keyboard_display.v
 VER_SIM_C_PATH = csrc/sim_main.cpp
 VER_SIM_CFLAGS = -cc --exe -trace-fst --build
 sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
@@ -54,11 +54,11 @@ sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	./build/top
 	@echo "Sim Complete."
 
-PROJ_PATH = $(shell pwd)
+PROJ_PATH = $(NPC_HOME)
 
-DESIGN ?=top
+DESIGN ?= top
 SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
-RTL_FILES ?= $(shell find $(PROJ_PATH)/vsrc -name "*.v")
+RTL_FILES ?= $(VSRCS)
 export CLK_FREQ_MHZ ?= 100
 
 RESULT_DIR = $(PROJ_PATH)/sta_result/$(DESIGN)-$(CLK_FREQ_MHZ)MHz
@@ -66,6 +66,9 @@ SCRIPT_DIR = $(PROJ_PATH)/scripts
 NETLIST_SYN_V   = $(RESULT_DIR)/$(DESIGN).netlist.syn.v
 NETLIST_FIXED_V = $(RESULT_DIR)/$(DESIGN).netlist.fixed.v
 TIMING_RPT = $(RESULT_DIR)/$(DESIGN).rpt
+
+init:
+	bash -c "$$(wget -O - https://ysyx.oscc.cc/slides/resources/scripts/init-yosys-sta.sh)"
 
 syn: $(NETLIST_SYN_V)
 $(NETLIST_SYN_V): $(RTL_FILES) $(SCRIPT_DIR)/yosys.tcl
