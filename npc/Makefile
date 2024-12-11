@@ -59,7 +59,7 @@ PROJ_PATH = $(shell pwd)
 DESIGN ?=top
 SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
 RTL_FILES ?= $(shell find $(PROJ_PATH)/vsrc -name "*.v")
-export CLK_FREQ_MHZ ?= 500
+export CLK_FREQ_MHZ ?= 100
 
 RESULT_DIR = $(PROJ_PATH)/sta_result/$(DESIGN)-$(CLK_FREQ_MHZ)MHz
 SCRIPT_DIR = $(PROJ_PATH)/scripts
