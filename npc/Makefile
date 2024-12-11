@@ -54,6 +54,8 @@ sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	./build/top
 	@echo "Sim Complete."
 
+
+# For sta
 PROJ_PATH = $(NPC_HOME)
 
 DESIGN ?= top
@@ -83,11 +85,12 @@ sta: $(TIMING_RPT)
 $(TIMING_RPT): $(SCRIPT_DIR)/sta.tcl $(SDC_FILE) $(NETLIST_FIXED_V)
 	./bin/iEDA -script $^ $(DESIGN) 2>&1 | tee $(RESULT_DIR)/sta.log
 
-all: default
-
+# For NVBoard
 run: $(BIN)
 	@$^
+	@echo "Linkin ro NVBoard."
 
+# For clean build files
 clean:
 	rm -rf $(BUILD_DIR)
 
