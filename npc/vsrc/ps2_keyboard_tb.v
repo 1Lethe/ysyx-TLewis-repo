@@ -35,8 +35,7 @@ keyboard_display keyboard_display(
     .segs_enable(),
     .keytime_cnt(),
     .ps2dis_seg0_1(),
-    .ps2dis_seg2_3(),
-    .shift_flag()
+    .ps2dis_seg2_3()
 );
 
 wire rst;
@@ -73,21 +72,6 @@ end
 initial begin
     clrn = 1'b0;  #20;
     clrn = 1'b1;  #20;
-    model.kbd_sendcode(8'h12); // press 'SHIFT'
-    model.kbd_sendcode(8'hF0);
-    model.kbd_sendcode(8'h12);
-    model.kbd_sendcode(8'h14); // press 'CTRL'
-    model.kbd_sendcode(8'hF0);
-    model.kbd_sendcode(8'h14);
-
-    model.kbd_sendcode(8'h12);
-    model.kbd_sendcode(8'h1C);
-    model.kbd_sendcode(8'h1C);
-    model.kbd_sendcode(8'hF0);
-    model.kbd_sendcode(8'h1C);
-    model.kbd_sendcode(8'hF0);
-    model.kbd_sendcode(8'h12);
-    
     model.kbd_sendcode(8'h1C); // press 'A'
     model.kbd_sendcode(8'hF0); // break code
     model.kbd_sendcode(8'h1C); // release 'A'
