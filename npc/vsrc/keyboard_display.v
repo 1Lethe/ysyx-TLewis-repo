@@ -44,8 +44,10 @@ always @(posedge clk or negedge rst) begin
                     kb_state <= kb_state;     
             end
             BREAK_KEY : begin
-                if(ps2dis_recFlag == 1'b1)
+                if((ps2dis_recFlag == 1'b1) && (ps2dis_data != 8'hF0))
                     kb_state <= MAKE;
+                else if((ps2dis_recFlag == 1'b1) && (ps2dis_data == 8'hF0))
+                    kb_state <= BREAK
                 else
                     kb_state <= kb_state;
             end
