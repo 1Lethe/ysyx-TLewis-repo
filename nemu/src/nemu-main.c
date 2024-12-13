@@ -21,7 +21,7 @@ void engine_start();
 int is_exit_status_bad();
 
 int main(int argc, char *argv[]) { 
-  int gdbAttachFlag = 0;
+  volatile bool gdbAttachFlag = 0;
 
   while(!gdbAttachFlag); 
 
