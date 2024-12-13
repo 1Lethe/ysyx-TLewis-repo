@@ -15,9 +15,12 @@
 
 #include <isa.h>
 #include <cpu/cpu.h>
+#include <utils.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+
+extern NEMUState nemu_state;
 
 static int is_batch_mode = false;
 
@@ -49,6 +52,7 @@ static int cmd_c(char *args) {
 
 
 static int cmd_q(char *args) {
+  nemu_state.state = NEMU_QUIT; // Elegantly exit.
   return -1;
 }
 
@@ -122,10 +126,11 @@ void sdb_mainloop() {
     sdl_clear_event_queue();
 #endif
 
+    /* decode input instructions */
     int i;
-    for (i = 0; i < NR_CMD; i ++) {
-      if (strcmp(cmd, cmd_table[i].name) == 0) {
-        if (cmd_table[i].handler(args) < 0) { return; }
+    for (i = 0; i < NR_CMD; i ++) { 
+      if (strcmp(cmd, cmd_table[i].name) == 0) { // Match the instruction table item by item , If match then
+        if (cmd_table[i].handler(args) < 0) { return; } // execution instruction till return
         break;
       }
     }
