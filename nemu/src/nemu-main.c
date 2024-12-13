@@ -20,10 +20,19 @@ void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
 
-int main(int argc, char *argv[]) { 
-  volatile bool gdbAttachFlag = 0;
+//#define USE_GDB_ATTACH
 
+int main(int argc, char *argv[]) {
+
+/*
+  Add by TLewis.
+  In this way We can use gdb attach to debug program in VSCode.
+  Only to do is set gdbAttachFlag true in GDB.
+*/
+#ifdef USE_GDB_ATTACH
+  volatile bool gdbAttachFlag = false;
   while(!gdbAttachFlag); 
+#endif
 
   /* Initialize the monitor. */
 #ifdef CONFIG_TARGET_AM
