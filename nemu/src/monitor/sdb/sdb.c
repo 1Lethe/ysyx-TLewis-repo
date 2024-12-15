@@ -87,7 +87,6 @@ static int cmd_info(char *args){
 }
 
 static int cmd_x(char *args){
-  char *arg = strtok(NULL, " ");
   uint8_t *pmem_scan = NULL;
   int scan_num;
   uint32_t mem_start_place;
@@ -95,7 +94,7 @@ static int cmd_x(char *args){
   if(args == NULL){
     printf("Command need args.\n");
   }else{
-    sscanf(arg, "%d %x", &scan_num, &mem_start_place);
+    sscanf(args, "%d %x", &scan_num, &mem_start_place);
     for(int i = 0;i < scan_num;i++){
       pmem_scan = guest_to_host(mem_start_place + i);
       printf("0x%x = 0x%x\n", mem_start_place+i, *pmem_scan);
