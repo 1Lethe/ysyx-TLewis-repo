@@ -92,7 +92,7 @@ static int cmd_x(char *args){
   uint32_t mem_start_place;
 
   if(args == NULL){
-    printf("Command need args.\n");
+    printf("Command x need args.\n");
   }else{
     if(sscanf(args, "%d %x", &scan_num, &mem_start_place) == -1){
       for(int i = 0;i < scan_num;i++){
@@ -100,7 +100,7 @@ static int cmd_x(char *args){
         printf("0x%x = 0x%x\n", mem_start_place+i, *pmem_scan);
       }
     }else{
-      printf("Invalid input for x command.");
+      printf("Invalid input for x command.\n");
     }
   }
 
