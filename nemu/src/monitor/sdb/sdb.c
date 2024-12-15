@@ -101,7 +101,7 @@ static int cmd_x(char *args){
       return 0;
     }
     if(mem_start_place < CONFIG_MBASE){
-      printf("Invalid start_place input.This arg should >= MBASE.\n");
+      printf("Invalid start_place input.This arg should >= MBASE(riscv32 default:0x80000000).\n");
       return 0;
     }
     for(int i = 0;i < scan_num;i++){
@@ -126,9 +126,9 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-  {"si", "Step to the pointed instruction" , cmd_si},
-  {"info", "Display the value of regs or watch", cmd_info},
-  {"x","Scan memory", cmd_x},
+  {"si", "Step to the pointed instruction.si [stepNum]" , cmd_si},
+  {"info", "Display the value of regs or watch.info <r/w>", cmd_info},
+  {"x","Scan memory.x <scan_num> <mem_start_place>", cmd_x},
 
 };
 
