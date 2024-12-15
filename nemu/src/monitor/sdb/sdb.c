@@ -72,14 +72,14 @@ static int cmd_info(char *args){
   char *arg = strtok(NULL, " ");
 
   if(arg == NULL){
-    printf("Command need args.r:regs,w:watchs.");
+    printf("Command need args.r:regs,w:watchs.\n");
   }else{
     if(*arg == 'r'){
       isa_reg_display();
     }else if(*arg == 'w'){
 
     }else{
-      printf("args not support.");
+      printf("args not support.\n");
     }
   }
   return 0;
