@@ -43,8 +43,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
-  isa_exec_once(s);
-  cpu.pc = s->dnpc;
+  isa_exec_once(s); // fetch and execute code s->pc & update static nextpc s->snpc.
+  cpu.pc = s->dnpc; // update pc
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
@@ -77,7 +77,7 @@ static void execute(uint64_t n) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
-    if (nemu_state.state != NEMU_RUNNING) break;
+    if (nemu_state.state != NEMU_RUNNING) break;// Run program till quit or end
     IFDEF(CONFIG_DEVICE, device_update());
   }
 }
@@ -108,7 +108,7 @@ void cpu_exec(uint64_t n) {
 
   uint64_t timer_start = get_time();
 
-  execute(n);
+  execute(n);// execute command
 
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
