@@ -90,7 +90,7 @@ static int cmd_x(char *args){
   char *arg = strtok(NULL, "");
   uint8_t *pmem_scan = NULL;
   int scan_num;
-  int mem_start_place;
+  uint32_t mem_start_place;
 
   if(args == NULL){
     printf("Command need args.\n");
