@@ -16,6 +16,7 @@
 #include <isa.h>
 #include <cpu/cpu.h>
 #include <utils.h>
+#include <memory/paddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
@@ -56,6 +57,63 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_si(char *args) {
+  int stepNum = 1;
+
+  if(args == NULL){
+    cpu_exec(1);
+  }else{
+    sscanf(args, "%d", &stepNum);
+    cpu_exec(stepNum);
+  }
+  return 0;
+}
+
+static int cmd_info(char *args){
+  char *arg = strtok(NULL, " ");
+
+  if(arg == NULL){
+    printf("Command need args.r : regs,w : watchs.\n");
+  }else{
+    if(*arg == 'r'){
+      isa_reg_display();
+    }else if(*arg == 'w'){
+      
+    }else{
+      printf("Invalid info command input.\n");
+    }
+  }
+  return 0;
+}
+
+static int cmd_x(char *args){
+  uint8_t *pmem_scan = NULL;
+  int scan_num;
+  uint32_t mem_start_place;
+
+  if(args == NULL){
+    printf("Command x need args.\n");
+    return 0;
+  }
+  if(sscanf(args, "%d %x", &scan_num, &mem_start_place) == 2){
+    if(scan_num <= 0){
+      printf("Invalid scan_num input.This arg should > 0.\n");
+      return 0;
+    }
+    if(mem_start_place < CONFIG_MBASE){
+      printf("Invalid start_place input.This arg should >= MBASE(riscv32 default:0x80000000).\n");
+      return 0;
+    }
+    for(int i = 0;i < scan_num;i++){
+      pmem_scan = guest_to_host(mem_start_place + i);
+      printf("0x%08x = 0x%02x\n", mem_start_place+i, *pmem_scan);
+    }
+  }else{
+    printf("Invalid x command input.\n");
+  }
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -68,6 +126,9 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
+  {"si", "Step to the pointed instruction.si [stepNum]" , cmd_si},
+  {"info", "Display the value of regs or watch.info <r/w>", cmd_info},
+  {"x","Scan memory.x <scan_num> <mem_start_place>", cmd_x},
 
 };
 
