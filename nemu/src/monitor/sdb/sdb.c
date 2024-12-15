@@ -89,14 +89,14 @@ static int cmd_info(char *args){
 static int cmd_x(char *args){
   uint8_t *pmem_scan = NULL;
   int scan_num;
-  uint32_t mem_start_place;
+  uint8_t mem_start_place;
 
   if(args == NULL){
     printf("Command x need args.\n");
     return 0;
   }
 
-  if(sscanf(args, "%d %x", &scan_num, &mem_start_place) == 2){
+  if(sscanf(args, "%d %hhx", &scan_num, &mem_start_place) == 2){
     if(scan_num <= 0){
       printf("Invalid scan num input.This arg should > 0.\n");
       return 0;
