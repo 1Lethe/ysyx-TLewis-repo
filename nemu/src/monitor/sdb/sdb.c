@@ -71,12 +71,16 @@ static int cmd_si(char *args) {
 static int cmd_info(char *args){
   char *arg = strtok(NULL, " ");
 
-  if(*arg == 'r'){
-    isa_reg_display();
-  }else if(*arg == 's'){
-
+  if(arg == NULL){
+    printf("Command need args.r:regs,w:watchs.");
   }else{
-    printf("invalid input. input = r/s");
+    if(*arg == 'r'){
+      isa_reg_display();
+    }else if(*arg == 'w'){
+
+    }else{
+      printf("args not support.");
+    }
   }
   return 0;
 }
