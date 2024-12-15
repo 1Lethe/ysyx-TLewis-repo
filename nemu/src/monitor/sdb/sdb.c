@@ -100,7 +100,7 @@ static int cmd_x(char *args){
         printf("0x%x = 0x%x\n", mem_start_place+i, *pmem_scan);
       }
     }else{
-
+      printf("Invalid input for x command.");
     }
   }
 
