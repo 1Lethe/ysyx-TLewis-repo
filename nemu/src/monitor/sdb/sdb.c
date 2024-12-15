@@ -80,7 +80,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-  {"si", "	Goes to the next instruction" ,cmd_si},
+  {"si", "Step to the pointed instruction" ,cmd_si},
 
 };
 
