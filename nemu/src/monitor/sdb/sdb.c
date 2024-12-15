@@ -76,7 +76,7 @@ static int cmd_info(char *args){
   }else if(*arg == 's'){
 
   }else{
-
+    printf("invalid input. input = r/s");
   }
   return 0;
 }
