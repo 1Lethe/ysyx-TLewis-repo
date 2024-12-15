@@ -103,7 +103,7 @@ static int cmd_x(char *args){
     }
     for(int i = 0;i < scan_num;i++){
       pmem_scan = guest_to_host(mem_start_place + i);
-      printf("0x%x = 0x%2x\n", mem_start_place+i, *pmem_scan);
+      printf("0x%x = 0x%02x\n", mem_start_place+i, *pmem_scan);
     }
   }else{
     printf("Invalid x command input.");
