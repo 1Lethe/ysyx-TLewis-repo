@@ -93,17 +93,21 @@ static int cmd_x(char *args){
 
   if(args == NULL){
     printf("Command x need args.\n");
-  }else{
-    if(sscanf(args, "%d %x", &scan_num, &mem_start_place) == 2){
-      for(int i = 0;i < scan_num;i++){
-        pmem_scan = guest_to_host(mem_start_place + i);
-        printf("0x%x = 0x%x\n", mem_start_place+i, *pmem_scan);
-      }
-    }else{
-      printf("Invalid input for x command.\n");
-    }
+    return 0;
   }
 
+  if(sscanf(args, "%d %x", &scan_num, &mem_start_place) == 2){
+    if(scan_num <= 0){
+      printf("Invalid scan_num input.This Arg should > 0.");
+      return 0;
+    }
+    for(int i = 0;i < scan_num;i++){
+      pmem_scan = guest_to_host(mem_start_place + i);
+      printf("0x%x = 0x%x\n", mem_start_place+i, *pmem_scan);
+    }
+  }else{
+    printf("Invalid x command input.");
+  }
   return 0;
 }
 
