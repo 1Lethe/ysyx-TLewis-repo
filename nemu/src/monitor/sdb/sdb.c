@@ -80,7 +80,7 @@ static int cmd_info(char *args){
     }else if(*arg == 'w'){
       
     }else{
-      printf("args not support.\n");
+      printf("Invalid info command input.\n");
     }
   }
   return 0;
@@ -103,7 +103,7 @@ static int cmd_x(char *args){
     }
     for(int i = 0;i < scan_num;i++){
       pmem_scan = guest_to_host(mem_start_place + i);
-      printf("0x%x = 0x%02x\n", mem_start_place+i, *pmem_scan);
+      printf("0x%08x = 0x%02x\n", mem_start_place+i, *pmem_scan);
     }
   }else{
     printf("Invalid x command input.");
