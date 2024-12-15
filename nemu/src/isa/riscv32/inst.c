@@ -73,6 +73,6 @@ static int decode_exec(Decode *s) {
 }
 
 int isa_exec_once(Decode *s) {
-  s->isa.inst = inst_fetch(&s->snpc, 4);
-  return decode_exec(s);
+  s->isa.inst = inst_fetch(&s->snpc, 4); // fetch code in mem and update static nextpc
+  return decode_exec(s); // execute code. here s->dnpc = s->snpc
 }
