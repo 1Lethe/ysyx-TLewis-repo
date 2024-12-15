@@ -16,6 +16,7 @@
 #include <isa.h>
 #include <cpu/cpu.h>
 #include <utils.h>
+#include <memory/paddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
@@ -77,11 +78,30 @@ static int cmd_info(char *args){
     if(*arg == 'r'){
       isa_reg_display();
     }else if(*arg == 'w'){
-
+      
     }else{
       printf("args not support.\n");
     }
   }
+  return 0;
+}
+
+static int cmd_x(char *args){
+  char *arg = strtok(NULL, "");
+  uint8_t *pmem_scan = NULL;
+  int scan_num;
+  int mem_start_place;
+
+  if(args == NULL){
+    printf("Command need args.");
+  }else{
+    sscanf(arg, "%d %d", &scan_num, &mem_start_place);
+    for(int i = 0;i < scan_num;i++){
+      pmem_scan = guest_to_host(mem_start_place + i);
+      printf("%x = %d", mem_start_place+i, *pmem_scan);
+    }
+  }
+
   return 0;
 }
 
@@ -98,7 +118,8 @@ static struct {
 
   /* TODO: Add more commands */
   {"si", "Step to the pointed instruction" , cmd_si},
-  {"info", "Display the value of regs or watch.", cmd_info}
+  {"info", "Display the value of regs or watch", cmd_info},
+  {"x","Scan memory", cmd_x},
 
 };
 
