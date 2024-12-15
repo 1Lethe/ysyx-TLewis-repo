@@ -98,7 +98,7 @@ static int cmd_x(char *args){
     sscanf(arg, "%d %x", &scan_num, &mem_start_place);
     for(int i = 0;i < scan_num;i++){
       pmem_scan = guest_to_host(mem_start_place + i);
-      printf("%x = %x\n", mem_start_place+i, *pmem_scan);
+      printf("0x%x = 0x%x\n", mem_start_place+i, *pmem_scan);
     }
   }
 
