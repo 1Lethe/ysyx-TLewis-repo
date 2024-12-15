@@ -98,7 +98,7 @@ static int cmd_x(char *args){
 
   if(sscanf(args, "%d %x", &scan_num, &mem_start_place) == 2){
     if(scan_num <= 0){
-      printf("Invalid scan_num input.This Arg should > 0.");
+      printf("Invalid scan_num input.This Arg should > 0.\n");
       return 0;
     }
     for(int i = 0;i < scan_num;i++){
@@ -106,7 +106,7 @@ static int cmd_x(char *args){
       printf("0x%x = 0x%x\n", mem_start_place+i, *pmem_scan);
     }
   }else{
-    printf("Invalid x command input.");
+    printf("Invalid x command input.\n");
   }
   return 0;
 }
