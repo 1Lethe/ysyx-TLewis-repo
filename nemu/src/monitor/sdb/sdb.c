@@ -95,17 +95,17 @@ static int cmd_x(char *args){
     printf("Command x need args.\n");
     return 0;
   }
-
   if(sscanf(args, "%d %x", &scan_num, &mem_start_place) == 2){
     if(scan_num <= 0){
-      printf("Invalid scan_num input.This Arg should > 0.");
+      printf("Invalid scan_num input.This arg should > 0.");
+      return 0;
+    }
+    if(mem_start_place < CONFIG_MBASE){
+      printf("Invalid start_place input.This arg should >= MBASE.");
       return 0;
     }
     for(int i = 0;i < scan_num;i++){
       pmem_scan = guest_to_host(mem_start_place + i);
-      if(pmem_scan == NULL){
-        printf("NULL Memory 0x%08x", mem_start_place+i);break;
-      }
       printf("0x%08x = 0x%02x\n", mem_start_place+i, *pmem_scan);
     }
   }else{
