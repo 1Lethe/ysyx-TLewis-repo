@@ -95,7 +95,7 @@ static int cmd_x(char *args){
   if(args == NULL){
     printf("Command need args.\n");
   }else{
-    sscanf(arg, "%d %d", &scan_num, &mem_start_place);
+    sscanf(arg, "%d %x", &scan_num, &mem_start_place);
     for(int i = 0;i < scan_num;i++){
       pmem_scan = guest_to_host(mem_start_place + i);
       printf("%x = %d", mem_start_place+i, *pmem_scan);
