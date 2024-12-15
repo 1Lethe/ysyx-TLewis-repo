@@ -93,7 +93,7 @@ static int cmd_x(char *args){
   int mem_start_place;
 
   if(args == NULL){
-    printf("Command need args.");
+    printf("Command need args.\n");
   }else{
     sscanf(arg, "%d %d", &scan_num, &mem_start_place);
     for(int i = 0;i < scan_num;i++){
