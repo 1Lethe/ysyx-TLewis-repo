@@ -136,10 +136,10 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-  {"si", "Step to the pointed instruction.si [stepNum]" , cmd_si},
-  {"info", "Display the value of regs or watch.info <r/w>", cmd_info},
-  {"x", "Scan memory.x <scan_num> <mem_start_place>", cmd_x},
-  {"p", "Solve the expression.p <expression>", cmd_p},
+  {"si", "Step to the pointed instruction.usage: si [stepNum]" , cmd_si},
+  {"info", "Display the value of regs or watch.usage: info <r/w>", cmd_info},
+  {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
+  {"p", "Solve the expression.usage: p <expression>", cmd_p},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
