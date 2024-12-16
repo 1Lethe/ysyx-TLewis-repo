@@ -206,17 +206,18 @@ static int find_oper(int p, int q){
 
 /* BNF algorithm */
 static int eval(int p, int q){
-  int ret_val = 0;
   if(p > q){
     return -1;
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     return atoi(tokens[p].str);
-  }else if((ret_val = chech_parentheses(p, q)) == true){
+  }
+  int is_pare_matched = chech_parentheses(p, q);
+  if(is_pare_matched == -1){
+    return -1;
+  }else if(is_pare_matched == true){
     /* Check the parentheses and remove a matched pair of it. */
     return eval(p + 1, q - 1);
-  }else if(ret_val == -1){
-    return -1;
   }else{
     /* Split the expression to smaller */
     int op = find_oper(p, q);
@@ -244,7 +245,9 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
+  printf("%d\n",nr_token);
+  printf("%s\n",e);
+  /* TODO: Insert codes to evaluate the expression. */
   printf("%s val = %d.\n", e,eval(0, nr_token-1));
 
   return 0;
