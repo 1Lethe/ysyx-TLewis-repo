@@ -115,7 +115,7 @@ static int cmd_x(char *args){
 }
 
 static int cmd_p(char *args){
-  bool success_flag;
+  bool success_flag = true;
   if(args == NULL){
     printf("Command p need args.");
     return 0;
