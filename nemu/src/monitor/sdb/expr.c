@@ -21,7 +21,7 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_POSTIVE_NUM, TK_NEGATIVE_NUM,TK_EQ
+  TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ
 
   /* TODO: Add more token types */
 
@@ -37,7 +37,6 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},          // spaces
-  {""},
   {"[0-9]+", TK_POSTIVE_NUM},         // decimal digit
   {"\\+", '+'},               // plus
   {"-", '-'},                 // sub
@@ -102,14 +101,15 @@ bool make_token(char *e) {// FIXME: used to be static
          */
 
         switch (rules[i].token_type) {
-          //case TK_NUM : tokens[i].type = TK_NUM;break;
+          case TK_NOTYPE : break;
+          case TK_POSTIVE_NUM : tokens[i].type = TK_POSTIVE_NUM;break;
           case '+': tokens[i].type = '+';break;
           case '-': tokens[i].type = '-';break;
           case '*': tokens[i].type = '*';break;
           case '/': tokens[i].type = '/';break;
           case '(': tokens[i].type = '(';break;
           case ')': tokens[i].type = ')';break;
-          default: panic("match Fault at position %d\n%s\n%*.s^\n", position, e, position, "");
+          default: break;
         }
 
         break;
