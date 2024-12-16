@@ -201,7 +201,7 @@ void sdb_mainloop() {
 }
 
 void init_sdb() {
-  bool success;
+  bool success = true;
   /* Compile the regular expressions. */
   init_regex();
 
