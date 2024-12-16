@@ -207,6 +207,7 @@ static int find_oper(int p, int q){
 /* BNF algorithm */
 static int eval(int p, int q){
   if(p > q){
+    printf("%d %d",p,q);
     panic("Bad expression.\n");
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
