@@ -158,17 +158,9 @@ static bool chech_parentheses(int p, int q){
     return false;
   }else{
     for(int i = p + 1;i <= q - 1;i++){
-      if(tokens[i].type == '('){
-        pare_match_time = 1;
-      }
-      if(pare_match_time == 1){
-        /* Start in p+1 and the first parentheses is ')' ,It must not surrounded ! */
-        if(tokens[i].type == ')'){
-          return false;
-        }else if(tokens[i].type == '('){
-          return true;
-        }
-      }
+      if(tokens[i].type == '(') pare_match_time++;
+      if(tokens[i].type == ')') pare_match_time--;
+      if(pare_match_time < 0) return false;
     }
   }
   /* If pass all tests above ,It's surrounded. */
