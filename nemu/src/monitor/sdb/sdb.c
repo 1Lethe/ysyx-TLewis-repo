@@ -114,6 +114,16 @@ static int cmd_x(char *args){
   return 0;
 }
 
+static int cmd_p(char *args){
+  bool success_flag;
+  if(args == NULL){
+    printf("Command p need args.");
+    return 0;
+  }
+  expr(args, &success_flag);
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -128,8 +138,8 @@ static struct {
   /* TODO: Add more commands */
   {"si", "Step to the pointed instruction.si [stepNum]" , cmd_si},
   {"info", "Display the value of regs or watch.info <r/w>", cmd_info},
-  {"x","Scan memory.x <scan_num> <mem_start_place>", cmd_x},
-
+  {"x", "Scan memory.x <scan_num> <mem_start_place>", cmd_x},
+  {"p", "Solve the expression.p <expression>", cmd_p},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
