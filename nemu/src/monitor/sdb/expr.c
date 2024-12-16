@@ -241,7 +241,7 @@ word_t expr(char *e, bool *success) {
   }
   printf("%d\n",nr_token);
   /* TODO: Insert codes to evaluate the expression. */
-  printf("%s val = %d.\n", e,eval(0, nr_token - 1));
+  printf("%s val = %d.\n", e,eval(0, nr_token-1));
 
 
   return 0;
