@@ -19,7 +19,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
-
+#define USE_DEBUG
 enum {
   TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
@@ -189,6 +189,7 @@ static int find_oper(int p, int q){
     if(tokens[i].type == '(' || pare_inside_flag == true){
       if(tokens[i].type == ')'){
         pare_inside_flag = false;
+        #
       }else{
         pare_inside_flag = true;
       }
@@ -223,9 +224,10 @@ static int eval(int p, int q){
     return eval(p + 1, q - 1);
   }else{
     /* Split the expression to smaller */
-    int op = find_oper(p, q);printf("op = %d\n", op);
+    int op = find_oper(p, q);
     int val1 = eval(p, op - 1);
     int val2 = eval(op + 1, q);
+    IFDEF(USE_DEBUG,printf("%d %d %d"),op,val1,val2)
 
     switch(tokens[op].type){
       case TK_PLUS : return val1 + val2;
