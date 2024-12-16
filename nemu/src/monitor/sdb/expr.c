@@ -87,7 +87,6 @@ static int nr_token __attribute__((used))  = 0;
 static bool make_token(char *e) {
   int position = 0;
   int i;
-  int token_place = 0;
   regmatch_t pmatch;
 
   nr_token = 0;
@@ -112,22 +111,21 @@ static bool make_token(char *e) {
         switch (rules[i].token_type) {
           case TK_NOTYPE : break;
           case TK_POSTIVE_NUM :
-            tokens[token_place].type = TK_POSTIVE_NUM;
-            memset(tokens[token_place].str, '\0', 32);
+            tokens[nr_token].type = TK_POSTIVE_NUM;
+            memset(tokens[nr_token].str, '\0', 32);
             Assert(substr_len <= 32,"ERROR : Too long expression at position %d with len %d: %.*s",\
             position, substr_len, substr_len, substr_start);
-            strncpy(tokens[token_place].str, substr_start,substr_len);
+            strncpy(tokens[nr_token].str, substr_start,substr_len);
             nr_token += 1;
             break;
-          case TK_PLUS: tokens[token_place].type = '+';nr_token += 1;break;
-          case TK_SUB: tokens[token_place].type = '-';nr_token += 1;break;
-          case TK_MUL: tokens[token_place].type = '*';nr_token += 1;break;
-          case TK_DIV: tokens[token_place].type = '/';nr_token += 1;break;
-          case TK_LEFT_PARE: tokens[token_place].type = '(';nr_token += 1;break;
-          case TK_RIGHT_PARE: tokens[token_place].type = ')';nr_token += 1;break;
+          case TK_PLUS: tokens[nr_token].type = '+';nr_token += 1;break;
+          case TK_SUB: tokens[nr_token].type = '-';nr_token += 1;break;
+          case TK_MUL: tokens[nr_token].type = '*';nr_token += 1;break;
+          case TK_DIV: tokens[nr_token].type = '/';nr_token += 1;break;
+          case TK_LEFT_PARE: tokens[nr_token].type = '(';nr_token += 1;break;
+          case TK_RIGHT_PARE: tokens[nr_token].type = ')';nr_token += 1;break;
           default: break;
         }
-        token_place++;
 
         break;
       }
