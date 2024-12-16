@@ -83,7 +83,7 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
-bool make_token(char *e) {
+static bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
@@ -138,7 +138,7 @@ bool make_token(char *e) {
 
   return true;
 }
-#if 0
+
 static bool chech_parentheses(int p, int q){
   int left_pare_num = 0;int right_pare_num = 0;
   int pare_match_time = 0;
@@ -156,7 +156,7 @@ static bool chech_parentheses(int p, int q){
   }else{
     for(int i = p + 1;i <= q - 1;i++){
       if(tokens[i].type == '('){
-        int pare_match_time == 1;
+        pare_match_time = 1;
       }
       if(pare_match_time == 1 && tokens[i].type == ')'){
         /* Start in p+1 and the first parentheses is ')' ,It must not surrounded ! */
@@ -168,28 +168,72 @@ static bool chech_parentheses(int p, int q){
   return true;
 }
 
+/* Find the main operator */
+static int find_oper(int p, int q){
+  int main_oper_place = 0;
+  bool pare_inside_flag = false;
+  int first_highlevel_place = 0;
+  int first_mul_place = 0;
+  for(int i = p;i <= q;i++){
+   /* Ignore not-oper types. */
+    if(tokens[i].type >= TK_NOTYPE){
+      continue;
+    }
+    /* Ignore every oper inside parentheses. */
+    if(tokens[i].type == '(' || pare_inside_flag == true){
+      if(tokens[i].type == ')'){
+        pare_inside_flag = false;
+      }else{
+        pare_inside_flag = true;
+      }
+      continue;
+    }
+    /* Record the first * or / . */
+    if((tokens[i].type == TK_MUL || tokens[i].type == TK_DIV) && (first_mul_place == 0)){
+      first_highlevel_place = i;
+      continue;
+    }
+    /* Find the main oper of expression which contain +/- ,now the first + or - is main oper. */
+    if(tokens[i].type == TK_PLUS || tokens[i].type == TK_SUB){
+      main_oper_place = i;
+      break;
+    }
+    /* If + or - not exist, then the main oper is * or / . */
+    main_oper_place = first_highlevel_place;
+  }
+  return main_oper_place;
+}
+
 /* BNF algorithm */
 static int eval(int p, int q){
-  int calc_res;
-  int main_oper_place = 0;
+
 
   if(p > q){
     panic("Bad expression.\n");
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
-    return calc_res;
-  }else if(check_parentheses(p, q) == true){
+    return atoi(tokens[p].str);
+  }else if(chech_parentheses(p, q) == true){
     /* Check the parentheses and remove a matched pair of it. */
     return eval(p + 1, q - 1);
-  }else(
+  }else{
     /* Split the expression to smaller */
-    /* Find the main operator */
-    bool pare_inside_flag = false;
-    for(int i = p;i <= q;i++){
-      if(tokens[i].type == )
+    int op = find_oper(p, q);
+    int val1 = eval(p, op - 1);
+    int val2 = eval(op + 1, q);
+
+    switch(tokens[op].type){
+      case TK_PLUS : return val1 + val2;
+      case TK_SUB : return val1 - val2;
+      case TK_MUL : return val1 * val2;
+      case TK_DIV : return val1 / val2;
+      default : assert(0);
     }
-  )
+  }
 }
+
+
+
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
@@ -198,8 +242,8 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
+  printf("%s val = %d.\n", e,eval(0, nr_token));
 
 
   return 0;
 }
-#endif

@@ -27,7 +27,6 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
-bool make_token(char *e);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -208,5 +207,6 @@ void init_sdb() {
   /* Initialize the watchpoint pool. */
   init_wp_pool();
 
-  make_token("3/4+5*100-(10-8)");
+  expr("(3+4)", NULL);
+
 }
