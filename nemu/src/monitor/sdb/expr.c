@@ -102,7 +102,7 @@ static bool make_token(char *e) {
 
         switch (rules[i].token_type) {
           case TK_NOTYPE : break;
-          case TK_POSTIVE_NUM : 
+          case TK_POSTIVE_NUM :
             tokens[i].type = TK_POSTIVE_NUM;
             memset(tokens[i].str, '\0', 32);
             Assert(substr_len <= 32,"ERROR : Too long expression at position %d with len %d: %.*s",\
