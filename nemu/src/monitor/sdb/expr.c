@@ -151,7 +151,7 @@ static bool check_parentheses(int p, int q, bool *success){
   if(left_pare_num != right_pare_num){
     printf("The num of parentheses in expression is wrong.\n");
     *success = false;
-    return false;
+    return true;
   }
 
   if(tokens[p].type != '(' || tokens[q].type != ')'){
