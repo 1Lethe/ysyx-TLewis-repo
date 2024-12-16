@@ -208,4 +208,5 @@ void init_sdb() {
   /* Initialize the watchpoint pool. */
   init_wp_pool();
 
+  make_token("3/4+5*100-(10-8)");
 }
