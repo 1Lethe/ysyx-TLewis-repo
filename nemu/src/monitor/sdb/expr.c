@@ -206,8 +206,6 @@ static int find_oper(int p, int q){
 
 /* BNF algorithm */
 static int eval(int p, int q){
-
-
   if(p > q){
     panic("Bad expression.\n");
   }else if(p == q){
@@ -240,7 +238,7 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
+  printf("%d\n",nr_token);
   /* TODO: Insert codes to evaluate the expression. */
   printf("%s val = %d.\n", e,eval(0, nr_token));
 
