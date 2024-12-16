@@ -20,7 +20,7 @@ void am_init_monitor();
 void engine_start();
 int is_exit_status_bad();
 
-#define USE_GDB_ATTACH
+//#define USE_GDB_ATTACH
 
 int main(int argc, char *argv[]) {
 
