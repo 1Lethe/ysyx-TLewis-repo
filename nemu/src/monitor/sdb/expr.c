@@ -221,7 +221,7 @@ static int eval(int p, int q){
     int val1 = eval(p, op - 1);
     int val2 = eval(op + 1, q);
     #ifdef USE_DEBUG
-    printf("%d %d %d;",op,val1,val2);
+    printf("%d %c %d %d;",op,tokens[op].type,val1,val2);
     #endif
 
     switch(tokens[op].type){
