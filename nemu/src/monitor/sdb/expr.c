@@ -229,7 +229,14 @@ static int eval(int p, int q, bool *success){
       case TK_PLUS : return val1 + val2;
       case TK_SUB : return val1 - val2;
       case TK_MUL : return val1 * val2;
-      case TK_DIV : return val1 / val2;
+      case TK_DIV :
+      if(val2 == 0){
+        *success = false;
+        printf("Expression try to divide by 0\n");
+        return 0;
+      }else{
+        return val1 / val2;
+      }
       default : assert(0);
     }
   }
