@@ -171,7 +171,7 @@ static bool check_parentheses(int p, int q, bool *success){
 /* Find the main operator */
 static int find_oper(int p, int q){
   int main_oper_place = 0;
-  bool pare_inside_flag = false;
+  int pare_inside_time = 0;
   int last_highlevel_place = 0;
   int last_lowlevel_place = 0;
   for(int i = p;i <= q;i++){
@@ -180,12 +180,14 @@ static int find_oper(int p, int q){
       continue;
     }
     /* Ignore every oper inside parentheses. */
-    if(tokens[i].type == '(' || pare_inside_flag == true){
-      if(tokens[i].type == ')'){
-        pare_inside_flag = false;
-      }else{
-        pare_inside_flag = true;
-      }
+    if(tokens[i].type == '('){
+      pare_inside_time++;
+      continue;
+    }else if(tokens[i].type == ')'){
+      pare_inside_time--;
+      continue;
+    }
+    if(pare_inside_time > 0){
       continue;
     }
     /* Find the main operation. */
