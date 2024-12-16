@@ -171,8 +171,8 @@ static bool chech_parentheses(int p, int q){
 static int find_oper(int p, int q){
   int main_oper_place = 0;
   bool pare_inside_flag = false;
-  int first_highlevel_place = 0;
-  int first_mul_place = 0;
+  int last_highlevel_place = 0;
+  int last_lowlevel_place = 0;
   for(int i = p;i <= q;i++){
    /* Ignore not-oper types. */
     if(tokens[i].type >= TK_NOTYPE){
@@ -187,21 +187,20 @@ static int find_oper(int p, int q){
       }
       continue;
     }
-    /* Record the first * or / . */
-    if((tokens[i].type == TK_MUL || tokens[i].type == TK_DIV) && (first_mul_place == 0)){
-      first_highlevel_place = i;
+    if(tokens[i].type == TK_MUL || tokens[i].type == TK_DIV){
+      last_highlevel_place = i;
+      continue;
+    }else if(tokens[i].type == TK_PLUS || tokens[i].type == TK_SUB){
+      last_lowlevel_place = i;
       continue;
     }
-    /* Find the main oper of expression which contain +/- ,now the first + or - is main oper. */
-    if(tokens[i].type == TK_PLUS || tokens[i].type == TK_SUB){
-      #ifdef USE_DEBUG
-      printf("OPER:%d %c %d %d\n",i,tokens[i].type,p,q);
-      #endif
-      main_oper_place = i;
-      break;
-    }
-    /* If + or - not exist, then the main oper is * or / . */
-    main_oper_place = first_highlevel_place;
+  }
+  if(last_lowlevel_place != 0){
+    /* exist + or - */
+    main_oper_place = last_lowlevel_place;
+  }else{
+    /* only exist * or / */
+    main_oper_place = last_highlevel_place;
   }
   return main_oper_place;
 }
