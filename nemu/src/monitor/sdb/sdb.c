@@ -208,7 +208,7 @@ void init_sdb() {
   init_wp_pool();
 
   //expr("((1-2+3)-(3+2)+(1+1))", NULL);
-  expr("(2*9/9)", NULL);
+  expr("(2 * 9 / 9)", NULL);
   //expr("(3+4*(6-2) /2+ (2-  1*1 *(1*2)))", NULL);
 
 }
