@@ -76,7 +76,7 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
-bool make_token(char *e) {// FIXME: used to be static
+static bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
@@ -105,7 +105,8 @@ bool make_token(char *e) {// FIXME: used to be static
           case TK_POSTIVE_NUM : 
             tokens[i].type = TK_POSTIVE_NUM;
             memset(tokens[i].str, '\0', 32);
-            Assert(substr_len <= 32,"ERROR : Too long expression at position %d with len %d: %.*s",position, substr_len, substr_len, substr_start);
+            Assert(substr_len <= 32,"ERROR : Too long expression at position %d with len %d: %.*s",\
+            position, substr_len, substr_len, substr_start);
             strncpy(tokens[i].str, substr_start,substr_len);
             break;
           case '+': tokens[i].type = '+';break;
