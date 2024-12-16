@@ -190,7 +190,7 @@ static int find_oper(int p, int q, bool *success){
     if(pare_inside_time > 0){
       continue;
     }
-    /* Find the main operation. */
+    /* Find the main operator. */
     if(tokens[i].type == TK_MUL || tokens[i].type == TK_DIV){
       if(i == 0){
         printf("The operator is at the beginning.\n");
@@ -243,7 +243,6 @@ static int eval(int p, int q, bool *success){
     int val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
     if(*success == false) return 0;
-    printf("%d %c %d %d\n",op,tokens[op].type,val1,val2);
 
     switch(tokens[op].type){
       case TK_PLUS : return val1 + val2;
