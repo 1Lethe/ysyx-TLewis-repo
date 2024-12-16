@@ -21,9 +21,15 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ
+  TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
   /* TODO: Add more token types */
+  TK_PLUS = '+',
+  TK_SUB = '-',
+  TK_MUL = '*',
+  TK_DIV = '/',
+  TK_LEFT_PARE = '(',
+  TK_RIGHT_PARE = ')',
 
 };
 
@@ -34,17 +40,18 @@ static struct rule {
 
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
+   * TODO: Add negative num.
    */
 
-  {" +", TK_NOTYPE},          // spaces
-  {"[0-9]+", TK_POSTIVE_NUM},         // decimal digit
-  {"\\+", '+'},               // plus
-  {"-", '-'},                 // sub
-  {"\\*", '*'},               // multiply
-  {"\\/", '/'},               // divide
-  {"\\(", '('},               // left parenthesis
-  {"\\)", ')'},               // right parenthesis
-  {"==", TK_EQ},              // equal
+  {" +", TK_NOTYPE},             // spaces
+  {"[0-9]+", TK_POSTIVE_NUM},    // decimal digit
+  {"\\+", TK_PLUS},              // plus
+  {"-", TK_SUB},                 // sub
+  {"\\*", TK_MUL},               // multiply
+  {"\\/", TK_DIV},               // divide
+  {"\\(", TK_LEFT_PARE},         // left parenthesis
+  {"\\)", TK_RIGHT_PARE},        // right parenthesis
+  {"==", TK_EQ},                 // equal
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -76,7 +83,7 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
-static bool make_token(char *e) {
+bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
@@ -108,13 +115,14 @@ static bool make_token(char *e) {
             Assert(substr_len <= 32,"ERROR : Too long expression at position %d with len %d: %.*s",\
             position, substr_len, substr_len, substr_start);
             strncpy(tokens[i].str, substr_start,substr_len);
+            nr_token += 1;
             break;
-          case '+': tokens[i].type = '+';break;
-          case '-': tokens[i].type = '-';break;
-          case '*': tokens[i].type = '*';break;
-          case '/': tokens[i].type = '/';break;
-          case '(': tokens[i].type = '(';break;
-          case ')': tokens[i].type = ')';break;
+          case TK_PLUS: tokens[i].type = '+';nr_token += 1;break;
+          case TK_SUB: tokens[i].type = '-';nr_token += 1;break;
+          case TK_MUL: tokens[i].type = '*';nr_token += 1;break;
+          case TK_DIV: tokens[i].type = '/';nr_token += 1;break;
+          case TK_LEFT_PARE: tokens[i].type = '(';nr_token += 1;break;
+          case TK_RIGHT_PARE: tokens[i].type = ')';nr_token += 1;break;
           default: break;
         }
 
@@ -130,7 +138,58 @@ static bool make_token(char *e) {
 
   return true;
 }
+#if 0
+static bool chech_parentheses(int p, int q){
+  int left_pare_num = 0;int right_pare_num = 0;
+  int pare_match_time = 0;
+  
+  for(int i = p;i <= q;i++){
+    if(tokens[i].type == '(') left_pare_num += 1;
+    if(tokens[i].type == ')') right_pare_num += 1;
+  }
+  if(left_pare_num != right_pare_num){
+    panic("The num of parentheses in expression is wrong.");
+  }
+  if(tokens[p].type != '(' || tokens[q].type != ')'){
+    /* The expression must not be surrounded by parentheses. */
+    return false;
+  }else{
+    for(int i = p + 1;i <= q - 1;i++){
+      if(tokens[i].type == '('){
+        int pare_match_time == 1;
+      }
+      if(pare_match_time == 1 && tokens[i].type == ')'){
+        /* Start in p+1 and the first parentheses is ')' ,It must not surrounded ! */
+        return false;
+      }
+    }
+  }
+  /* If pass all tests above ,It's surrounded. */
+  return true;
+}
 
+/* BNF algorithm */
+static int eval(int p, int q){
+  int calc_res;
+  int main_oper_place = 0;
+
+  if(p > q){
+    panic("Bad expression.\n");
+  }else if(p == q){
+    /* Now the value has beed calculated, which should be a number. Just return it.*/
+    return calc_res;
+  }else if(check_parentheses(p, q) == true){
+    /* Check the parentheses and remove a matched pair of it. */
+    return eval(p + 1, q - 1);
+  }else(
+    /* Split the expression to smaller */
+    /* Find the main operator */
+    bool pare_inside_flag = false;
+    for(int i = p;i <= q;i++){
+      if(tokens[i].type == )
+    }
+  )
+}
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
@@ -139,7 +198,8 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+
 
   return 0;
 }
+#endif
