@@ -194,7 +194,9 @@ static int find_oper(int p, int q){
     }
     /* Find the main oper of expression which contain +/- ,now the first + or - is main oper. */
     if(tokens[i].type == TK_PLUS || tokens[i].type == TK_SUB){
-      printf("%d %d %d\n",i,p,q);
+      #ifdef USE_DEBUG
+      printf("OPER:%d %c %d %d\n",i,tokens[i].type,p,q);
+      #endif
       main_oper_place = i;
       break;
     }
