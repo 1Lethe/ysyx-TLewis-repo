@@ -140,7 +140,7 @@ static bool make_token(char *e) {
   return true;
 }
 
-static bool chech_parentheses(int p, int q){
+static int chech_parentheses(int p, int q){
   int left_pare_num = 0;int right_pare_num = 0;
   int pare_match_time = 0;
   
@@ -149,7 +149,8 @@ static bool chech_parentheses(int p, int q){
     if(tokens[i].type == TK_RIGHT_PARE) { right_pare_num += 1; }
   }
   if(left_pare_num != right_pare_num){
-    panic("The num of parentheses in expression is wrong.");
+    printf("The num of parentheses in expression is wrong.");
+    return -1;
   }
   if(tokens[p].type != '(' || tokens[q].type != ')'){
     /* The expression must not be surrounded by parentheses. */
@@ -205,15 +206,17 @@ static int find_oper(int p, int q){
 
 /* BNF algorithm */
 static int eval(int p, int q){
+  int ret_val = 0;
   if(p > q){
-    printf("%d %d",p,q);
-    panic("Bad expression.\n");
+    return -1;
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     return atoi(tokens[p].str);
-  }else if(chech_parentheses(p, q) == true){
+  }else if((ret_val = chech_parentheses(p, q)) == true){
     /* Check the parentheses and remove a matched pair of it. */
     return eval(p + 1, q - 1);
+  }else if(ret_val == -1){
+    return -1;
   }else{
     /* Split the expression to smaller */
     int op = find_oper(p, q);
@@ -241,8 +244,6 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  printf("%d\n",nr_token);
-  printf("%s\n",e);
   /* TODO: Insert codes to evaluate the expression. */
   printf("%s val = %d.\n", e,eval(0, nr_token-1));
 
