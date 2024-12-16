@@ -76,7 +76,7 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
-bool make_token(char *e) {// FIXME : used to be static
+bool make_token(char *e) {// FIXME: used to be static
   int position = 0;
   int i;
   regmatch_t pmatch;

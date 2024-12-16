@@ -209,4 +209,5 @@ void init_sdb() {
   init_wp_pool();
 
   make_token("(3+5)/8*2");
+  make_token("100/10+200/20+(3*50-1)-7");
 }
