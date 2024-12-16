@@ -20,7 +20,6 @@
  */
 #include <regex.h>
 
-#define USE_DEBUG
 enum {
   TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
@@ -225,9 +224,6 @@ static int eval(int p, int q, bool *success){
     int op = find_oper(p, q);
     int val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
-    #ifdef USE_DEBUG
-    printf("%d %c %d %d\n",op,tokens[op].type,val1,val2);
-    #endif
 
     switch(tokens[op].type){
       case TK_PLUS : return val1 + val2;
