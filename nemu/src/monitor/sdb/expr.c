@@ -105,7 +105,7 @@ bool make_token(char *e) {// FIXME: used to be static
           case TK_POSTIVE_NUM : 
             tokens[i].type = TK_POSTIVE_NUM;
             memset(tokens[i].str, '\0', 32);
-            //Assert(substr_len > 32,"Too long expression");
+            Assert(substr_len > 32,"Too long expression");
             strncpy(tokens[i].str, substr_start,substr_len);
             printf("%s\n",tokens[i].str);
             break;
