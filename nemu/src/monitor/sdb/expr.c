@@ -153,7 +153,7 @@ static bool check_parentheses(int p, int q, bool *success){
     *success = false;
     return false;
   }
-  
+
   if(tokens[p].type != '(' || tokens[q].type != ')'){
     /* The expression must not be surrounded by parentheses. */
     return false;
@@ -256,6 +256,7 @@ word_t expr(char *e, bool *success) {
 
   if (!make_token(e)) {
     *success = false;
+    printf("Failed to match token.\n");
     return 0;
   }
 
