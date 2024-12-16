@@ -268,7 +268,7 @@ word_t expr(char *e, bool *success) {
     printf("Invalid token \"%s\".\n", e);
     return 0;
   }else{
-    printf("%s val = %d.\n", e, val);
+    printf("Expression %s val = %d.\n", e, val);
     return 0;
   }
 }
