@@ -211,6 +211,6 @@ void init_sdb() {
   expr("((1-2+3)-(3+2)+(1+1))", &success);
   expr("(2 * 9 / 9)", &success);
   expr("(3+4*(6-2) /2+ (2-  1*1 *(1*2)))", &success);
-  expr("1/0",&success);
+  expr("4/(3+3-0*6-   6)",&success);
 
 }

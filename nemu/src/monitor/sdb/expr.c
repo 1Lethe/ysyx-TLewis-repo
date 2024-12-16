@@ -147,11 +147,13 @@ static bool check_parentheses(int p, int q, bool *success){
     if(tokens[i].type == TK_LEFT_PARE) { left_pare_num += 1; }
     if(tokens[i].type == TK_RIGHT_PARE) { right_pare_num += 1; }
   }
+
   if(left_pare_num != right_pare_num){
     printf("The num of parentheses in expression is wrong.\n");
     *success = false;
     return false;
   }
+  
   if(tokens[p].type != '(' || tokens[q].type != ')'){
     /* The expression must not be surrounded by parentheses. */
     return false;
@@ -186,6 +188,7 @@ static int find_oper(int p, int q){
       }
       continue;
     }
+    /* Find the main operation. */
     if(tokens[i].type == TK_MUL || tokens[i].type == TK_DIV){
       last_highlevel_place = i;
       continue;
@@ -207,13 +210,16 @@ static int find_oper(int p, int q){
 /* BNF algorithm */
 static int eval(int p, int q, bool *success){
   bool is_pare_matched;
+
   if(p > q){
     return -1;
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     return atoi(tokens[p].str);
   }
+
   is_pare_matched = check_parentheses(p, q, success);
+
   if(*success == false){
     return 0;
   }else if(is_pare_matched == true){
@@ -232,7 +238,7 @@ static int eval(int p, int q, bool *success){
       case TK_DIV :
       if(val2 == 0){
         *success = false;
-        printf("Expression try to divide by 0\n");
+        printf("Expression try to divide by 0.\n");
         return 0;
       }else{
         return val1 / val2;
@@ -247,6 +253,7 @@ static int eval(int p, int q, bool *success){
 
 word_t expr(char *e, bool *success) {
   int val;
+
   if (!make_token(e)) {
     *success = false;
     return 0;
