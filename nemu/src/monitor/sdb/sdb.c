@@ -201,15 +201,16 @@ void sdb_mainloop() {
 }
 
 void init_sdb() {
+  bool success;
   /* Compile the regular expressions. */
   init_regex();
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
 
-  expr("((1-2+3)-(3+2)+(1+1))", NULL);
-  expr("(2 * 9 / 9)", NULL);
-  expr("(3+4*(6-2) /2+ (2-  1*1 *(1*2)))", NULL);
-  expr("+1",NULL);
+  expr("((1-2+3)-(3+2)+(1+1))", &success);
+  expr("(2 * 9 / 9)", &success);
+  expr("(3+4*(6-2) /2+ (2-  1*1 *(1*2)))", &success);
+  expr("+1",&success);
 
 }
