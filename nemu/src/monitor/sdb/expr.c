@@ -37,7 +37,7 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},          // spaces
-  {"\\d+", TK_NUM},            // decimal digit
+  {"\\d", TK_NUM},            // decimal digit
   {"\\+", '+'},               // plus
   {"-", '-'},                 // sub
   {"\\*", '*'},               // multiply
