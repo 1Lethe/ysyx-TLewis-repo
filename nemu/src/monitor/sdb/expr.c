@@ -182,7 +182,6 @@ static int find_oper(int p, int q){
     if(tokens[i].type == '(' || pare_inside_flag == true){
       if(tokens[i].type == ')'){
         pare_inside_flag = false;
-        #
       }else{
         pare_inside_flag = true;
       }
