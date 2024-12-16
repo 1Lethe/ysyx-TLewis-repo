@@ -169,9 +169,9 @@ static bool check_parentheses(int p, int q, bool *success){
 }
 
 /* Find the main operator */
-static int find_oper(int p, int q){
+static int find_oper(int p, int q, bool *success){
   int main_oper_place = 0;
-  bool pare_inside_flag = false;
+  int pare_inside_time = 0;
   int last_highlevel_place = 0;
   int last_lowlevel_place = 0;
   for(int i = p;i <= q;i++){
@@ -180,19 +180,31 @@ static int find_oper(int p, int q){
       continue;
     }
     /* Ignore every oper inside parentheses. */
-    if(tokens[i].type == '(' || pare_inside_flag == true){
-      if(tokens[i].type == ')'){
-        pare_inside_flag = false;
-      }else{
-        pare_inside_flag = true;
-      }
+    if(tokens[i].type == '('){
+      pare_inside_time++;
+      continue;
+    }else if(tokens[i].type == ')'){
+      pare_inside_time--;
       continue;
     }
-    /* Find the main operation. */
+    if(pare_inside_time > 0){
+      continue;
+    }
+    /* Find the main operator. */
     if(tokens[i].type == TK_MUL || tokens[i].type == TK_DIV){
+      if(i == 0){
+        printf("The operator is at the beginning.\n");
+        *success = false;
+        return 0;
+      }
       last_highlevel_place = i;
       continue;
     }else if(tokens[i].type == TK_PLUS || tokens[i].type == TK_SUB){
+      if(i == 0){
+        printf("The operator is at the beginning.\n");
+        *success = false;
+        return 0;
+      }
       last_lowlevel_place = i;
       continue;
     }
@@ -227,9 +239,10 @@ static int eval(int p, int q, bool *success){
     return eval(p + 1, q - 1, success);
   }else{
     /* Split the expression to smaller */
-    int op = find_oper(p, q);
+    int op = find_oper(p, q, success);
     int val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
+    if(*success == false) return 0;
 
     switch(tokens[op].type){
       case TK_PLUS : return val1 + val2;
