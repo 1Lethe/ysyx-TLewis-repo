@@ -140,7 +140,7 @@ static bool make_token(char *e) {
   return true;
 }
 
-static int chech_parentheses(int p, int q){
+static bool check_parentheses(int p, int q, bool *success){
   int left_pare_num = 0;int right_pare_num = 0;
   int pare_match_time = 0;
   
@@ -149,8 +149,9 @@ static int chech_parentheses(int p, int q){
     if(tokens[i].type == TK_RIGHT_PARE) { right_pare_num += 1; }
   }
   if(left_pare_num != right_pare_num){
-    printf("The num of parentheses in expression is wrong.");
-    return -1;
+    printf("The num of parentheses in expression is wrong.\n");
+    *success = false;
+    return false;
   }
   if(tokens[p].type != '(' || tokens[q].type != ')'){
     /* The expression must not be surrounded by parentheses. */
@@ -205,24 +206,25 @@ static int find_oper(int p, int q){
 }
 
 /* BNF algorithm */
-static int eval(int p, int q){
+static int eval(int p, int q, bool *success){
+  bool is_pare_matched;
   if(p > q){
     return -1;
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     return atoi(tokens[p].str);
   }
-  int is_pare_matched = chech_parentheses(p, q);
-  if(is_pare_matched == -1){
-    return -1;
+  is_pare_matched = check_parentheses(p, q, success);
+  if(*success == false){
+    return 0;
   }else if(is_pare_matched == true){
     /* Check the parentheses and remove a matched pair of it. */
-    return eval(p + 1, q - 1);
+    return eval(p + 1, q - 1, success);
   }else{
     /* Split the expression to smaller */
     int op = find_oper(p, q);
-    int val1 = eval(p, op - 1);
-    int val2 = eval(op + 1, q);
+    int val1 = eval(p, op - 1, success);
+    int val2 = eval(op + 1, q, success);
     #ifdef USE_DEBUG
     printf("%d %c %d %d\n",op,tokens[op].type,val1,val2);
     #endif
@@ -241,14 +243,18 @@ static int eval(int p, int q){
 
 
 word_t expr(char *e, bool *success) {
+  int val;
   if (!make_token(e)) {
     *success = false;
     return 0;
   }
-  printf("%d\n",nr_token);
-  printf("%s\n",e);
-  /* TODO: Insert codes to evaluate the expression. */
-  printf("%s val = %d.\n", e,eval(0, nr_token-1));
 
-  return 0;
+  val = eval(0 ,nr_token-1, success);
+  if(*success == false){
+    printf("Invalid token.");
+    return 0;
+  }else{
+    printf("%s val = %d.\n", e,val);
+    return 0;
+  }
 }
