@@ -37,7 +37,7 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},          // spaces
-  {"\\d+, TK_NUM"},           // decimal digit
+  {"\\d+", TK_NUM},            // decimal digit
   {"\\+", '+'},               // plus
   {"-", '-'},                 // sub
   {"\\*", '*'},               // multiply
@@ -76,7 +76,7 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
-static bool make_token(char *e) {
+bool make_token(char *e) {
   int position = 0;
   int i;
   regmatch_t pmatch;
@@ -101,7 +101,14 @@ static bool make_token(char *e) {
          */
 
         switch (rules[i].token_type) {
-          default: TODO();
+          case TK_NUM : tokens[i].type = TK_NUM;break;
+          case '+': tokens[i].type = '+';break;
+          case '-': tokens[i].type = '-';break;
+          case '*': tokens[i].type = '*';break;
+          case '/': tokens[i].type = '/';break;
+          case '(': tokens[i].type = '(';break;
+          case ')': tokens[i].type = ')';break;
+          default: break;
         }
 
         break;
