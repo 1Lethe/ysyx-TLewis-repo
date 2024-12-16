@@ -222,7 +222,9 @@ static int eval(int p, int q, bool *success){
 
   if(*success == false){
     return 0;
-  }else if(is_pare_matched == true){
+  }
+  
+  if(is_pare_matched == true){
     /* Check the parentheses and remove a matched pair of it. */
     return eval(p + 1, q - 1, success);
   }else{
