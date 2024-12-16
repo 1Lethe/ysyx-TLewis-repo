@@ -208,5 +208,5 @@ void init_sdb() {
   /* Initialize the watchpoint pool. */
   init_wp_pool();
 
-  make_token("++5");
+  make_token("++005");
 }
