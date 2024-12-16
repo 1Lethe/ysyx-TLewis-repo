@@ -146,8 +146,8 @@ static bool chech_parentheses(int p, int q){
   int pare_match_time = 0;
   
   for(int i = p;i <= q;i++){
-    if(tokens[i].type == '(') left_pare_num += 1;
-    if(tokens[i].type == ')') right_pare_num += 1;
+    if(tokens[i].type == '(') { left_pare_num += 1; }
+    if(tokens[i].type == ')') { right_pare_num += 1; }
   }
   if(left_pare_num != right_pare_num){
     panic("The num of parentheses in expression is wrong.");
