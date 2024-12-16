@@ -102,7 +102,8 @@ bool make_token(char *e) {// FIXME: used to be static
 
         switch (rules[i].token_type) {
           case TK_NOTYPE : break;
-          case TK_POSTIVE_NUM : tokens[i].type = TK_POSTIVE_NUM;break;
+          case TK_POSTIVE_NUM : tokens[i].type = TK_POSTIVE_NUM;
+            strcpy(tokens[i].str, substr_start);break;
           case '+': tokens[i].type = '+';break;
           case '-': tokens[i].type = '-';break;
           case '*': tokens[i].type = '*';break;
