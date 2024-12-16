@@ -19,7 +19,7 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
-#define USE_DEBUG
+
 enum {
   TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
@@ -227,7 +227,9 @@ static int eval(int p, int q){
     int op = find_oper(p, q);
     int val1 = eval(p, op - 1);
     int val2 = eval(op + 1, q);
-    IFDEF(USE_DEBUG,printf("1");)
+    #ifdef USE_DEBUG
+    printf("%d %d %d;",op,val1,val2);
+    #endif
 
     switch(tokens[op].type){
       case TK_PLUS : return val1 + val2;
