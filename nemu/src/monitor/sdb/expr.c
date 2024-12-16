@@ -102,9 +102,13 @@ bool make_token(char *e) {// FIXME: used to be static
 
         switch (rules[i].token_type) {
           case TK_NOTYPE : break;
-          case TK_POSTIVE_NUM : tokens[i].type = TK_POSTIVE_NUM;
+          case TK_POSTIVE_NUM : 
+            tokens[i].type = TK_POSTIVE_NUM;
             memset(tokens[i].str, '\0', 32);
-            strncpy(tokens[i].str, substr_start,substr_len);printf("%s\n",tokens[i].str);break;
+            Assert(substr_len > 32,"Too long expression");
+            strncpy(tokens[i].str, substr_start,substr_len);
+            printf("%s\n",tokens[i].str);
+            break;
           case '+': tokens[i].type = '+';break;
           case '-': tokens[i].type = '-';break;
           case '*': tokens[i].type = '*';break;

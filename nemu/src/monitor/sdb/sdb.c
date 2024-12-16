@@ -208,7 +208,6 @@ void init_sdb() {
   /* Initialize the watchpoint pool. */
   init_wp_pool();
 
-  //FIXME: here is just a test and need delete
   make_token("(3+5)/8*2");
-  make_token("1000000000000000000000000000000000000000000000/10+200/20+(3*50-1)-7");
+  make_token("100/10+200/20+(3*50-1)");
 }
