@@ -223,7 +223,7 @@ static int eval(int p, int q, bool *success){
   if(*success == false){
     return 0;
   }
-  
+
   if(is_pare_matched == true){
     /* Check the parentheses and remove a matched pair of it. */
     return eval(p + 1, q - 1, success);
@@ -238,13 +238,13 @@ static int eval(int p, int q, bool *success){
       case TK_SUB : return val1 - val2;
       case TK_MUL : return val1 * val2;
       case TK_DIV :
-      if(val2 == 0){
-        *success = false;
-        printf("Expression try to divide by 0.\n");
-        return 0;
-      }else{
-        return val1 / val2;
-      }
+        if(val2 == 0){
+          *success = false;
+          printf("Expression try to divide by 0.\n");
+          return 0;
+        }else{
+          return val1 / val2;
+        }
       default : assert(0);
     }
   }
