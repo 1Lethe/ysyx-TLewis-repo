@@ -207,6 +207,6 @@ void init_sdb() {
   /* Initialize the watchpoint pool. */
   init_wp_pool();
 
-  expr("(1-2+3)", NULL);
+  expr("((1-2+3)-(3+2))", NULL);
 
 }
