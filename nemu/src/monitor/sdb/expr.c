@@ -20,6 +20,7 @@
  */
 #include <regex.h>
 
+#define USE_DEBUG
 enum {
   TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
