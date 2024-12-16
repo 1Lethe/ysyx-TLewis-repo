@@ -251,7 +251,7 @@ word_t expr(char *e, bool *success) {
 
   val = eval(0 ,nr_token-1, success);
   if(*success == false){
-    printf("Invalid token %s.\n", e);
+    printf("Invalid token \"%s\".\n", e);
     return 0;
   }else{
     printf("%s val = %d.\n", e, val);
