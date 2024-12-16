@@ -160,9 +160,13 @@ static bool chech_parentheses(int p, int q){
       if(tokens[i].type == '('){
         pare_match_time = 1;
       }
-      if(pare_match_time == 1 && tokens[i].type == ')'){
+      if(pare_match_time == 1){
         /* Start in p+1 and the first parentheses is ')' ,It must not surrounded ! */
-        return false;
+        if(tokens[i].type == ')'){
+          return false;
+        }else if(tokens[i].type == '('){
+          return true;
+        }
       }
     }
   }
