@@ -256,6 +256,7 @@ static int eval(int p, int q, bool *success){
 word_t expr(char *e, bool *success) {
   int val;
 
+  *success = true;
   if (!make_token(e)) {
     *success = false;
     printf("Failed to match token.\n");
