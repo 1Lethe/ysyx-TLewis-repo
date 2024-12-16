@@ -19,7 +19,6 @@
  * Type 'man regex' for more information about POSIX regex functions.
  */
 #include <regex.h>
-#include <debug.h>
 
 enum {
   TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ
@@ -107,7 +106,7 @@ bool make_token(char *e) {// FIXME: used to be static
             tokens[i].type = TK_POSTIVE_NUM;
             printf("%d\n",substr_len);
             memset(tokens[i].str, '\0', 32);
-            Assert(substr_len > 32,"Too long expression");
+            Assert(substr_len <= 32,"Too long expression");
             strncpy(tokens[i].str, substr_start,substr_len);
             printf("%s\n",tokens[i].str);
             break;
