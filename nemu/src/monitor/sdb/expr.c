@@ -21,9 +21,12 @@
 #include <regex.h>
 
 enum {
+  // TODO: Add more expression.
+  // Pay attention to put different rules to correct places.
+  
   TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
-  /* TODO: Add more token types */
+  /* Operator put here. */
   TK_PLUS = '+',
   TK_SUB = '-',
   TK_MUL = '*',
@@ -112,8 +115,11 @@ static bool make_token(char *e) {
           case TK_POSTIVE_NUM :
             tokens[nr_token].type = TK_POSTIVE_NUM;
             memset(tokens[nr_token].str, '\0', 32);
-            Assert(substr_len <= 32,"ERROR : Too long expression at position %d with len %d: %.*s",\
-            position, substr_len, substr_len, substr_start);
+            if(substr_len > 32) {
+              printf("ERROR : Too long token at position %d with len %d: %.*s\n",\
+              position, substr_len, substr_len, substr_start);
+              return false;
+            }
             strncpy(tokens[nr_token].str, substr_start,substr_len);
             nr_token += 1;
             break;
