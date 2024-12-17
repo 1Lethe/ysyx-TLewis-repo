@@ -21,9 +21,10 @@
 #include <regex.h>
 
 enum {
+  /*  */
   TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
-  /* TODO: Add more token types */
+  /* Operator put here. */
   TK_PLUS = '+',
   TK_SUB = '-',
   TK_MUL = '*',
