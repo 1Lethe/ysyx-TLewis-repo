@@ -21,6 +21,8 @@
 #include <regex.h>
 
 enum {
+  // TODO: Add more expression.
+  
   /*  */
   TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
