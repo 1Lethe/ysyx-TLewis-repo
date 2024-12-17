@@ -115,8 +115,11 @@ static bool make_token(char *e) {
           case TK_POSTIVE_NUM :
             tokens[nr_token].type = TK_POSTIVE_NUM;
             memset(tokens[nr_token].str, '\0', 32);
-            Assert(substr_len <= 32,"ERROR : Too long expression at position %d with len %d: %.*s",\
-            position, substr_len, substr_len, substr_start);
+            if(substr_len > 32) {
+              printf("ERROR : Too long expression at position %d with len %d: %.*s",\
+              position, substr_len, substr_len, substr_start);
+              return false;
+            }
             strncpy(tokens[nr_token].str, substr_start,substr_len);
             nr_token += 1;
             break;
