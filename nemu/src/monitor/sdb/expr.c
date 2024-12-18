@@ -22,8 +22,8 @@
 
 enum {
   // TODO: Add more expression.
+  // Pay attention to put different rules to correct places.
   
-  /*  */
   TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
   /* Operator put here. */
