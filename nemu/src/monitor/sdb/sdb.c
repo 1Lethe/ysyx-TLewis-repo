@@ -222,6 +222,6 @@ void init_sdb() {
   FILE *fp = fopen("/home/tonglewis/ysyx-workbench/nemu/tools/gen-expr/temp.txt", "r");
   assert(fp != NULL);
   char *answer = fgets(answer, 65535, fp);
-  char *expr_c = fgets(answer, 65535, fp);
+  char *expr_c = fgets(expr_c, 65535, fp);
   expr(expr_c,&flag);
 }
