@@ -230,7 +230,7 @@ void init_sdb() {
     if(answer == calc){
       continue;
     }else{
-      //assert(0);
+      assert(0);
     }
   }
 }
