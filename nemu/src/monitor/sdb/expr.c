@@ -227,6 +227,8 @@ static int find_oper(int p, int q, bool *success){
   return main_oper_place;
 }
 
+int dividezero = 0;
+
 /* BNF algorithm */
 static uint32_t eval(int p, int q, bool *success){
   bool is_pare_matched;
@@ -259,6 +261,7 @@ static uint32_t eval(int p, int q, bool *success){
       case TK_DIV :
         if(val2 == 0){
           *success = false;
+          dividezero = 1;
           printf("Expression try to divide by 0.\n");
           return 0;
         }else{

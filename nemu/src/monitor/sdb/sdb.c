@@ -211,6 +211,8 @@ void sdb_mainloop() {
   }
 }
 
+extern int dividezero;
+
 void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
@@ -230,7 +232,11 @@ void init_sdb() {
     if(answer == calc){
       continue;
     }else{
-      assert(0);
+      if(dividezero != 1){
+        assert(0);
+      }else{
+        dividezero = 0;
+      }
     }
   }
 }
