@@ -84,7 +84,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[1000] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -113,6 +113,7 @@ static bool make_token(char *e) {
 
         switch (rules[i].token_type) {
           case TK_NOTYPE : break;
+          case TK_LINEBREAK : break;
           case TK_POSTIVE_NUM :
             tokens[nr_token].type = TK_POSTIVE_NUM;
             memset(tokens[nr_token].str, '\0', 32);
