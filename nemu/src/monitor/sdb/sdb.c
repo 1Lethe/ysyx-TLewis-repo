@@ -101,7 +101,7 @@ static int cmd_x(char *args){
       return 0;
     }
     if(mem_start_place < CONFIG_MBASE){
-      printf("Invalid start_place input.This arg should >= MBASE(riscv32 default:0x80000000).\n");
+      printf("Invalid start_place input.This arg should >= MBASE(riscv32 default:0x8000000).\n");
       return 0;
     }
     for(int i = 0;i < scan_num;i++){
