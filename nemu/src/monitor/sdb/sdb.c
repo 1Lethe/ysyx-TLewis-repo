@@ -88,7 +88,7 @@ static int cmd_info(char *args){
 
 static int cmd_x(char *args){
   uint8_t *pmem_scan = NULL;
-  int scan_num;
+  uint32_t scan_num;
   uint32_t mem_start_place;
 
   if(args == NULL){
