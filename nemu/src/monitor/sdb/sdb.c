@@ -121,7 +121,7 @@ static int cmd_p(char *args){
     printf("Command p need args.");
     return 0;
   }
-  expr(args, &success_flag);
+  expr(args, &success_flag);// FIXME: bug cannot assert wrong expression like "1++1"
   return 0;
 }
 
