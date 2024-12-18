@@ -271,7 +271,7 @@ static int eval(int p, int q, bool *success){
 
 
 // FIXME: just for test
-int expr(char *e, bool *success) {
+uint32_t expr(char *e, bool *success) {
   int val;
 
   *success = true;
