@@ -88,7 +88,7 @@ static int cmd_info(char *args){
 
 static int cmd_x(char *args){
   uint8_t *pmem_scan = NULL;
-  int scan_num;
+  uint32_t scan_num;
   uint32_t mem_start_place;
 
   if(args == NULL){
@@ -100,8 +100,9 @@ static int cmd_x(char *args){
       printf("Invalid scan_num input.This arg should > 0.\n");
       return 0;
     }
-    if(mem_start_place < CONFIG_MBASE){
-      printf("Invalid start_place input.This arg should >= MBASE(riscv32 default:0x80000000).\n");
+    if(mem_start_place < PMEM_LEFT || mem_start_place + scan_num > PMEM_RIGHT){
+      printf("Invalid input.This arg should be valid.\n");
+      printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
       return 0;
     }
     for(int i = 0;i < scan_num;i++){
