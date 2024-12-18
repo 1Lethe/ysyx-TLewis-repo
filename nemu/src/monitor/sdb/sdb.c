@@ -219,11 +219,18 @@ void init_sdb() {
   init_wp_pool();
 
   bool flag;
-  int answer;char expr_c[65535];
-  FILE *fp = fopen("/home/tonglewis/ysyx-workbench/nemu/tools/gen-expr/temp.txt", "r");
-  assert(fp != NULL);
-  fscanf(fp,"%d", &answer);
-  printf("%d\n",answer);
-  fgets(expr_c, 65535, fp);
-  expr(expr_c,&flag);
+  int answer;char expr_c[65535];int calc;
+  for(int i = 0;i < 1000;i++){
+    FILE *fp = fopen("/home/tonglewis/ysyx-workbench/nemu/tools/gen-expr/temp.txt", "r");
+    assert(fp != NULL);
+    fscanf(fp,"%d", &answer);
+    printf("%d\n",answer);
+    fgets(expr_c, 65535, fp);
+    calc = expr(expr_c,&flag);
+    if(answer == calc){
+      continue;
+    }else{
+      assert(0);
+    }
+  }
 }

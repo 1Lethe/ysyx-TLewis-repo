@@ -270,8 +270,8 @@ static int eval(int p, int q, bool *success){
 
 
 
-
-word_t expr(char *e, bool *success) {
+// FIXME: just for test
+int expr(char *e, bool *success) {
   int val;
 
   *success = true;
@@ -287,6 +287,6 @@ word_t expr(char *e, bool *success) {
     return 0;
   }else{
     printf("Expression %s val = %d.\n", e, val);
-    return 0;
+    return val;
   }
 }
