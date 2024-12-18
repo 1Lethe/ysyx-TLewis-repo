@@ -100,8 +100,8 @@ static int cmd_x(char *args){
       printf("Invalid scan_num input.This arg should > 0.\n");
       return 0;
     }
-    if(mem_start_place < PMEM_LEFT || mem_start_place > PMEM_RIGHT){
-      printf("Invalid start_place input.This arg should valid.\n");
+    if(mem_start_place < PMEM_LEFT || mem_start_place + scan_num > PMEM_RIGHT){
+      printf("Invalid input.This arg should be valid.\n");
       return 0;
     }
     for(int i = 0;i < scan_num;i++){
