@@ -102,6 +102,7 @@ static int cmd_x(char *args){
     }
     if(mem_start_place < PMEM_LEFT || mem_start_place + scan_num > PMEM_RIGHT){
       printf("Invalid input.This arg should be valid.\n");
+      printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
       return 0;
     }
     for(int i = 0;i < scan_num;i++){
