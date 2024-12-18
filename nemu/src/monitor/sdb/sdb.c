@@ -100,8 +100,8 @@ static int cmd_x(char *args){
       printf("Invalid scan_num input.This arg should > 0.\n");
       return 0;
     }
-    if(mem_start_place < CONFIG_MBASE){
-      printf("Invalid start_place input.This arg should >= MBASE(riscv32 default:0x8000000).\n");
+    if(mem_start_place < PMEM_LEFT || mem_start_place > PMEM_RIGHT){
+      printf("Invalid start_place input.This arg should valid.\n");
       return 0;
     }
     for(int i = 0;i < scan_num;i++){
