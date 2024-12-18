@@ -217,4 +217,11 @@ void init_sdb() {
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
+
+  bool flag;
+  FILE *fp = fopen("/home/tonglewis/ysyx-workbench/nemu/tools/gen-expr/temp.txt", "r");
+  assert(fp != NULL);
+  char *answer = fgets(answer, 65535, fp);
+  char *expr_c = fgets(answer, 65535, fp);
+  expr(expr_c,&flag);
 }
