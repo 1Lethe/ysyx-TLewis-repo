@@ -121,7 +121,7 @@ static int cmd_p(char *args){
     printf("Command p need args.");
     return 0;
   }
-  expr(args, &success_flag);
+  expr(args, &success_flag);// FIXME: bug cannot assert wrong expression like "1++1"
   return 0;
 }
 
@@ -211,10 +211,32 @@ void sdb_mainloop() {
   }
 }
 
+extern int dividezero;
+
 void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
+
+  bool flag;
+  int answer;char expr_c[65535];int calc;
+  FILE *fp = fopen("/home/tonglewis/ysyx-workbench/nemu/tools/gen-expr/temp.txt", "r");
+  assert(fp != NULL);
+  for(int i = 0;i < 1000;i++){
+    fscanf(fp,"%d", &answer);
+    printf("%d\n",answer);
+    fgets(expr_c, 65535, fp);
+    calc = expr(expr_c,&flag);
+    if(answer == calc){
+      continue;
+    }else{
+      if(dividezero != 1){
+        assert(0);
+      }else{
+        dividezero = 0;
+      }
+    }
+  }
 }
