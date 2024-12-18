@@ -32,6 +32,8 @@ static char *code_format =
 "  return 0; "
 "}";
 
+//FIXME: still cannot filter expression that divide by zero!!!!
+
 bool start_gen_flag = 0;
 int depth = 0;
 

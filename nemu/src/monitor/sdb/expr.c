@@ -24,7 +24,7 @@ enum {
   // TODO: Add more expression.
   // Pay attention to put different rules to correct places.
   
-  TK_NOTYPE = 256, TK_LINEBREAK,TK_POSTIVE_NUM,TK_EQ,
+  TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
 
   /* Operator put here. */
   TK_PLUS = '+',
@@ -47,7 +47,6 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},             // spaces
-  {"\n", TK_LINEBREAK},
   {"[0-9]+", TK_POSTIVE_NUM},    // decimal digit
   {"\\+", TK_PLUS},              // plus
   {"-", TK_SUB},                 // sub
@@ -84,7 +83,7 @@ typedef struct token {
   char str[32];
 } Token;
 
-static Token tokens[1000] __attribute__((used)) = {};
+static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -101,7 +100,7 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        //Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",\
+        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
         position += substr_len;
@@ -113,7 +112,6 @@ static bool make_token(char *e) {
 
         switch (rules[i].token_type) {
           case TK_NOTYPE : break;
-          case TK_LINEBREAK : break;
           case TK_POSTIVE_NUM :
             tokens[nr_token].type = TK_POSTIVE_NUM;
             memset(tokens[nr_token].str, '\0', 32);
@@ -227,10 +225,8 @@ static int find_oper(int p, int q, bool *success){
   return main_oper_place;
 }
 
-int dividezero = 0;
-
 /* BNF algorithm */
-static uint32_t eval(int p, int q, bool *success){
+static int eval(int p, int q, bool *success){
   bool is_pare_matched;
 
   if(p > q){
@@ -261,7 +257,6 @@ static uint32_t eval(int p, int q, bool *success){
       case TK_DIV :
         if(val2 == 0){
           *success = false;
-          dividezero = 1;
           printf("Expression try to divide by 0.\n");
           return 0;
         }else{
@@ -272,10 +267,7 @@ static uint32_t eval(int p, int q, bool *success){
   }
 }
 
-
-
-// FIXME: just for test
-uint32_t expr(char *e, bool *success) {
+word_t expr(char *e, bool *success) {
   int val;
 
   *success = true;
@@ -291,6 +283,6 @@ uint32_t expr(char *e, bool *success) {
     return 0;
   }else{
     printf("Expression %s val = %d.\n", e, val);
-    return val;
+    return 0;
   }
 }

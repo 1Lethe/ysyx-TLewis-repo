@@ -219,24 +219,4 @@ void init_sdb() {
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
-
-  bool flag;
-  int answer;char expr_c[65535];int calc;
-  FILE *fp = fopen("/home/tonglewis/ysyx-workbench/nemu/tools/gen-expr/temp.txt", "r");
-  assert(fp != NULL);
-  for(int i = 0;i < 1000;i++){
-    fscanf(fp,"%d", &answer);
-    printf("%d\n",answer);
-    fgets(expr_c, 65535, fp);
-    calc = expr(expr_c,&flag);
-    if(answer == calc){
-      continue;
-    }else{
-      if(dividezero != 1){
-        assert(0);
-      }else{
-        dividezero = 0;
-      }
-    }
-  }
 }
