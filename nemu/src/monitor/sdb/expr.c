@@ -24,7 +24,7 @@ enum {
   // TODO: Add more expression.
   // Pay attention to put different rules to correct places.
   
-  TK_NOTYPE = 256, TK_POSTIVE_NUM,TK_EQ,
+  TK_NOTYPE = 256, TK_LINEBREAK,TK_POSTIVE_NUM,TK_EQ,
 
   /* Operator put here. */
   TK_PLUS = '+',
@@ -47,6 +47,7 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},             // spaces
+  {"\n", TK_LINEBREAK},
   {"[0-9]+", TK_POSTIVE_NUM},    // decimal digit
   {"\\+", TK_PLUS},              // plus
   {"-", TK_SUB},                 // sub
