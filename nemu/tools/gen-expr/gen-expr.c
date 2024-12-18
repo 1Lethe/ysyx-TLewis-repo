@@ -65,7 +65,7 @@ static int gen_rand_op(void){
 }
 
 static void gen_rand_expr() {
-  if((strlen(buf) >= sizeof(buf)/sizeof(buf[0]) - 20) || depth >= 10){
+  if((strlen(buf) >= sizeof(buf)/sizeof(buf[0]) - 20) || depth >= 20){
     gen_num();
     return;
   }else{
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+    int ret = system("gcc -w /tmp/.code.c -o /tmp/.expr");
     if (ret != 0) continue;
 
     fp = popen("/tmp/.expr", "r");
