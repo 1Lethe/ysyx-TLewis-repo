@@ -227,7 +227,7 @@ static int find_oper(int p, int q, bool *success){
 }
 
 /* BNF algorithm */
-static int eval(int p, int q, bool *success){
+static uint32_t eval(int p, int q, bool *success){
   bool is_pare_matched;
 
   if(p > q){
