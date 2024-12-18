@@ -219,10 +219,10 @@ void init_sdb() {
   init_wp_pool();
 
   bool flag;
-  char answer[65535];char expr_c[65535];
+  int answer;char expr_c[65535];
   FILE *fp = fopen("/home/tonglewis/ysyx-workbench/nemu/tools/gen-expr/temp.txt", "r");
   assert(fp != NULL);
-  fgets(answer, 65535, fp);
+  fscanf(fp,"%d ", &answer);
   fgets(expr_c, 65535, fp);
   expr(expr_c,&flag);
 }
