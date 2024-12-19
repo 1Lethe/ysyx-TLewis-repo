@@ -279,7 +279,9 @@ static int eval(int p, int q, bool *success){
     return -1;
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
-    return atoi(tokens[p].str);
+    uint32_t ret = 0;
+    sscanf(tokens[p].str, "%d", &ret);
+    return ret;
   }
 
   is_pare_matched = check_parentheses(p, q, success);
