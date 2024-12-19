@@ -159,7 +159,7 @@ static bool make_token(char *e) {
             tokens[nr_token].type = TK_REG_NAME;
             memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
             bool success = true;
-            snprintf(tokens[nr_token].str, TOKEN_STR_LEN, "%d", isa_reg_str2val(substr_start + 1, &success));
+            snprintf(tokens[nr_token].str, substr_len, "%d", isa_reg_str2val(substr_start + 1, &success));
             if(!success) return false;
             nr_token += 1;
             break;
