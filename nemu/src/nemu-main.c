@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
   init_monitor(argc, argv);
 #endif
 
-  char a[10] = "0x8000";
+  char a[10] = "0X8000";
   printf("%d\n",atoi(a));
 
   /* Start engine. */
