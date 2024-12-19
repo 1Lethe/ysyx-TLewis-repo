@@ -332,7 +332,7 @@ word_t expr(char *e, bool *success) {
     printf("Invalid token \"%s\".\n", e);
     return 0;
   }else{
-    printf("Expression %s val = 0x%08x.\n", e, val);
+    printf("Expression %s val = 0x%032x.\n", e, val);
     return 0;
   }
 }
