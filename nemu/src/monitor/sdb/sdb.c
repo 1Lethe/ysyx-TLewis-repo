@@ -211,7 +211,6 @@ void sdb_mainloop() {
   }
 }
 
-extern int dividezero;
 
 void init_sdb() {
   /* Compile the regular expressions. */
