@@ -54,7 +54,7 @@ static struct rule {
   {"\n", TK_LINEBREAK},          // linebreak
   {"\\(", TK_LEFT_PARE},         // left parenthesis
   {"\\)", TK_RIGHT_PARE},        // right parenthesis
-  {"0x[0-9A-F]+", TK_HEX_NUM},
+  {"0x[0-9A-Fa-f]+", TK_HEX_NUM},
   {"[0-9]+", TK_DEC_POS_NUM},    // decimal digit
   {"\\*", TK_MUL},               // multiply
   {"\\/", TK_DIV},               // divide
