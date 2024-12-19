@@ -132,7 +132,7 @@ static bool make_token(char *e) {
               position, substr_len, substr_len, substr_start);
               return false;
             }
-            strncpy(tokens[nr_token].str, substr_start,substr_len);
+            snprintf(tokens[nr_token].str, TOKEN_STR_LEN, "%s", substr_start);
             nr_token += 1;
             break;
           case TK_DEC_POS_NUM :
