@@ -23,8 +23,12 @@
 enum {
   // TODO: Add more expression.
   // Pay attention to put different rules to correct places.
-  
-  TK_NOTYPE = 256, TK_LINEBREAK,TK_POSTIVE_NUM,TK_EQ,
+
+  /* non-operator put here. */
+  TK_NOTYPE = 256, TK_LINEBREAK,
+  TK_DEC_POS_NUM,TK_DEC_NEG_NUM,TK_HEX_NUM,
+  TK_EQ,TK_NEQ,TK_AND,
+  TK_REG_NAME,TK_POINTER,
 
   /* Operator put here. */
   TK_PLUS = '+',
@@ -48,14 +52,18 @@ static struct rule {
 
   {" +", TK_NOTYPE},             // spaces
   {"\n", TK_LINEBREAK},          // linebreak
-  {"[0-9]+", TK_POSTIVE_NUM},    // decimal digit
-  {"\\+", TK_PLUS},              // plus
-  {"-", TK_SUB},                 // sub
-  {"\\*", TK_MUL},               // multiply
-  {"\\/", TK_DIV},               // divide
   {"\\(", TK_LEFT_PARE},         // left parenthesis
   {"\\)", TK_RIGHT_PARE},        // right parenthesis
+  {"0x[0-9A-Fa-f]+", TK_HEX_NUM},
+  {"[0-9]+", TK_DEC_POS_NUM},    // decimal digit
+  {"\\*", TK_MUL},               // multiply
+  {"\\/", TK_DIV},               // divide
+  {"\\+", TK_PLUS},              // plus
+  {"-", TK_SUB},                 // sub
   {"==", TK_EQ},                 // equal
+  {"!=", TK_NEQ},
+  {"&&", TK_AND},
+  {"\\$[$raspgt0-9]+", TK_REG_NAME}
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -79,9 +87,11 @@ void init_regex() {
   }
 }
 
+#define TOKEN_STR_LEN 32
+
 typedef struct token {
   int type;
-  char str[32];
+  char str[TOKEN_STR_LEN];
 } Token;
 
 static Token tokens[32] __attribute__((used)) = {};
@@ -114,10 +124,21 @@ static bool make_token(char *e) {
         switch (rules[i].token_type) {
           case TK_NOTYPE : break;
           case TK_LINEBREAK : break;
-          case TK_POSTIVE_NUM :
-            tokens[nr_token].type = TK_POSTIVE_NUM;
-            memset(tokens[nr_token].str, '\0', 32);
-            if(substr_len > 32) {
+          case TK_HEX_NUM : 
+            tokens[nr_token].type = TK_HEX_NUM;
+            memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
+            if(substr_len >= 32){
+              printf("ERROR : Too long token at position %d with len %d: %.*s\n",\
+              position, substr_len, substr_len, substr_start);
+              return false;
+            }
+            snprintf(tokens[nr_token].str, TOKEN_STR_LEN, "%s", substr_start);
+            nr_token += 1;
+            break;
+          case TK_DEC_POS_NUM :
+            tokens[nr_token].type = TK_DEC_POS_NUM;
+            memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
+            if(substr_len >= 32) {
               printf("ERROR : Too long token at position %d with len %d: %.*s\n",\
               position, substr_len, substr_len, substr_start);
               return false;
@@ -131,6 +152,19 @@ static bool make_token(char *e) {
           case TK_DIV: tokens[nr_token].type = '/';nr_token += 1;break;
           case TK_LEFT_PARE: tokens[nr_token].type = '(';nr_token += 1;break;
           case TK_RIGHT_PARE: tokens[nr_token].type = ')';nr_token += 1;break;
+          case TK_EQ : tokens[nr_token].type = TK_EQ;nr_token += 1;break;
+          case TK_NEQ : tokens[nr_token].type = TK_NEQ;nr_token += 1;break;
+          case TK_AND : tokens[nr_token].type = TK_AND;nr_token += 1;break;
+          case TK_REG_NAME : 
+            tokens[nr_token].type = TK_REG_NAME;
+            memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
+            bool success = true;
+            char reg_str[5];
+            memcpy(reg_str, substr_start + 1, substr_len - 1);
+            snprintf(tokens[nr_token].str, TOKEN_STR_LEN, "%d", isa_reg_str2val(reg_str,&success));
+            if(!success) return false;
+            nr_token += 1;
+            break;
           default: break;
         }
 
@@ -143,6 +177,17 @@ static bool make_token(char *e) {
       return false;
     }
   }
+
+  // TODO: Rematch token rules
+  for(i = 0;i < nr_token;i++){
+    if(tokens[i].type == '*' && (i == 0 || (tokens[i].type == '+' || tokens[i].type == '-' || \
+    tokens[i].type == '*' || tokens[i].type == '/')))
+    {
+      tokens[i].type = TK_POINTER;
+      Log("Rematch rules TK_POINTER position %d", i);
+    }
+  }
+
 
   return true;
 }
@@ -235,7 +280,10 @@ static int eval(int p, int q, bool *success){
     return -1;
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
-    return atoi(tokens[p].str);
+    uint32_t ret = 0;
+    if(tokens[p].type == TK_HEX_NUM) sscanf(tokens[p].str, "%x", &ret);
+    else if(tokens[p].type == TK_DEC_POS_NUM) sscanf(tokens[p].str, "%d", &ret);
+    return ret;
   }
 
   is_pare_matched = check_parentheses(p, q, success);
@@ -270,7 +318,7 @@ static int eval(int p, int q, bool *success){
 }
 
 word_t expr(char *e, bool *success) {
-  int val;
+  uint32_t val;
 
   *success = true;
   if (!make_token(e)) {
@@ -284,7 +332,7 @@ word_t expr(char *e, bool *success) {
     printf("Invalid token \"%s\".\n", e);
     return 0;
   }else{
-    printf("Expression %s val = %d.\n", e, val);
+    printf("Expression %s val = 0x%x.\n", e, val);
     return 0;
   }
 }
