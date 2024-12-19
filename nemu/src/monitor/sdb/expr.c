@@ -161,7 +161,7 @@ static bool make_token(char *e) {
             bool success = true;
             char reg_str[5];
             memcpy(reg_str, substr_start + 1, substr_len - 1);
-            snprintf(tokens[nr_token].str, substr_len, "%d", isa_reg_str2val(reg_str, &success));
+            snprintf(tokens[nr_token].str, substr_len, "%u", isa_reg_str2val(reg_str,&success));
             if(!success) return false;
             nr_token += 1;
             break;
