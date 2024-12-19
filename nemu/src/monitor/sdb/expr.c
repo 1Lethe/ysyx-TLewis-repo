@@ -87,9 +87,11 @@ void init_regex() {
   }
 }
 
+#define TOKEN_STR_LEN 32
+
 typedef struct token {
   int type;
-  char str[32];
+  char str[TOKEN_STR_LEN];
 } Token;
 
 static Token tokens[32] __attribute__((used)) = {};
@@ -124,7 +126,7 @@ static bool make_token(char *e) {
           case TK_LINEBREAK : break;
           case TK_HEX_NUM : 
             tokens[nr_token].type = TK_HEX_NUM;
-            memset(tokens[nr_token].str, '\0', 32);
+            memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
             if(substr_len > 32){
               printf("ERROR : Too long token at position %d with len %d: %.*s\n",\
               position, substr_len, substr_len, substr_start);
@@ -135,7 +137,7 @@ static bool make_token(char *e) {
             break;
           case TK_DEC_POS_NUM :
             tokens[nr_token].type = TK_DEC_POS_NUM;
-            memset(tokens[nr_token].str, '\0', 32);
+            memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
             if(substr_len > 32) {
               printf("ERROR : Too long token at position %d with len %d: %.*s\n",\
               position, substr_len, substr_len, substr_start);
@@ -153,7 +155,14 @@ static bool make_token(char *e) {
           case TK_EQ : tokens[nr_token].type = TK_EQ;nr_token += 1;break;
           case TK_NEQ : tokens[nr_token].type = TK_NEQ;nr_token += 1;break;
           case TK_AND : tokens[nr_token].type = TK_AND;nr_token += 1;break;
-          case TK_REG_NAME : tokens[nr_token].type = TK_REG_NAME;nr_token += 1;break;
+          case TK_REG_NAME : 
+            tokens[nr_token].type = TK_REG_NAME;
+            memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
+            bool success = true;
+            snprintf(tokens[nr_token].str, TOKEN_STR_LEN, "%d", isa_reg_str2val(substr_start, &success));
+            if(!success) return false;
+            nr_token += 1;
+            break;
           default: break;
         }
 
