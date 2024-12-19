@@ -280,7 +280,7 @@ static int eval(int p, int q, bool *success){
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     uint32_t ret = 0;
-    sscanf(tokens[p].str, "%d", &ret);
+    sscanf(tokens[p].str, "%x", &ret);
     return ret;
   }
 
