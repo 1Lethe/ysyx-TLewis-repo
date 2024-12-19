@@ -184,6 +184,7 @@ static bool make_token(char *e) {
     tokens[i].type == '*' || tokens[i].type == '/')))
     {
       tokens[i].type = TK_POINTER;
+      Log("Rematch rules TK_POINTER position %d", i);
     }
   }
 
