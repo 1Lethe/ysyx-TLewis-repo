@@ -127,7 +127,7 @@ static bool make_token(char *e) {
           case TK_HEX_NUM : 
             tokens[nr_token].type = TK_HEX_NUM;
             memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
-            if(substr_len > 32){
+            if(substr_len >= 32){
               printf("ERROR : Too long token at position %d with len %d: %.*s\n",\
               position, substr_len, substr_len, substr_start);
               return false;
@@ -138,7 +138,7 @@ static bool make_token(char *e) {
           case TK_DEC_POS_NUM :
             tokens[nr_token].type = TK_DEC_POS_NUM;
             memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
-            if(substr_len > 32) {
+            if(substr_len >= 32) {
               printf("ERROR : Too long token at position %d with len %d: %.*s\n",\
               position, substr_len, substr_len, substr_start);
               return false;
