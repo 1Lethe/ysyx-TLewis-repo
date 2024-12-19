@@ -314,7 +314,7 @@ static int eval(int p, int q, bool *success){
 }
 
 word_t expr(char *e, bool *success) {
-  int val;
+  uint32_t val;
 
   *success = true;
   if (!make_token(e)) {
