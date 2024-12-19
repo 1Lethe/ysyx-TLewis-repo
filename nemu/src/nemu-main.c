@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 #endif
 
   char a[10] = "0x8000";
-  printf("%d",atoi(a));
+  printf("%d\n",atoi(a));
 
   /* Start engine. */
   engine_start();
