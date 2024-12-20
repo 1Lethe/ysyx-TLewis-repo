@@ -183,7 +183,8 @@ static bool make_token(char *e) {
   // TODO: Rematch token rules
   for(i = 0;i < nr_token;i++){
     if(tokens[i].type == '*' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
-    tokens[i-1].type == '*' || tokens[i-1].type == '/' || tokens[i-1].type == '(')))
+    tokens[i-1].type == '*' || tokens[i-1].type == '/' || tokens[i-1].type == '(' || \
+    tokens[i-1].type == TK_EQ || tokens[i-1].type == TK_NEQ || tokens[i-1].type == TK_AND)))
     {
       tokens[i].type = TK_POINTER;
       tokens[i+1].type = TK_POINT_ADDR;
@@ -199,7 +200,8 @@ static bool make_token(char *e) {
       Log("Rematch rules TK_POINTER in token position %d", i);
     }
     if(tokens[i].type == '-' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
-    tokens[i-1].type == '*' || tokens[i-1].type == '/' || tokens[i-1].type == '(')))
+    tokens[i-1].type == '*' || tokens[i-1].type == '/' || tokens[i-1].type == '(' || \
+    tokens[i-1].type == TK_EQ || tokens[i-1].type == TK_NEQ || tokens[i-1].type == TK_AND)))
     {
       if(tokens[i+1].type != TK_DEC_POS_NUM){
         printf("Wrong token type behind negative sign.\n");
