@@ -27,7 +27,8 @@ enum {
 
   /* non-operator put here. */
   TK_NOTYPE = 256, TK_LINEBREAK,
-  TK_DEC_POS_NUM,TK_DEC_NEG_NUM,TK_HEX_NUM,
+  TK_DEC_POS_NUM,
+  TK_NEG_SIGN,TK_DEC_NEG_NUM,TK_HEX_NUM,
   TK_EQ,TK_NEQ,TK_AND,
   TK_REG_NAME,TK_POINTER,TK_POINT_ADDR,
 
@@ -303,7 +304,7 @@ static int eval(int p, int q, bool *success){
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     uint32_t ret = 0;
-    if(tokens[p].type == TK_HEX_NUM || tokens[p].type == TK_POINT_ADDR) sscanf(tokens[p].str, "%x", &ret);
+    if(tokens[p].type == TK_HEX_NUM || tokens[p].type == TK_POINT_ADDR || tokens[p].type == TK_REG_NAME) sscanf(tokens[p].str, "%x", &ret);
     else if(tokens[p].type == TK_DEC_POS_NUM) sscanf(tokens[p].str, "%d", &ret);
     return ret;
   }
