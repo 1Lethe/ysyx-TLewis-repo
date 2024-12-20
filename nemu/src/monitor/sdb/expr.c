@@ -273,10 +273,10 @@ static int find_oper(int p, int q, bool *success){
       continue;
     }
   }
-  if(lowlevel_exist == true){
+  if(lowlevel_exist){
     /* exist + or - */
     main_oper_place = last_lowlevel_place;
-  }else if(highlevel_exist  == true && lowlevel_exist == false){
+  }else if(highlevel_exist && !lowlevel_exist){
     /* only exist * or / */
     main_oper_place = last_highlevel_place;
   }
