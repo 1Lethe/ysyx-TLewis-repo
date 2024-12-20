@@ -185,10 +185,6 @@ static bool make_token(char *e) {
     if(tokens[i].type == '*' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
     tokens[i-1].type == '*' || tokens[i-1].type == '/')))
     {
-      if(i == nr_token){
-        printf("Pointer without addr.\n");
-        return false;
-      }
       tokens[i].type = TK_POINTER;
       tokens[i+1].type = TK_POINT_ADDR;
       uint32_t addr = 0;uint8_t *pmem_scan = NULL;
@@ -205,7 +201,12 @@ static bool make_token(char *e) {
     if(tokens[i].type == '-' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
     tokens[i-1].type == '*' || tokens[i-1].type == '/')))
     {
-      
+      tokens[i].type = TK_NEG_SIGN;
+      tokens[i].type = TK_DEC_NEG_NUM;
+      int num = 0;
+      sscanf(tokens[i+1].str, "%d", &num);
+      num = -num;
+      snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%d", num);
     }
   }
 
@@ -299,7 +300,7 @@ static int find_oper(int p, int q, bool *success){
 static int eval(int p, int q, bool *success){
   bool is_pare_matched;
 
-  if(tokens[p].type == TK_POINTER){
+  if(tokens[p].type == TK_POINTER || tokens[p].type == TK_NEG_SIGN){
     /* Prefix */
     p++;
   }
