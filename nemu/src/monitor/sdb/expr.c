@@ -289,7 +289,7 @@ static int eval(int p, int q, bool *success){
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     uint32_t ret = 0;
-    if(tokens[p].type == TK_HEX_NUM) sscanf(tokens[p].str, "%x", &ret);
+    if(tokens[p].type == TK_HEX_NUM || tokens[p].type == TK_POINT_ADDR) sscanf(tokens[p].str, "%x", &ret);
     else if(tokens[p].type == TK_DEC_POS_NUM) sscanf(tokens[p].str, "%d", &ret);
     return ret;
   }
