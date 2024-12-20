@@ -196,7 +196,7 @@ static bool make_token(char *e) {
       }
       pmem_scan = guest_to_host(addr);
       snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%02x", *pmem_scan);
-      Log("Rematch rules TK_POINTER position %d", i);
+      Log("Rematch rules TK_POINTER in token position %d", i);
     }
     if(tokens[i].type == '-' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
     tokens[i-1].type == '*' || tokens[i-1].type == '/')))
@@ -207,7 +207,7 @@ static bool make_token(char *e) {
       sscanf(tokens[i+1].str, "%d", &num);
       num = -num;
       snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%d", num);
-      Log("Rematch rules TK_NEG_SIGN position %d", i);
+      Log("Rematch rules TK_NEG_SIGN in token position %d", i);
     }
   }
 
