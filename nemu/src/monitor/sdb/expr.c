@@ -299,10 +299,10 @@ static int find_oper(int p, int q, bool *success){
       oper_and_exist = true;
       oper_and_place = i;
     }else if(tokens[i].type == TK_EQ){
-      oper_eq_place = true;
+      oper_eq_exist = true;
       oper_eq_place = i;
     }else if(tokens[i].type == TK_NEQ){
-      oper_neq_place = true;
+      oper_neq_exist = true;
       oper_neq_place = i;
     }
   }
