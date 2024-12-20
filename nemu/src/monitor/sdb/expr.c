@@ -354,7 +354,7 @@ word_t expr(char *e, bool *success) {
     printf("Invalid token \"%s\".\n", e);
     return 0;
   }else{
-    printf("Expression %s val \nDEC: %d, HEX: 0x%x.\n", e, val, val);
+    printf("Expression %s val: \nDEC: %d, HEX: 0x%x.\n", e, val, val);
     return 0;
   }
 }
