@@ -29,7 +29,6 @@ enum {
   TK_NOTYPE = 256, TK_LINEBREAK,
   TK_DEC_POS_NUM,
   TK_NEG_SIGN,TK_DEC_NEG_NUM,TK_HEX_NUM,
-  TK_EQ,TK_NEQ,TK_AND,
   TK_REG_NAME,TK_POINTER,TK_POINT_ADDR,
 
   /* Operator put here. */
@@ -40,6 +39,7 @@ enum {
   TK_LEFT_PARE = '(',
   TK_RIGHT_PARE = ')',
 
+  TK_EQ = 1,TK_NEQ,TK_AND,
 };
 
 static struct rule {
@@ -376,9 +376,9 @@ static int eval(int p, int q, bool *success){
         }else{
           return val1 / val2;
         }
-      case TK_EQ : if(val1 == val2) return true; else false;
-      case TK_NEQ : if(val1 != val2) return true; else false;
-      case TK_AND : if(val1 && val2) return true; else false;
+      case TK_EQ : if(val1 == val2) return true; else return false;
+      case TK_NEQ : if(val1 != val2) return true; else return false;
+      case TK_AND : if(val1 && val2) return true; else return false;
       default : assert(0);
     }
   }
