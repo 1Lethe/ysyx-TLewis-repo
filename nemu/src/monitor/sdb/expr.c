@@ -181,8 +181,8 @@ static bool make_token(char *e) {
 
   // TODO: Rematch token rules
   for(i = 0;i < nr_token;i++){
-    if(tokens[i].type == '*' && (i == 0 || (tokens[i].type == '+' || tokens[i].type == '-' || \
-    tokens[i].type == '*' || tokens[i].type == '/')))
+    if(tokens[i].type == '*' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
+    tokens[i-1].type == '*' || tokens[i-1].type == '/')))
     {
       if(i == nr_token){
         printf("Pointer without addr.\n");
