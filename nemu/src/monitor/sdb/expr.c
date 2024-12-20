@@ -288,6 +288,10 @@ static int find_oper(int p, int q, bool *success){
 static int eval(int p, int q, bool *success){
   bool is_pare_matched;
 
+  if(tokens[p].type == TK_POINTER){
+    p++;
+  }
+
   if(p > q){
     return -1;
   }else if(p == q){
