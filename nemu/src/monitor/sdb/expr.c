@@ -202,7 +202,7 @@ static bool make_token(char *e) {
     tokens[i-1].type == '*' || tokens[i-1].type == '/')))
     {
       tokens[i].type = TK_NEG_SIGN;
-      tokens[i].type = TK_DEC_NEG_NUM;
+      tokens[i+1].type = TK_DEC_NEG_NUM;
       int num = 0;
       sscanf(tokens[i+1].str, "%d", &num);
       num = -num;
@@ -311,8 +311,12 @@ static int eval(int p, int q, bool *success){
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     int ret = 0;
-    if(tokens[p].type == TK_HEX_NUM || tokens[p].type == TK_POINT_ADDR || tokens[p].type == TK_REG_NAME) sscanf(tokens[p].str, "%x", &ret);
-    else if(tokens[p].type == TK_DEC_POS_NUM || tokens[p].type == TK_DEC_NEG_NUM) sscanf(tokens[p].str, "%d", &ret);
+    if(tokens[p].type == TK_HEX_NUM || tokens[p].type == TK_POINT_ADDR || tokens[p].type == TK_REG_NAME){
+      sscanf(tokens[p].str, "%x", &ret);
+    }
+    else if(tokens[p].type == TK_DEC_POS_NUM || tokens[p].type == TK_DEC_NEG_NUM){
+      sscanf(tokens[p].str, "%d", &ret);
+    }
     return ret;
   }
 
