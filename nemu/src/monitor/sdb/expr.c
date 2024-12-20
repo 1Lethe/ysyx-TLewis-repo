@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #include <isa.h>
+#include <memory/paddr.h>
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
@@ -26,9 +27,10 @@ enum {
 
   /* non-operator put here. */
   TK_NOTYPE = 256, TK_LINEBREAK,
-  TK_DEC_POS_NUM,TK_DEC_NEG_NUM,TK_HEX_NUM,
+  TK_DEC_POS_NUM,
+  TK_NEG_SIGN,TK_DEC_NEG_NUM,TK_HEX_NUM,
   TK_EQ,TK_NEQ,TK_AND,
-  TK_REG_NAME,TK_POINTER,
+  TK_REG_NAME,TK_POINTER,TK_POINT_ADDR,
 
   /* Operator put here. */
   TK_PLUS = '+',
@@ -161,7 +163,7 @@ static bool make_token(char *e) {
             bool success = true;
             char reg_str[5];
             memcpy(reg_str, substr_start + 1, substr_len - 1);
-            snprintf(tokens[nr_token].str, TOKEN_STR_LEN, "%d", isa_reg_str2val(reg_str,&success));
+            snprintf(tokens[nr_token].str, TOKEN_STR_LEN, "%x", isa_reg_str2val(reg_str,&success));
             if(!success) return false;
             nr_token += 1;
             break;
@@ -180,14 +182,42 @@ static bool make_token(char *e) {
 
   // TODO: Rematch token rules
   for(i = 0;i < nr_token;i++){
-    if(tokens[i].type == '*' && (i == 0 || (tokens[i].type == '+' || tokens[i].type == '-' || \
-    tokens[i].type == '*' || tokens[i].type == '/')))
+    if(tokens[i].type == '*' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
+    tokens[i-1].type == '*' || tokens[i-1].type == '/' || tokens[i-1].type == '(')))
     {
       tokens[i].type = TK_POINTER;
-      Log("Rematch rules TK_POINTER position %d", i);
+      tokens[i+1].type = TK_POINT_ADDR;
+      uint32_t addr = 0;uint8_t *pmem_scan = NULL;
+      sscanf(tokens[i+1].str, "0x%x", &addr);
+      if(addr < PMEM_LEFT || addr > PMEM_RIGHT){
+        printf("Invalid memory area 0x%x in position %d.", addr, i);
+        printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
+        return false;
+      }
+      pmem_scan = guest_to_host(addr);
+      snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%02x", *pmem_scan);
+      Log("Rematch rules TK_POINTER in token position %d", i);
+    }
+    if(tokens[i].type == '-' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
+    tokens[i-1].type == '*' || tokens[i-1].type == '/' || tokens[i-1].type == '(')))
+    {
+      if(tokens[i+1].type != TK_DEC_POS_NUM){
+        printf("Wrong token type behind negative sign.\n");
+        return false;
+      }
+      if(strlen(tokens[i+1].str) >= TOKEN_STR_LEN - 1){
+        printf("Negative number is too long.");
+        return false;
+      }
+      tokens[i].type = TK_NEG_SIGN;
+      tokens[i+1].type = TK_DEC_NEG_NUM;
+      int num = 0;
+      sscanf(tokens[i+1].str, "%d", &num);
+      num = -num;
+      snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%d", num);
+      Log("Rematch rules TK_NEG_SIGN in token position %d", i);
     }
   }
-
 
   return true;
 }
@@ -225,8 +255,8 @@ static bool check_parentheses(int p, int q, bool *success){
 static int find_oper(int p, int q, bool *success){
   int main_oper_place = 0;
   int pare_inside_time = 0;
-  int last_highlevel_place = 0;
-  int last_lowlevel_place = 0;
+  int last_highlevel_place = 0;bool highlevel_exist = false;
+  int last_lowlevel_place = 0;bool lowlevel_exist = false;
   for(int i = p;i <= q;i++){
    /* Ignore not-oper types. */
     if(tokens[i].type >= TK_NOTYPE){
@@ -250,6 +280,7 @@ static int find_oper(int p, int q, bool *success){
         *success = false;
         return 0;
       }
+      highlevel_exist = true;
       last_highlevel_place = i;
       continue;
     }else if(tokens[i].type == TK_PLUS || tokens[i].type == TK_SUB){
@@ -258,17 +289,19 @@ static int find_oper(int p, int q, bool *success){
         *success = false;
         return 0;
       }
+      lowlevel_exist = true;
       last_lowlevel_place = i;
       continue;
     }
   }
-  if(last_lowlevel_place != 0){
+  if(lowlevel_exist){
     /* exist + or - */
     main_oper_place = last_lowlevel_place;
-  }else{
+  }else if(highlevel_exist && !lowlevel_exist){
     /* only exist * or / */
     main_oper_place = last_highlevel_place;
   }
+
   return main_oper_place;
 }
 
@@ -276,13 +309,22 @@ static int find_oper(int p, int q, bool *success){
 static int eval(int p, int q, bool *success){
   bool is_pare_matched;
 
+  if(tokens[p].type == TK_POINTER || tokens[p].type == TK_NEG_SIGN){
+    /* Prefix */
+    p++;
+  }
+
   if(p > q){
     return -1;
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
-    uint32_t ret = 0;
-    if(tokens[p].type == TK_HEX_NUM) sscanf(tokens[p].str, "%x", &ret);
-    else if(tokens[p].type == TK_DEC_POS_NUM) sscanf(tokens[p].str, "%d", &ret);
+    int ret = 0;
+    if(tokens[p].type == TK_HEX_NUM || tokens[p].type == TK_POINT_ADDR || tokens[p].type == TK_REG_NAME){
+      sscanf(tokens[p].str, "%x", &ret);
+    }
+    else if(tokens[p].type == TK_DEC_POS_NUM || tokens[p].type == TK_DEC_NEG_NUM){
+      sscanf(tokens[p].str, "%d", &ret);
+    }
     return ret;
   }
 
@@ -332,7 +374,7 @@ word_t expr(char *e, bool *success) {
     printf("Invalid token \"%s\".\n", e);
     return 0;
   }else{
-    printf("Expression %s val = 0x%x.\n", e, val);
+    printf("Expression %s val: \nDEC: %d, HEX: 0x%x.\n", e, val, val);
     return 0;
   }
 }
