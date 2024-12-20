@@ -201,8 +201,8 @@ static bool make_token(char *e) {
     if(tokens[i].type == '-' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
     tokens[i-1].type == '*' || tokens[i-1].type == '/')))
     {
-      if(tokens[i+1].type == TK_HEX_NUM){
-        printf("Wrong HEX num behind negative sign.\n");
+      if(tokens[i+1].type != TK_DEC_POS_NUM){
+        printf("Wrong token type behind negative sign.\n");
         return false;
       }
       if(strlen(tokens[i+1].str) >= TOKEN_STR_LEN - 1){
