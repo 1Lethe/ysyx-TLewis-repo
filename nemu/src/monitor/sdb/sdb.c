@@ -146,7 +146,7 @@ static struct {
   {"info", "Display the value of regs or watch.usage: info <r/w>", cmd_info},
   {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
-  {"echo", "make NEMU echo something.",cmd_echo},
+  {"echo", "echo something.",cmd_echo},
 };
 
 #define NR_CMD ARRLEN(cmd_table)

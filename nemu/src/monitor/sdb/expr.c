@@ -28,7 +28,7 @@ enum {
   TK_NOTYPE = 256, TK_LINEBREAK,
   TK_DEC_POS_NUM,TK_DEC_NEG_NUM,TK_HEX_NUM,
   TK_EQ,TK_NEQ,TK_AND,
-  TK_REG_NAME,TK_POINTER,
+  TK_REG_NAME,TK_POINTER,TK_POINT_ADDR,
 
   /* Operator put here. */
   TK_PLUS = '+',
@@ -177,17 +177,25 @@ static bool make_token(char *e) {
       return false;
     }
   }
-#if 0
+
   // TODO: Rematch token rules
   for(i = 0;i < nr_token;i++){
     if(tokens[i].type == '*' && (i == 0 || (tokens[i].type == '+' || tokens[i].type == '-' || \
     tokens[i].type == '*' || tokens[i].type == '/')))
     {
+      if(i == nr_token){
+        printf("Pointer without addr.\n");
+        return false;
+      }
       tokens[i].type = TK_POINTER;
+      tokens[i+1].type = TK_POINT_ADDR;
+      uint32_t addr = 0;//uint32_t pmem_scan = 0;
+      sscanf(tokens[i+1].str, "%d", &addr);
+      
+      
       Log("Rematch rules TK_POINTER position %d", i);
     }
   }
-#endif
 
   return true;
 }
