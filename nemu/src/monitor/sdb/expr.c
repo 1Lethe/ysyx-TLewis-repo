@@ -193,7 +193,7 @@ static bool make_token(char *e) {
       uint32_t addr = 0;uint8_t *pmem_scan = NULL;
       sscanf(tokens[i+1].str, "0x%x", &addr);
       if(addr < PMEM_LEFT || addr > PMEM_RIGHT){
-        printf("Invalid memory area input.\n");
+        printf("Invalid memory area 0x%x in pisition %d.", addr, i);
         printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
         return false;
       }
