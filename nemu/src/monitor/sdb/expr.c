@@ -202,6 +202,11 @@ static bool make_token(char *e) {
       snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%02x", *pmem_scan);
       Log("Rematch rules TK_POINTER position %d", i);
     }
+    if(tokens[i].type == '-' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
+    tokens[i-1].type == '*' || tokens[i-1].type == '/')))
+    {
+      
+    }
   }
 
   return true;
