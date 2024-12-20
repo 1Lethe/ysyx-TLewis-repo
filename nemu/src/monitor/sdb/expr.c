@@ -257,6 +257,9 @@ static int find_oper(int p, int q, bool *success){
   int pare_inside_time = 0;
   int last_highlevel_place = 0;bool highlevel_exist = false;
   int last_lowlevel_place = 0;bool lowlevel_exist = false;
+  int oper_and_place = 0;bool oper_and_exist = false;
+  int oper_eq_place = 0;bool oper_eq_exist = false;
+  int oper_neq_place = 0;bool oper_neq_exist = false; 
   for(int i = p;i <= q;i++){
    /* Ignore not-oper types. */
     if(tokens[i].type >= TK_NOTYPE){
@@ -292,16 +295,35 @@ static int find_oper(int p, int q, bool *success){
       lowlevel_exist = true;
       last_lowlevel_place = i;
       continue;
+    }else if(tokens[i].type == TK_AND){
+      oper_and_exist = true;
+      oper_and_place = i;
+    }else if(tokens[i].type == TK_EQ){
+      oper_eq_place = true;
+      oper_eq_place = i;
+    }else if(tokens[i].type == TK_NEQ){
+      oper_neq_place = true;
+      oper_neq_place = i;
     }
   }
-  if(lowlevel_exist){
-    /* exist + or - */
-    main_oper_place = last_lowlevel_place;
-  }else if(highlevel_exist && !lowlevel_exist){
-    /* only exist * or / */
-    main_oper_place = last_highlevel_place;
-  }
 
+  if(oper_eq_exist || oper_neq_exist || oper_and_exist){
+    if(oper_and_exist){
+      main_oper_place = oper_and_place;
+    }else if(oper_eq_exist && !oper_and_exist){
+      main_oper_place = oper_eq_place;
+    }else if(oper_neq_exist && !oper_and_exist){
+      main_oper_place = oper_neq_place;
+    }
+  }else{
+    if(lowlevel_exist){
+      /* exist + or - */
+      main_oper_place = last_lowlevel_place;
+    }else if(highlevel_exist && !lowlevel_exist){
+      /* only exist * or / */
+      main_oper_place = last_highlevel_place;
+    }
+  }
   return main_oper_place;
 }
 
@@ -354,6 +376,9 @@ static int eval(int p, int q, bool *success){
         }else{
           return val1 / val2;
         }
+      case TK_EQ : if(val1 == val2) return true; else false;
+      case TK_NEQ : if(val1 != val2) return true; else false;
+      case TK_AND : if(val1 && val2) return true; else false;
       default : assert(0);
     }
   }
