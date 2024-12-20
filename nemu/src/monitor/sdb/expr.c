@@ -207,6 +207,7 @@ static bool make_token(char *e) {
       sscanf(tokens[i+1].str, "%d", &num);
       num = -num;
       snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%d", num);
+      Log("Rematch rules TK_NEG_SIGN position %d", i);
     }
   }
 
