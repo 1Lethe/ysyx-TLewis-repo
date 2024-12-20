@@ -39,7 +39,7 @@ enum {
   TK_LEFT_PARE = '(',
   TK_RIGHT_PARE = ')',
 
-  TK_EQ = 1,TK_NEQ,TK_AND,
+  TK_EQ = 1,TK_NEQ,TK_AND,TK_OR
 };
 
 static struct rule {
