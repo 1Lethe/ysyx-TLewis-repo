@@ -234,8 +234,8 @@ static bool check_parentheses(int p, int q, bool *success){
 static int find_oper(int p, int q, bool *success){
   int main_oper_place = 0;
   int pare_inside_time = 0;
-  int last_highlevel_place = 0;
-  int last_lowlevel_place = 0;
+  int last_highlevel_place = 0;bool highlevel_exist = false;
+  int last_lowlevel_place = 0;bool lowlevel_exist = false;
   for(int i = p;i <= q;i++){
    /* Ignore not-oper types. */
     if(tokens[i].type >= TK_NOTYPE){
@@ -259,6 +259,7 @@ static int find_oper(int p, int q, bool *success){
         *success = false;
         return 0;
       }
+      highlevel_exist = true;
       last_highlevel_place = i;
       continue;
     }else if(tokens[i].type == TK_PLUS || tokens[i].type == TK_SUB){
@@ -267,14 +268,15 @@ static int find_oper(int p, int q, bool *success){
         *success = false;
         return 0;
       }
+      lowlevel_exist = true;
       last_lowlevel_place = i;
       continue;
     }
   }
-  if(last_lowlevel_place != 0){
+  if(lowlevel_exist){
     /* exist + or - */
     main_oper_place = last_lowlevel_place;
-  }else{
+  }else if(highlevel_exist & !lowlevel_exist){
     /* only exist * or / */
     main_oper_place = last_highlevel_place;
   }
