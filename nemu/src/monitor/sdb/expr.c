@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #include <isa.h>
+#include <memory/paddr.h>
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
@@ -189,10 +190,10 @@ static bool make_token(char *e) {
       }
       tokens[i].type = TK_POINTER;
       tokens[i+1].type = TK_POINT_ADDR;
-      uint32_t addr = 0;//uint32_t pmem_scan = 0;
+      uint32_t addr = 0;uint8_t *pmem_scan = NULL;
       sscanf(tokens[i+1].str, "%d", &addr);
-      
-      
+      pmem_scan = guest_to_host(addr);
+      snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%02x", *pmem_scan);
       Log("Rematch rules TK_POINTER position %d", i);
     }
   }
@@ -289,8 +290,7 @@ static int eval(int p, int q, bool *success){
   }else if(p == q){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     uint32_t ret = 0;
-    if(tokens[p].type == TK_HEX_NUM) sscanf(tokens[p].str, "%x", &ret);
-    else if(tokens[p].type == TK_DEC_POS_NUM) sscanf(tokens[p].str, "%d", &ret);
+    sscanf(tokens[p].str, "%d", &ret);
     return ret;
   }
 
