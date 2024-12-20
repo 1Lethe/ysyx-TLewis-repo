@@ -177,7 +177,7 @@ static bool make_token(char *e) {
       return false;
     }
   }
-
+#if 0
   // TODO: Rematch token rules
   for(i = 0;i < nr_token;i++){
     if(tokens[i].type == '*' && (i == 0 || (tokens[i].type == '+' || tokens[i].type == '-' || \
@@ -187,7 +187,7 @@ static bool make_token(char *e) {
       Log("Rematch rules TK_POINTER position %d", i);
     }
   }
-
+#endif
 
   return true;
 }
