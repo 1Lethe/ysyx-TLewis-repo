@@ -312,7 +312,7 @@ static int eval(int p, int q, bool *success){
     /* Now the value has beed calculated, which should be a number. Just return it.*/
     int ret = 0;
     if(tokens[p].type == TK_HEX_NUM || tokens[p].type == TK_POINT_ADDR || tokens[p].type == TK_REG_NAME) sscanf(tokens[p].str, "%x", &ret);
-    else if(tokens[p].type == TK_DEC_POS_NUM) sscanf(tokens[p].str, "%d", &ret);
+    else if(tokens[p].type == TK_DEC_POS_NUM || tokens[p].type == TK_DEC_NEG_NUM) sscanf(tokens[p].str, "%d", &ret);
     return ret;
   }
 
