@@ -191,7 +191,7 @@ static bool make_token(char *e) {
       tokens[i].type = TK_POINTER;
       tokens[i+1].type = TK_POINT_ADDR;
       uint32_t addr = 0;uint8_t *pmem_scan = NULL;
-      sscanf(tokens[i+1].str, "%d", &addr);
+      sscanf(tokens[i+1].str, "0x%x", &addr);
       pmem_scan = guest_to_host(addr);
       snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%02x", *pmem_scan);
       Log("Rematch rules TK_POINTER position %d", i);
