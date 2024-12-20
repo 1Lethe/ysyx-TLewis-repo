@@ -192,6 +192,11 @@ static bool make_token(char *e) {
       tokens[i+1].type = TK_POINT_ADDR;
       uint32_t addr = 0;uint8_t *pmem_scan = NULL;
       sscanf(tokens[i+1].str, "0x%x", &addr);
+      if(addr < PMEM_LEFT || addr > PMEM_RIGHT){
+        printf("Invalid memory area input.\n");
+        printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
+        return false;
+      }
       pmem_scan = guest_to_host(addr);
       snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%02x", *pmem_scan);
       Log("Rematch rules TK_POINTER position %d", i);
