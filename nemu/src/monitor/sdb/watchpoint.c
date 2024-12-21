@@ -73,13 +73,13 @@ void free_wp(WP *wp){
         if(wp_pool[i].next == NULL){
           wp->prev = &wp_pool[i];
           wp->next = NULL;
-          wp->isfree = true;
           wp_pool[i].next = wp;
           break;
         }
       }
       wp->next = NULL;
     }
+    wp->isfree = true;
     if(head->next != NULL) free_ = head->next;
     wp_num--;
   }
