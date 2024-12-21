@@ -21,7 +21,6 @@ typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
   struct watchpoint *prev;
-
   /* TODO: Add more members if necessary */
 
 } WP;
@@ -40,39 +39,34 @@ void init_wp_pool(void) {
 
   head = NULL;
   free_ = wp_pool;
-  wp_num = 0;
 }
 
 /* TODO: Implement the functionality of watchpoint */
 WP* new_wp(void){
-  if(wp_num <= NR_WP){
-    wp_num++;
-    head = wp_pool + wp_num - 1;
-    if (wp_num == NR_WP) free_ = NULL;
-    else if(wp_num < NR_WP) free_ = wp_pool + wp_num;
-    else assert(0);
-    Assert(head != NULL, "head is NULL");
-    return head;
+  if(wp_num > NR_WP){
+    panic("max wp num");
   }else{
-    panic("Max wp");
+    WP *wp = free_;
+    free_ = wp->next;
+    head = wp;
+    wp_num++;
+    return wp;
   }
 }
 
 void free_wp(WP *wp){
-  if(wp_num == 0){
+  if(wp_num <= 0){
     panic("No wp");
+  }else{
+    if(head == wp){
+      if(wp->prev != NULL) head = wp->prev;
+      free_ = wp;
+    }else{
+      wp->next->prev = wp->prev;
+      wp->prev->next = wp->next;
+      wp->prev = wp_pool + NR_WP;
+      wp->next = NULL;
+    }
+    wp_num--;
   }
-  /* linked list operation */
-  if(wp->prev != NULL) wp->prev->next = wp->next;
-  if(wp->next != NULL) wp->next->prev = wp->prev;
-  wp_pool[NR_WP-1].next = wp;
-  wp->next = NULL;
-
-  /* update free_ and head */
-  wp_num--;
-  if(wp_num == 0) head = NULL;
-  else if(wp_num > 0) head = wp_pool + wp_num - 1;
-  else assert(0);
-  free_ = wp_pool + wp_num;
-  Assert(free_ != NULL, "free_ is NULL");
 }
