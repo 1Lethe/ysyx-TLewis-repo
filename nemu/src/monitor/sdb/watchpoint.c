@@ -46,12 +46,12 @@ void init_wp_pool(void) {
 /* TODO: Implement the functionality of watchpoint */
 WP* new_wp(void){
   if(wp_num <= NR_WP){
+    wp_num++;
     head = wp_pool + wp_num - 1;
     if (wp_num == NR_WP) free_ = NULL;
     else if(wp_num < NR_WP) free_ = wp_pool + wp_num;
     else assert(0);
     Assert(head != NULL, "head is NULL");
-    wp_num++;
     return head;
   }else{
     panic("Max wp");
