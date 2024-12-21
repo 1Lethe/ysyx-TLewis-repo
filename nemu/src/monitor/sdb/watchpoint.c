@@ -47,7 +47,6 @@ WP* new_wp(void){
     panic("max wp num");
   }else{
     WP *wp = free_;
-    Assert(wp != NULL,"failed to reach wp");
     if(wp->next != NULL) free_ = wp->next;
     else free_ = NULL;
     head = wp;
