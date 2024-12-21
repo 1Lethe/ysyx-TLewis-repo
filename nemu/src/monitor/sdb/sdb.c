@@ -227,7 +227,7 @@ void init_sdb() {
   WP* wp1 = new_wp();
   WP* wp2 = new_wp();
   WP* wp3 = new_wp();
-  free_wp(wp3);
-  free_wp(wp2);
   free_wp(wp1);
+  free_wp(wp2);
+  free_wp(wp3);
 }
