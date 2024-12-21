@@ -230,5 +230,4 @@ void init_sdb() {
   free_wp(wp3);
   free_wp(wp2);
   free_wp(wp1);
-  free_wp(wp1);
 }
