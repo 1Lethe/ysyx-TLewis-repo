@@ -65,8 +65,8 @@ void free_wp(WP *wp){
       else head = NULL;
       free_ = wp;
     }else{
-      wp->next->prev = wp->prev;
-      wp->prev->next = wp->next;
+      if(wp->next != NULL) wp->next->prev = wp->prev;
+      if(wp->prev != NULL) wp->prev->next = wp->next;
       wp->prev = wp_pool + NR_WP;
       wp->next = NULL;
     }
