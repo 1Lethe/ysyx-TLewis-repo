@@ -45,16 +45,26 @@ void init_wp_pool(void) {
 
 /* TODO: Implement the functionality of watchpoint */
 WP* new_wp(void){
-  head = wp_pool + wp_num;
-  free_ = wp_pool + wp_num + 1;
-  wp_num++;
-  return head;
+  if(wp_num <= NR_WP){
+    head = wp_pool + wp_num;
+    free_ = wp_pool + wp_num + 1;
+    wp_num++;
+    return head;
+  }else{
+    panic("Max wp");
+  }
 }
 
 void free_wp(WP *wp){
-  *wp->prev->next = *wp->next;
-  *wp->next->prev = *wp->prev;
+  if(wp_num == 0){
+    panic("No wp");
+  }
+  if(wp->prev != NULL) wp->prev->next = wp->next;
+  if(wp->next != NULL) wp->next->prev = wp->prev;
   wp_pool[NR_WP-1].next = wp;
   wp->next = NULL;
 
+  wp_num--;
+  head = wp_pool + wp_num;
+  free_ = wp_pool + wp_num - 1;
 }
