@@ -65,7 +65,6 @@ void free_wp(WP *wp){
       while(head->prev != NULL){
         head = head->prev;
       }
-      free_ = head->next;
     }else{
       if(wp->next != NULL) wp->next->prev = wp->prev;
       if(wp->prev != NULL) wp->prev->next = wp->next;
@@ -74,13 +73,14 @@ void free_wp(WP *wp){
         if(wp_pool[i].next == NULL){
           wp->prev = &wp_pool[i];
           wp->next = NULL;
+          wp->isfree = true;
           wp_pool[i].next = wp;
           break;
         }
       }
       wp->next = NULL;
     }
-    if(free_ != NULL) free_->isfree = true;
+    if(head->next != NULL) free_ = head->next;
     wp_num--;
   }
 }
