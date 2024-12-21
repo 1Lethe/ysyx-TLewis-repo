@@ -16,7 +16,7 @@
 #include "sdb.h"
 
 #define NR_WP 32
-
+#if 0
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
@@ -25,7 +25,7 @@ typedef struct watchpoint {
   /* TODO: Add more members if necessary */
 
 } WP;
-
+#endif
 static WP wp_pool[NR_WP] = {};
 static WP *head = NULL, *free_ = NULL;
 static int wp_num = 0;
@@ -46,8 +46,11 @@ void init_wp_pool(void) {
 /* TODO: Implement the functionality of watchpoint */
 WP* new_wp(void){
   if(wp_num <= NR_WP){
-    head = wp_pool + wp_num;
-    free_ = wp_pool + wp_num + 1;
+    head = wp_pool + wp_num - 1;
+    if (wp_num == NR_WP) free_ = NULL;
+    else if(wp_num < NR_WP) free_ = wp_pool + wp_num;
+    else assert(0);
+    Assert(head != NULL, "head is NULL");
     wp_num++;
     return head;
   }else{
@@ -59,12 +62,17 @@ void free_wp(WP *wp){
   if(wp_num == 0){
     panic("No wp");
   }
+  /* linked list operation */
   if(wp->prev != NULL) wp->prev->next = wp->next;
   if(wp->next != NULL) wp->next->prev = wp->prev;
   wp_pool[NR_WP-1].next = wp;
   wp->next = NULL;
 
+  /* update free_ and head */
   wp_num--;
-  head = wp_pool + wp_num;
-  free_ = wp_pool + wp_num - 1;
+  if(wp_num == 0) head = NULL;
+  else if(wp_num > 0) head = wp_pool + wp_num - 1;
+  else assert(0);
+  free_ = wp_pool + wp_num;
+  Assert(free_ != NULL, "free_ is NULL");
 }
