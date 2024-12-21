@@ -80,7 +80,7 @@ void free_wp(WP *wp){
       }
       wp->next = NULL;
     }
-    free_->isfree = true;
+    if(free_ != NULL) free_->isfree = true;
     wp_num--;
   }
 }
