@@ -46,12 +46,11 @@ WP* new_wp(void){
   if(wp_num >= NR_WP){
     panic("max wp num");
   }else{
-    WP *wp = free_;
-    if(wp->next != NULL) free_ = wp->next;
+    head = free_;
+    if(free_->next != NULL) free_ = free_->next;
     else free_ = NULL;
-    head = wp;
     wp_num++;
-    return wp;
+    return head;
   }
 }
 
