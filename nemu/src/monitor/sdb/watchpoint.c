@@ -15,7 +15,7 @@
 
 #include "sdb.h"
 
-#define NR_WP 32
+#define NR_WP 3
 #if 0
 typedef struct watchpoint {
   int NO;
@@ -47,7 +47,9 @@ WP* new_wp(void){
     panic("max wp num");
   }else{
     WP *wp = free_;
-    free_ = wp->next;
+    Assert(wp != NULL,"failed to reach wp");
+    if(wp->next != NULL) free_ = wp->next;
+    else free_ = NULL;
     head = wp;
     wp_num++;
     return wp;
@@ -60,6 +62,7 @@ void free_wp(WP *wp){
   }else{
     if(head == wp){
       if(wp->prev != NULL) head = wp->prev;
+      else head = NULL;
       free_ = wp;
     }else{
       wp->next->prev = wp->prev;
