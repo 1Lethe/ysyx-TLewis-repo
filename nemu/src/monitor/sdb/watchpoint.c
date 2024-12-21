@@ -47,12 +47,13 @@ WP* new_wp(void){
   if(wp_num >= NR_WP){
     panic("max wp num");
   }else{
-    head = free_;
-    if(free_->next != NULL) free_ = free_->next;
+    WP *wp = free_;
+    if(wp->next != NULL) free_ = wp->next;
     else free_ = NULL;
+    head = wp;
     head->isfree = false;
     wp_num++;
-    return head;
+    return wp;
   }
 }
 
@@ -79,7 +80,7 @@ void free_wp(WP *wp){
       }
       wp->next = NULL;
     }
-    if(free_ != NULL) free_->isfree = true;
+    free_->isfree = true;
     wp_num--;
   }
 }
