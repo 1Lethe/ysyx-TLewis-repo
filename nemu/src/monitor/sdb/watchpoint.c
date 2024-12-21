@@ -35,6 +35,7 @@ void init_wp_pool(void) {
     wp_pool[i].NO = i;
     wp_pool[i].next = (i == NR_WP - 1 ? NULL : &wp_pool[i + 1]);
     wp_pool[i].prev = (i == 0 ? NULL : &wp_pool[i - 1]);
+    wp_pool[i].isfree = true;
   }
 
   head = NULL;
@@ -49,6 +50,7 @@ WP* new_wp(void){
     head = free_;
     if(free_->next != NULL) free_ = free_->next;
     else free_ = NULL;
+    head->isfree = false;
     wp_num++;
     return head;
   }
@@ -77,6 +79,7 @@ void free_wp(WP *wp){
       }
       wp->next = NULL;
     }
+    free_->isfree = true;
     wp_num--;
   }
 }
