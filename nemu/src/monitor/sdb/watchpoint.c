@@ -91,7 +91,7 @@ void create_wp(char *e, bool *success){
   WP *wp = new_wp();
 
   word_t result = expr(e, success);
-  if(!success){
+  if(!*success){
     free_wp(wp);
     return;
   }else{
