@@ -124,7 +124,7 @@ static int cmd_p(char *args){
   }
   val = expr(args, &success_flag);// FIXME: cannot assert wrong expression like "1++1"
   if(success_flag){
-    printf("Expression %s val :\n DEC: %d HEX : %x", args, val, val);
+    printf("Expression %s val :\n DEC: %d HEX : %x\n", args, val, val);
   }
   return 0;
 }
