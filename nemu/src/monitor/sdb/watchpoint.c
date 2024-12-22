@@ -105,8 +105,8 @@ bool trace_wp(void){
     wp->prev_value = wp->curr_value;
     wp->curr_value = expr(wp->expr, &success);
     if(wp->prev_value != wp->curr_value){ 
-      printf("Watchpoint %d expr %s value changed.\nOld : DEC: %u HEX: 0x%x\nNew : DEC %u HEX: 0x%x\n",\
-      wp->NO, wp->expr, wp->prev_value, wp->prev_value, wp->curr_value, wp->curr_value);
+      printf("Watchpoint %d expr %s value change.\nOld: 0x%x New: 0x%x\n",\
+      wp->NO, wp->expr, wp->prev_value, wp->curr_value);
       isStop = true;
     }
     if(!success) assert(0);
@@ -130,7 +130,7 @@ void info_wp(void){
   for(int i = 0;i < wp_num; i++){
     for(int j = 0;j < NR_WP;j++){
       if(wp_pool[j].isfree == false && wp_pool[j].NO == wp_place){
-        printf("WP %d expr: %s value DEC: %u HEX: 0x%x\n", \
+        printf("WP %d expr: %s value DEC: %d HEX: 0x%x\n", \
         wp_pool[j].NO, wp_pool[j].expr, wp_pool[j].curr_value, wp_pool[j].curr_value);
         wp_place++;
         break;
