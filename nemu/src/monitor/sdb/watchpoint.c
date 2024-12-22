@@ -105,7 +105,7 @@ bool trace_wp(void){
     wp->prev_value = wp->curr_value;
     wp->curr_value = expr(wp->expr, &success);
     if(wp->prev_value != wp->curr_value){ 
-      printf("Watchpoint %d expr %s value change.\nOld : DEC: %d HEX: 0x%x\nNew : DEC %d HEX: 0x%x\n",\
+      printf("Watchpoint %d expr %s value changed.\nOld : DEC: %d HEX: 0x%x\nNew : DEC %d HEX: 0x%x\n",\
       wp->NO, wp->expr, wp->prev_value, wp->prev_value, wp->curr_value, wp->curr_value);
       isStop = true;
     }
