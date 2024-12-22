@@ -220,7 +220,7 @@ static struct {
 
   /* TODO: Add more commands */
   {"si", "Step to the pointed instruction.usage: si [stepNum]" , cmd_si},
-  {"info", "Display the value of regs or watch.usage: info <r/w>", cmd_info},
+  {"info", "Display the value of regs or watch.usage: info <r/w/b>", cmd_info},
   {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
   {"echo", "echo something.wsage: echo <str>", cmd_echo},
