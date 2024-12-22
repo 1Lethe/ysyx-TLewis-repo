@@ -62,13 +62,13 @@ void free_wp(WP *wp){
     panic("No wp");
   }else{
     if(head == wp){
-      while(head->prev != NULL){
-        head = head->prev;
-      }
+      head = head->prev;
     }else{
+      /* Reconnect the linked list */
       if(wp->next != NULL) wp->next->prev = wp->prev;
       if(wp->prev != NULL) wp->prev->next = wp->next;
       int i;
+      /* move free node to the end of the linked list */
       for(i = 0;i < NR_WP;i++){
         if(wp_pool[i].next == NULL){
           wp->prev = &wp_pool[i];
@@ -79,8 +79,6 @@ void free_wp(WP *wp){
       }
       wp->next = NULL;
     }
-    wp->isfree = true;
-    if(head->next != NULL) free_ = head->next;
     wp_num--;
   }
 }
