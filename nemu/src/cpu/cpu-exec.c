@@ -20,6 +20,7 @@
 #include <locale.h>
 
 bool trace_wp();
+bool trace_bp(Decode *s);
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -44,10 +45,12 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
   /* Trace watchpoint */
 #ifdef CONFIG_WATCHPOINT
-  bool is_stop = trace_wp(*_this);
-  if(is_stop) nemu_state.state = NEMU_STOP;
+  bool is_wp_stop = trace_wp();
+  if(is_wp_stop) nemu_state.state = NEMU_STOP;
 #endif
 
+  bool is_bp_stop = trace_bp(_this);
+  if(is_bp_stop) nemu_state.state = NEMU_STOP;
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
