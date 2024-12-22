@@ -19,12 +19,13 @@
 #include <common.h>
 
 #define TOKEN_STR_LEN 32
+#define WP_EXPR_LEN 256
 
 typedef struct watchpoint {
     int NO;
     struct watchpoint *next;
     bool isfree;
-    char expr[TOKEN_STR_LEN];
+    char expr[WP_EXPR_LEN];
     word_t prev_value;
     word_t curr_value;
 } WP;
