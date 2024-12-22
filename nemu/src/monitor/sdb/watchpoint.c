@@ -27,13 +27,16 @@ void init_wp_pool(void) {
     wp_pool[i].NO = i;
     wp_pool[i].next = (i == NR_WP - 1 ? NULL : &wp_pool[i + 1]);
     wp_pool[i].isfree = true;
+    wp_pool[i].expr = NULL;
+    wp_pool[i].prev_value = 0;
+    wp_pool[i].curr_value = 0;
   }
 
   head = NULL;
   free_ = wp_pool;
 }
 
-/* TODO: Implement the functionality of watchpoint */
+/* Create a new watchpoint */
 WP* new_wp(void) {
   if (wp_num >= NR_WP) {
     panic("Max WP number reached");
@@ -54,6 +57,7 @@ WP* new_wp(void) {
   return wp;
 }
 
+/* Free a watchpoint */
 void free_wp(WP *wp) {
   if (wp_num <= 0 || wp == NULL) {
     panic("No WP to free");
@@ -77,6 +81,15 @@ void free_wp(WP *wp) {
     wp->next = free_;
     free_ = wp;
   }
+  
+  wp->expr = NULL;
+  wp->prev_value = 0;
+  wp->curr_value = 0;
   wp->isfree = true;
   wp_num--;
+}
+
+void create_wp(char *e){
+  WP *wp = new_wp();
+  wp->expr = e;
 }
