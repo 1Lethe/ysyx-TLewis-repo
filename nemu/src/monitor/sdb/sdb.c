@@ -51,7 +51,6 @@ static int cmd_c(char *args) {
   return 0;
 }
 
-
 static int cmd_q(char *args) {
   nemu_state.state = NEMU_QUIT; // Elegantly exit.
   return -1;
@@ -78,7 +77,7 @@ static int cmd_info(char *args){
     if(*arg == 'r'){
       isa_reg_display();
     }else if(*arg == 'w'){
-      
+      info_wp();
     }else{
       printf("Invalid info command input.\n");
     }
@@ -116,17 +115,53 @@ static int cmd_x(char *args){
 }
 
 static int cmd_p(char *args){
+  word_t val = 0;
   bool success_flag;
   if(args == NULL){
     printf("Command p need args.");
     return 0;
   }
-  expr(args, &success_flag);// FIXME: bug cannot assert wrong expression like "1++1"
+  val = expr(args, &success_flag);// FIXME: cannot assert wrong expression like "1++1"
+  if(success_flag){
+    printf("Expression %s val :\n DEC: %d HEX : 0x%x\n", args, val, val);
+  }
   return 0;
 }
 
 static int cmd_echo(char *args){
   printf("%s\n", args);
+  return 0;
+}
+
+static int cmd_w(char *args){
+  if(args == NULL){
+    printf("command w need args.\n");
+    return 0;
+  }
+
+  bool success = true;
+  create_wp(args, &success);
+  if(!success){
+    printf("Failed to create watchpoint.\n");
+  }else{
+    printf("Create watchpoint.\n");
+  }
+  return 0;
+}
+
+static int cmd_d(char *args){
+  int wp_th = 0;
+
+  if(args == NULL){
+    printf("command d need args.\n");
+    return 0;
+  }
+
+  if(sscanf(args, "%d", &wp_th) == 1){
+    delete_wp(wp_th);
+  }else{
+    printf("Invalid d command input.\n");
+  }
   return 0;
 }
 
@@ -146,7 +181,9 @@ static struct {
   {"info", "Display the value of regs or watch.usage: info <r/w>", cmd_info},
   {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
-  {"echo", "echo something.",cmd_echo},
+  {"echo", "echo something.wsage: echo <str>", cmd_echo},
+  {"w", "Add watchpoint.usage: w <expression>", cmd_w},
+  {"d", "Delete watchpoint.usage: d <wp_th>", cmd_d},
 };
 
 #define NR_CMD ARRLEN(cmd_table)

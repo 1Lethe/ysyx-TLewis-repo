@@ -18,6 +18,26 @@
 
 #include <common.h>
 
+#define TOKEN_STR_LEN 32
+#define WP_EXPR_LEN 256
+
+typedef struct watchpoint {
+    int NO;
+    struct watchpoint *next;
+    bool isfree;
+    char expr[WP_EXPR_LEN];
+    word_t prev_value;
+    word_t curr_value;
+} WP;
+
 word_t expr(char *e, bool *success);
+
+WP *new_wp(void);
+void free_wp(WP *wp);
+void create_wp(char *e, bool *success);
+bool trace_wp(void);
+int count_wp(void);
+void info_wp(void);
+void delete_wp(int x);
 
 #endif

@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <memory/paddr.h>
+#include "sdb.h"
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
@@ -49,7 +50,6 @@ static struct rule {
 
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
-   * TODO: Add negative num.
    */
 
   {" +", TK_NOTYPE},             // spaces
@@ -89,8 +89,6 @@ void init_regex() {
   }
 }
 
-#define TOKEN_STR_LEN 32
-
 typedef struct token {
   int type;
   char str[TOKEN_STR_LEN];
@@ -112,10 +110,8 @@ static bool make_token(char *e) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
-
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
-
         position += substr_len;
 
         /* TODO: Now a new token is recognized with rules[i]. Add codes
@@ -400,7 +396,6 @@ word_t expr(char *e, bool *success) {
     printf("Invalid token \"%s\".\n", e);
     return 0;
   }else{
-    printf("Expression %s val: \nDEC: %d, HEX: 0x%x.\n", e, val, val);
-    return 0;
+    return val;
   }
 }
