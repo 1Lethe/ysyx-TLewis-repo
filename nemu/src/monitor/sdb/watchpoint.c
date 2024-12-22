@@ -80,9 +80,10 @@ void free_wp(WP *wp) {
       current = current->next;
     }
     Assert(current == wp, "failed to find wp.");
-    prev->next = current->next;
-    current->next = free_;
+    prev->next = wp->next;
+    wp->next = free_;
     free_ = wp;
   }
+  wp->isfree = true;
   wp_num--;
 }
