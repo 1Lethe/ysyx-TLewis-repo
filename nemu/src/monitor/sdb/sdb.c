@@ -134,10 +134,33 @@ static int cmd_echo(char *args){
 }
 
 static int cmd_w(char *args){
+  if(args == NULL){
+    printf("command w need args.\n");
+    return 0;
+  }
+
   bool success = true;
   create_wp(args, &success);
   if(!success){
-    printf("Failed to create WP.\n");
+    printf("Failed to create watchpoint.\n");
+  }else{
+    printf("Create watchpoint.\n");
+  }
+  return 0;
+}
+
+static int cmd_d(char *args){
+  int wp_th = 0;
+
+  if(args == NULL){
+    printf("command d need args.\n");
+    return 0;
+  }
+
+  if(sscanf(args, "%d", &wp_th) == 1){
+    delete_wp(wp_th);
+  }else{
+    printf("Invalid d command input.\n");
   }
   return 0;
 }
@@ -160,6 +183,7 @@ static struct {
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
   {"echo", "echo something.", cmd_echo},
   {"w", "Add watchpoint.", cmd_w},
+  {"d", "Delete watchpoint.", cmd_d},
 };
 
 #define NR_CMD ARRLEN(cmd_table)

@@ -37,5 +37,6 @@ void create_wp(char *e, bool *success);
 bool trace_wp(void);
 int count_wp(void);
 void info_wp(void);
+void delete_wp(int x);
 
 #endif

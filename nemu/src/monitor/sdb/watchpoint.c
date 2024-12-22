@@ -95,7 +95,6 @@ void create_wp(char *e, bool *success){
     return;
   }
   strncpy(wp->expr, e, TOKEN_STR_LEN);
-  printf("Create watchpoint %d.", wp->NO);
 }
 
 bool trace_wp(void){
