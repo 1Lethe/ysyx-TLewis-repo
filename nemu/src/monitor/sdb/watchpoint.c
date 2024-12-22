@@ -87,14 +87,31 @@ void free_wp(WP *wp) {
   wp_num--;
 }
 
-void Create_wp(char *e){
+void create_wp(char *e, bool *success){
   WP *wp = new_wp();
+
+  expr(e, success);
+  if(!success){
+    return;
+  }
   wp->expr = e;
 }
 
-void Trace_wp(void){
+bool trace_wp(void){
   WP *wp = head;
+  bool isStop = false;
   while(wp != NULL){
-    
+    bool success = true;
+    wp->prev_value = wp->curr_value;
+    wp->curr_value = expr(wp->expr, &success);
+    if(wp->prev_value != wp->curr_value){ 
+      printf("Watchpoint %d expr %s value change.\nOld : DEC: %d HEX: 0x%x\nNew : DEC %d HEX: 0x%x\n",\
+      wp->NO, wp->expr, wp->prev_value, wp->prev_value, wp->curr_value, wp->curr_value);
+      isStop = true;
+    }
+    if(!success) assert(0);
+
+    wp = wp->next;
   }
+  return isStop;
 }

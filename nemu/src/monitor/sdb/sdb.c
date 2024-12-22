@@ -134,6 +134,15 @@ static int cmd_echo(char *args){
   return 0;
 }
 
+static int cmd_w(char *args){
+  bool success = true;
+  create_wp(args, &success);
+  if(!success){
+    printf("Failed to create WP.\n");
+  }
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -150,7 +159,8 @@ static struct {
   {"info", "Display the value of regs or watch.usage: info <r/w>", cmd_info},
   {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
-  {"echo", "echo something.",cmd_echo},
+  {"echo", "echo something.", cmd_echo},
+  {"w", "Add watchpoint.", cmd_w},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
@@ -228,6 +238,4 @@ void init_sdb() {
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
-  WP *wp1 = new_wp();
-  free_wp(wp1);
 }
