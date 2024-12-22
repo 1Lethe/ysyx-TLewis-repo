@@ -92,6 +92,7 @@ void create_wp(char *e, bool *success){
 
   word_t result = expr(e, success);
   if(!success){
+    free_wp(wp);
     return;
   }
   strncpy(wp->expr, e, TOKEN_STR_LEN);
