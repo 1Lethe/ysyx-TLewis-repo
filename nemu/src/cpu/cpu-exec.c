@@ -49,7 +49,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
 
   vaddr_t pc_guest = (_this->pc - CONFIG_MBASE)/0x4;
-  printf("pc = 0x%x\n", pc_guest);
+  printf("pc = %d\n", pc_guest);
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
