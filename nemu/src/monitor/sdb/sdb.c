@@ -181,9 +181,9 @@ static struct {
   {"info", "Display the value of regs or watch.usage: info <r/w>", cmd_info},
   {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
-  {"echo", "echo something.", cmd_echo},
-  {"w", "Add watchpoint.", cmd_w},
-  {"d", "Delete watchpoint.", cmd_d},
+  {"echo", "echo something.wsage: echo <str>", cmd_echo},
+  {"w", "Add watchpoint.usage: w <expression>", cmd_w},
+  {"d", "Delete watchpoint.usage: d <wp_th>", cmd_d},
 };
 
 #define NR_CMD ARRLEN(cmd_table)

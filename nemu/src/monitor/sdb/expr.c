@@ -50,7 +50,6 @@ static struct rule {
 
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
-   * TODO: Add negative num.
    */
 
   {" +", TK_NOTYPE},             // spaces
