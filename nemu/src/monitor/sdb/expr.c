@@ -111,10 +111,8 @@ static bool make_token(char *e) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
-      #ifdef CONFIG_ENABLE_MATCH_LOG
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
-      #endif
         position += substr_len;
 
         /* TODO: Now a new token is recognized with rules[i]. Add codes
@@ -195,9 +193,7 @@ static bool make_token(char *e) {
       }
       pmem_scan = guest_to_host(addr);
       snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%02x", *pmem_scan);
-    #ifdef CONFIG_ENABLE_MATCH_LOG
       Log("Rematch rules TK_POINTER in token position %d", i);
-    #endif
     }
     if(tokens[i].type == '-' && (i == 0 || (tokens[i-1].type == '+' || tokens[i-1].type == '-' || \
     tokens[i-1].type == '*' || tokens[i-1].type == '/' || tokens[i-1].type == '(' || \
@@ -217,9 +213,7 @@ static bool make_token(char *e) {
       sscanf(tokens[i+1].str, "%d", &num);
       num = -num;
       snprintf(tokens[i+1].str, TOKEN_STR_LEN, "%d", num);
-    #ifdef CONFIG_ENABLE_MATCH_LOG
       Log("Rematch rules TK_NEG_SIGN in token position %d", i);
-    #endif
     }
   }
 
