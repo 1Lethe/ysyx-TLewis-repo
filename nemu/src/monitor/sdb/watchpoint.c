@@ -95,6 +95,7 @@ void create_wp(char *e, bool *success){
     return;
   }
   strncpy(wp->expr, e, TOKEN_STR_LEN);
+  printf("Create watchpoint %d.", wp->NO);
 }
 
 bool trace_wp(void){
@@ -137,4 +138,17 @@ void info_wp(void){
       }
     }
   }
+}
+
+void delete_wp(int x){
+  WP *wp = head;
+  while(wp != NULL){
+    if(wp->NO == x){
+      printf("Remove watchpoint %d.\n", wp->NO);
+      free_wp(wp);
+      return;
+    }
+    wp = wp->next;
+  }
+  printf("Not find watchpoint.\n");
 }
