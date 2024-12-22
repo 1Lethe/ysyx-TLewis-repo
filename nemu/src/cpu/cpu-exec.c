@@ -48,7 +48,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   if(is_stop) nemu_state.state = NEMU_STOP;
 #endif
 
-  vaddr_t pc_guest = _this->pc - CONFIG_MBASE;
+  vaddr_t pc_guest = (_this->pc - CONFIG_MBASE)/0x4;
   printf("pc = 0x%x\n", pc_guest);
 }
 
