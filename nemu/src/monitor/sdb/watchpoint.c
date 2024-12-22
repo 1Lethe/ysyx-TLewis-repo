@@ -94,10 +94,11 @@ void create_wp(char *e, bool *success){
   if(!success){
     free_wp(wp);
     return;
+  }else{
+    strncpy(wp->expr, e, TOKEN_STR_LEN);
+    wp->prev_value = result;
+    wp->curr_value = result;
   }
-  strncpy(wp->expr, e, TOKEN_STR_LEN);
-  wp->prev_value = result;
-  wp->curr_value = result;
 }
 
 bool trace_wp(void){
