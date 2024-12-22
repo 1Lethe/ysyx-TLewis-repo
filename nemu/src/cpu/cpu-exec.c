@@ -48,8 +48,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   if(is_stop) nemu_state.state = NEMU_STOP;
 #endif
 
-  vaddr_t pc_guest = isa_pc(_this);
-  printf("pc_guest = %d\n", pc_guest);
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {

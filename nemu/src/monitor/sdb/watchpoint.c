@@ -153,5 +153,5 @@ void delete_wp(int x){
     }
     wp = wp->next;
   }
-  printf("Not find watchpoint.\n");
+  printf("watchpoint %d not found.\n", x);
 }

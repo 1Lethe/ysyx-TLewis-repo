@@ -78,6 +78,6 @@ int isa_exec_once(Decode *s) {
   return decode_exec(s); // decode & execute command. here s->dnpc = s->snpc
 }
 
-vaddr_t isa_pc(Decode *s){
+vaddr_t isa_pc_step(Decode *s){
   return (s->pc - CONFIG_MBASE) / 4; // return PC in words (4 bytes)
 }

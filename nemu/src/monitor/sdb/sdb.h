@@ -17,6 +17,7 @@
 #define __SDB_H__
 
 #include <common.h>
+#include <cpu/decode.h>
 
 #define TOKEN_STR_LEN 32
 #define WP_EXPR_LEN 256
@@ -39,5 +40,19 @@ bool trace_wp(void);
 int count_wp(void);
 void info_wp(void);
 void delete_wp(int x);
+
+typedef struct breakpoint {
+    int NO;
+    struct breakpoint *next;
+    bool isfree;
+    vaddr_t pc_break;
+} BP;
+
+BP *new_bp(void);
+void free_bp(BP *bp);
+void create_bp(vaddr_t pc_break, bool *success);
+bool trace_bp(Decode *s);
+void info_bp(void);
+void delete_bp(int x);
 
 #endif

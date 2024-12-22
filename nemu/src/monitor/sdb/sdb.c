@@ -78,6 +78,8 @@ static int cmd_info(char *args){
       isa_reg_display();
     }else if(*arg == 'w'){
       info_wp();
+    }else if(*arg == 'b'){
+      info_bp();
     }else{
       printf("Invalid info command input.\n");
     }
@@ -149,7 +151,7 @@ static int cmd_w(char *args){
   return 0;
 }
 
-static int cmd_d(char *args){
+static int cmd_dw(char *args){
   int wp_th = 0;
 
   if(args == NULL){
@@ -161,6 +163,44 @@ static int cmd_d(char *args){
     delete_wp(wp_th);
   }else{
     printf("Invalid d command input.\n");
+  }
+  return 0;
+}
+
+static int cmd_b(char *args){
+  int b_place = 0;
+  bool success_flag = true;
+  
+  if(args == NULL){
+    printf("command b need args.\n");
+    return 0;
+  }
+  
+  if(sscanf(args, "%d", &b_place) == 1){
+    create_bp(b_place, &success_flag);
+    if(success_flag){
+      printf("Create breakpoint at Step %d.\n", b_place);
+    }else{
+      printf("Failed to create breakpoint.\n");
+    }
+  }else{
+    printf("Invalid b command input.\n");
+  }
+  return 0;
+}
+
+static int cmd_db(char *args){
+  int bp_th = 0;
+
+  if(args == NULL){
+    printf("command db need args.\n");
+    return 0;
+  }
+
+  if(sscanf(args, "%d", &bp_th) == 1){
+    delete_bp(bp_th);
+  }else{
+    printf("Invalid db command input.\n");
   }
   return 0;
 }
@@ -183,7 +223,9 @@ static struct {
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
   {"echo", "echo something.wsage: echo <str>", cmd_echo},
   {"w", "Add watchpoint.usage: w <expression>", cmd_w},
-  {"d", "Delete watchpoint.usage: d <wp_th>", cmd_d},
+  {"dw", "Delete watchpoint.usage: d <wp_th>", cmd_dw},
+  {"b", "Set breakpoint.usage: b <pc_step>", cmd_b},
+  {"db", "Delete breakpoint.usage: db <bp_th>", cmd_db},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
