@@ -131,6 +131,14 @@ config TRACE
   bool "Enable tracer"
   default y
 
+config WATCHPOINT
+  bool "Enable watchpoint"
+  default y
+
+config ENABLE_MATCH_LOG
+  bool "Enable match log in expr.c"
+  default y
+
 config TRACE_START
   depends on TRACE
   int "When tracing is enabled (unit: number of instructions)"
