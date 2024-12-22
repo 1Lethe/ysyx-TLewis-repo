@@ -136,12 +136,10 @@ void info_wp(void){
     return;
   }
 
-  for(int i = 0;i < wp_num; i++){
-    WP* wp = head;
-    while(wp != NULL){
-      printf("Watchpoint %d expr %s value: 0x%x\n", wp->NO, wp->expr, wp->curr_value);
-      wp = wp->next;
-    }
+  WP* wp = head;
+  while(wp != NULL){
+    printf("Watchpoint %d expr %s value: 0x%x\n", wp->NO, wp->expr, wp->curr_value);
+    wp = wp->next;
   }
 }
 
