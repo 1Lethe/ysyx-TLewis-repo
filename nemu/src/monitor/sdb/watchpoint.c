@@ -90,6 +90,12 @@ void free_wp(WP *wp) {
 void create_wp(char *e, bool *success){
   WP *wp = new_wp();
 
+  if(strlen(e) >= WP_EXPR_LEN){
+    printf("Watchpoint expression is too long.\n");
+    *success = false;
+    free_wp(wp);
+    return;
+  }
   word_t result = expr(e, success);
   if(!*success){
     free_wp(wp);
