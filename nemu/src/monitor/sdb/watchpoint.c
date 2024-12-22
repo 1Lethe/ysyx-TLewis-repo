@@ -20,7 +20,7 @@
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
-  struct watchpoint *prev;
+  bool isfree;
   /* TODO: Add more members if necessary */
 
 } WP;
@@ -34,7 +34,6 @@ void init_wp_pool(void) {
   for (i = 0; i < NR_WP; i ++) {
     wp_pool[i].NO = i;
     wp_pool[i].next = (i == NR_WP - 1 ? NULL : &wp_pool[i + 1]);
-    wp_pool[i].prev = (i == 0 ? NULL : &wp_pool[i - 1]);
     wp_pool[i].isfree = true;
   }
 
@@ -49,16 +48,14 @@ WP* new_wp(void) {
     return NULL;
   }
 
-  assert(free_ != NULL); // 确保有可用的 watchpoint
+  assert(free_ != NULL); // 确保有空闲节点
 
-  // 从 free_ 中取出一个节点
+  // 从 free_ 链表取出第一个节点
   WP *wp = free_;
   free_ = free_->next;
-  if (free_) free_->prev = NULL;
 
-  // 插入到 head 链表
+  // 插入到 head 链表的头部
   wp->next = head;
-  if (head) head->prev = wp;
   head = wp;
 
   wp->isfree = false;
@@ -73,20 +70,25 @@ void free_wp(WP *wp) {
     return;
   }
 
-  assert(!wp->isfree); // 确保 wp 是被占用状态
+  assert(!wp->isfree); // 确保 wp 是已分配状态
 
   // 从 head 链表移除 wp
-  if (wp->prev) wp->prev->next = wp->next;
-  if (wp->next) wp->next->prev = wp->prev;
+  WP **prev = &head;
+  while (*prev != NULL && *prev != wp) {
+    prev = &(*prev)->next; // 找到 wp 的前一个节点
+  }
 
-  if (head == wp) head = wp->next;
+  if (*prev == NULL) {
+    panic("WP not found in the allocated list");
+    return;
+  }
 
-  // 插入到 free_ 链表
+  *prev = wp->next; // 将 wp 从 head 链表中移除
+
+  // 插入到 free_ 链表的头部
   wp->next = free_;
-  if (free_) free_->prev = wp;
   free_ = wp;
 
-  wp->prev = NULL;
   wp->isfree = true;
   wp_num--;
 }

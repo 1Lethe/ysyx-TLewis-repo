@@ -224,12 +224,10 @@ void init_sdb() {
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
-  WP* wp1 = new_wp();
-  WP* wp2 = new_wp();
+  WP *wp1 = new_wp();
+  WP *wp2 = new_wp();
+  assert(wp1 != wp2);
+
   free_wp(wp1);
-  WP* wp5 = new_wp();
-  WP* wp6 = new_wp();
-  free_wp(wp5);
-  free_wp(wp6);
   free_wp(wp2);
 }
