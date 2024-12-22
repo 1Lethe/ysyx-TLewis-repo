@@ -27,7 +27,7 @@ void init_wp_pool(void) {
     wp_pool[i].NO = i;
     wp_pool[i].next = (i == NR_WP - 1 ? NULL : &wp_pool[i + 1]);
     wp_pool[i].isfree = true;
-    wp_pool[i].expr = NULL;
+    memset(wp_pool[i].expr, '\0', TOKEN_STR_LEN);
     wp_pool[i].prev_value = 0;
     wp_pool[i].curr_value = 0;
   }
@@ -80,7 +80,7 @@ void free_wp(WP *wp) {
     free_ = wp;
   }
 
-  wp->expr = NULL;
+  memset(wp->expr, '\0', TOKEN_STR_LEN);
   wp->prev_value = 0;
   wp->curr_value = 0;
   wp->isfree = true;
@@ -94,7 +94,7 @@ void create_wp(char *e, bool *success){
   if(!success){
     return;
   }
-  wp->expr = e;
+  strncpy(wp->expr, e, TOKEN_STR_LEN);
 }
 
 bool trace_wp(void){

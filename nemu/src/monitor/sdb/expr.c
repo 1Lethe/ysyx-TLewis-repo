@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <memory/paddr.h>
+#include "sdb.h"
 
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
@@ -88,8 +89,6 @@ void init_regex() {
     }
   }
 }
-
-#define TOKEN_STR_LEN 32
 
 typedef struct token {
   int type;
