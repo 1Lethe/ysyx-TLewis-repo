@@ -77,7 +77,7 @@ static int cmd_info(char *args){
     if(*arg == 'r'){
       isa_reg_display();
     }else if(*arg == 'w'){
-      
+      info_wp();
     }else{
       printf("Invalid info command input.\n");
     }

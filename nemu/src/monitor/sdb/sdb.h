@@ -35,5 +35,7 @@ WP *new_wp(void);
 void free_wp(WP *wp);
 void create_wp(char *e, bool *success);
 bool trace_wp(void);
+int count_wp(void);
+void info_wp(void);
 
 #endif

@@ -115,3 +115,26 @@ bool trace_wp(void){
   }
   return isStop;
 }
+
+int count_wp(void){
+  return wp_num;
+}
+
+void info_wp(void){
+  int wp_place = 0;
+  if(wp_num == 0){
+    printf("there is no watchpoint used.\n");
+    return;
+  }
+
+  for(int i = 0;i < wp_num; i++){
+    for(int j = 0;j < NR_WP;j++){
+      if(wp_pool[j].isfree == false && wp_pool[j].NO == wp_place){
+        printf("WP %d expr: %s value DEC: %d HEX: 0x%x\n", \
+        wp_pool[j].NO, wp_pool[j].expr, wp_pool[j].curr_value, wp_pool[j].curr_value);
+        wp_place++;
+        break;
+      }
+    }
+  }
+}
