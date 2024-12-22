@@ -62,7 +62,7 @@ void free_wp(WP *wp){
     panic("No wp");
   }else{
     if(head == wp){
-      if(wp_num != 0){
+      if(wp_num > 1){
         head = head->prev;
         free_ = head->next;
       }else{
