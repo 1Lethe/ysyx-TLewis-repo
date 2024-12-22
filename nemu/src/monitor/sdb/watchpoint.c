@@ -43,53 +43,50 @@ void init_wp_pool(void) {
 }
 
 /* TODO: Implement the functionality of watchpoint */
-WP* new_wp(void){
-  if(wp_num >= NR_WP){
-    panic("max wp num");
-  }else{
-    WP *wp = free_;
-    if(wp->next != NULL) free_ = wp->next;
-    else free_ = NULL;
-    head = wp;
-    head->isfree = false;
-    wp_num++;
-    return wp;
+WP* new_wp(void) {
+  if (wp_num >= NR_WP) {
+    panic("Max WP number reached");
+    return NULL;
   }
+
+  assert(free_ != NULL); // 确保有可用的 watchpoint
+
+  // 从 free_ 中取出一个节点
+  WP *wp = free_;
+  free_ = free_->next;
+  if (free_) free_->prev = NULL;
+
+  // 插入到 head 链表
+  wp->next = head;
+  if (head) head->prev = wp;
+  head = wp;
+
+  wp->isfree = false;
+  wp_num++;
+
+  return wp;
 }
 
-void free_wp(WP *wp){
-  if(wp_num <= 0){
-    panic("No wp");
-  }else{
-    if(head == wp){
-      if(wp_num > 1){
-        head = head->prev;
-        free_ = head->next;
-      }else{
-        head = NULL;
-        for(int i = 0;i < NR_WP;i++){
-          if(wp_pool[i].prev == NULL){
-            free_ = &wp_pool[i];
-            break;
-          }
-        }
-      }
-    }else{
-      if(wp->next != NULL) wp->next->prev = wp->prev;
-      if(wp->prev != NULL) wp->prev->next = wp->next;
-      for(int i = 0;i < NR_WP;i++){
-        if(wp_pool[i].next == NULL){
-          wp->prev = &wp_pool[i];
-          wp->next = NULL;
-          wp_pool[i].next = wp;
-          break;
-        }
-      }
-      wp->next = NULL;
-      
-      free_ = head->next;
-    }
-    wp->isfree = true;
-    wp_num--;
+void free_wp(WP *wp) {
+  if (wp_num <= 0 || wp == NULL) {
+    panic("No WP to free");
+    return;
   }
+
+  assert(!wp->isfree); // 确保 wp 是被占用状态
+
+  // 从 head 链表移除 wp
+  if (wp->prev) wp->prev->next = wp->next;
+  if (wp->next) wp->next->prev = wp->prev;
+
+  if (head == wp) head = wp->next;
+
+  // 插入到 free_ 链表
+  wp->next = free_;
+  if (free_) free_->prev = wp;
+  free_ = wp;
+
+  wp->prev = NULL;
+  wp->isfree = true;
+  wp_num--;
 }
