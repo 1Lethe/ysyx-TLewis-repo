@@ -226,7 +226,7 @@ static struct {
   {"echo", "echo something.wsage: echo <str>", cmd_echo},
   {"w", "Add watchpoint.usage: w <expression>", cmd_w},
   {"dw", "Delete watchpoint.usage: d <wp_th>", cmd_dw},
-  {"b", "Set breakpoint.usage: b <pc_step>", cmd_b},
+  {"b", "Add breakpoint.usage: b <pc_step>", cmd_b},
   {"db", "Delete breakpoint.usage: db <bp_th>", cmd_db},
 };
 
