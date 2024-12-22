@@ -86,6 +86,7 @@ void free_wp(WP *wp){
         }
       }
       wp->next = NULL;
+      
       free_ = head->next;
     }
     wp->isfree = true;
