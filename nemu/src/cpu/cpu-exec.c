@@ -48,9 +48,10 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   bool is_wp_stop = trace_wp();
   if(is_wp_stop) nemu_state.state = NEMU_STOP;
 #endif
-
+#ifdef CONFIG_BREAKPOINT
   bool is_bp_stop = trace_bp(_this);
   if(is_bp_stop) nemu_state.state = NEMU_STOP;
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {

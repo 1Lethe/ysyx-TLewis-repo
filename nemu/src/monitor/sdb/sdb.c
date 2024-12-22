@@ -136,6 +136,7 @@ static int cmd_echo(char *args){
   return 0;
 }
 
+// FIXME: breakpoint cannot set in ebreak.
 static int cmd_w(char *args){
   if(args == NULL){
     printf("command w need args.\n");
