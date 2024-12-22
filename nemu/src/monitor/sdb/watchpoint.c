@@ -20,8 +20,8 @@ typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
   bool isfree;
-  /* TODO: Add more members if necessary */
-
+  char *expr;
+  
 } WP;
 
 static WP wp_pool[NR_WP] = {};
