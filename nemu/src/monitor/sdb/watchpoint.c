@@ -65,8 +65,7 @@ void free_wp(WP *wp){
       if(wp_num != 0){
         head = head->prev;
         free_ = head->next;
-      }
-      else{
+      }else{
         head = NULL;
         for(int i = 0;i < NR_WP;i++){
           if(wp_pool[i].prev == NULL){
@@ -87,6 +86,7 @@ void free_wp(WP *wp){
         }
       }
       wp->next = NULL;
+      free_ = head->next;
     }
     wp->isfree = true;
     wp_num--;
