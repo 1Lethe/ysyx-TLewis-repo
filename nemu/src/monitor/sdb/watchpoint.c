@@ -84,4 +84,5 @@ void free_wp(WP *wp) {
     current->next = free_;
     free_ = wp;
   }
+  wp_num--;
 }
