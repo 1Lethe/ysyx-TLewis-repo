@@ -131,22 +131,16 @@ int count_wp(void){
 }
 
 void info_wp(void){
-  int wp_place = 0;
   if(wp_num == 0){
     printf("there is no watchpoint used.\n");
     return;
   }
 
-  for(int i = 0;i < wp_num; i++){
-    for(int j = 0;j < NR_WP;j++){
-      if(wp_pool[j].isfree == false && wp_pool[j].NO == wp_place){
-        printf("WP %d expr: %s value: 0x%x\n", \
-        wp_pool[j].NO, wp_pool[j].expr, wp_pool[j].curr_value);
-        wp_place++;
-        break;
-      }
+  WP* wp = head;
+  while(wp != NULL){
+    printf("Watchpoint %d expr %s value: 0x%x\n", wp->NO, wp->expr, wp->curr_value);
+    wp = wp->next;
     }
-  }
 }
 
 void delete_wp(int x){
@@ -159,5 +153,5 @@ void delete_wp(int x){
     }
     wp = wp->next;
   }
-  printf("Not find watchpoint.\n");
+  printf("watchpoint %d not found.\n", x);
 }
