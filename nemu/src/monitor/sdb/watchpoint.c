@@ -90,11 +90,13 @@ void free_wp(WP *wp) {
 void create_wp(char *e, bool *success){
   WP *wp = new_wp();
 
-  expr(e, success);
+  word_t result = expr(e, success);
   if(!success){
     return;
   }
   strncpy(wp->expr, e, TOKEN_STR_LEN);
+  wp->prev_value = result;
+  wp->curr_value = result;
 }
 
 bool trace_wp(void){
