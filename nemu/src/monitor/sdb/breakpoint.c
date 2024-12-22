@@ -5,7 +5,7 @@
 
 #define NR_BP 32
 
-static BP bp_pool[NR_BP];
+static BP bp_pool[NR_BP] = {};
 static BP *head = NULL, *free_ = NULL;
 static int bp_num = 0;
 
@@ -13,10 +13,11 @@ void breakpoint_init(void) {
     int i;
     for(i = 0; i < NR_BP; i++){
         bp_pool[i].NO = i;
-        bp_pool[i].next = (i == NR_BP - 1)? NULL : &bp_pool[i + 1];
+        bp_pool[i].next = (i == NR_BP - 1 ? NULL : &bp_pool[i + 1]);
         bp_pool[i].isfree = true;
         bp_pool[i].pc_break = -1;
     }
+
     head = NULL;
     free_ = bp_pool;
 }
@@ -32,9 +33,9 @@ BP* new_bp(void){
     free_ = free_->next;
     bp->next = head;
     head = bp;
+
     bp->isfree = false;
     bp_num++;
-
     return bp;
 }
 
