@@ -48,19 +48,17 @@ WP* new_wp(void) {
     return NULL;
   }
 
-  assert(free_ != NULL); // 确保有空闲节点
+  assert(free_ != NULL);
 
-  // 从 free_ 链表取出第一个节点
+  /* Move up free_ pointer and select free node*/
   WP *wp = free_;
   free_ = free_->next;
-
-  // 插入到 head 链表的头部
+  /* add mp to head linked list and move head pointer */
   wp->next = head;
   head = wp;
 
   wp->isfree = false;
   wp_num++;
-
   return wp;
 }
 
@@ -70,25 +68,20 @@ void free_wp(WP *wp) {
     return;
   }
 
-  assert(!wp->isfree); // 确保 wp 是已分配状态
-
-  // 从 head 链表移除 wp
-  WP **prev = &head;
-  while (*prev != NULL && *prev != wp) {
-    prev = &(*prev)->next; // 找到 wp 的前一个节点
+  assert(!wp->isfree);
+  if(wp == head){
+    head = wp->next;
+    wp->next = free_;
+  }else{
+    WP *current = head;
+    WP *prev = NULL;
+    while (current->next != NULL && current != wp){
+      prev = current;
+      current = current->next;
+    }
+    Assert(current != wp, "failed to find wp.");
+    prev->next = current->next;
+    current->next = free_;
+    free_ = wp;
   }
-
-  if (*prev == NULL) {
-    panic("WP not found in the allocated list");
-    return;
-  }
-
-  *prev = wp->next; // 将 wp 从 head 链表中移除
-
-  // 插入到 free_ 链表的头部
-  wp->next = free_;
-  free_ = wp;
-
-  wp->isfree = true;
-  wp_num--;
 }
