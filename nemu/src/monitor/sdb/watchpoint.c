@@ -62,9 +62,11 @@ void free_wp(WP *wp){
     panic("No wp");
   }else{
     if(head == wp){
-      head = head->prev;
+      while(head->prev != NULL){
+        head = head->prev;
+      }
     }else{
-      /* Reconnect the linked list */
+      /* */
       if(wp->next != NULL) wp->next->prev = wp->prev;
       if(wp->prev != NULL) wp->prev->next = wp->next;
       int i;
