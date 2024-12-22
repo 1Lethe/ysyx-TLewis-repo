@@ -16,6 +16,7 @@
 #include <cpu/cpu.h>
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
+#include <memory/paddr.h>
 #include <locale.h>
 
 bool trace_wp();
@@ -46,6 +47,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   bool is_stop = trace_wp();
   if(is_stop) nemu_state.state = NEMU_STOP;
 #endif
+
+  vaddr_t pc_guest = _this->pc - CONFIG_MBASE;
+  printf("pc = 0x%x\n", pc_guest);
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
