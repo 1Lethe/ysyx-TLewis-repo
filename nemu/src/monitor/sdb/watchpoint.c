@@ -140,7 +140,7 @@ void info_wp(void){
   while(wp != NULL){
     printf("Watchpoint %d expr %s value: 0x%x\n", wp->NO, wp->expr, wp->curr_value);
     wp = wp->next;
-  }
+    }
 }
 
 void delete_wp(int x){
