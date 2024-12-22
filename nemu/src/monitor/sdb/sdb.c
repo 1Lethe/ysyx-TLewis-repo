@@ -27,6 +27,7 @@ static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+void init_bp_pool();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -72,12 +73,14 @@ static int cmd_info(char *args){
   char *arg = strtok(NULL, " ");
 
   if(arg == NULL){
-    printf("Command need args.r : regs,w : watchs.\n");
+    printf("Command need args.r : regs,w : watchpoints.\n");
   }else{
     if(*arg == 'r'){
       isa_reg_display();
     }else if(*arg == 'w'){
       info_wp();
+    }else if(*arg == 'b'){
+      info_bp();
     }else{
       printf("Invalid info command input.\n");
     }
@@ -121,7 +124,7 @@ static int cmd_p(char *args){
     printf("Command p need args.");
     return 0;
   }
-  val = expr(args, &success_flag);// FIXME: cannot assert wrong expression like "1++1"
+  val = expr(args, &success_flag);
   if(success_flag){
     printf("Expression %s val :\n DEC: %d HEX : 0x%x\n", args, val, val);
   }
@@ -133,6 +136,7 @@ static int cmd_echo(char *args){
   return 0;
 }
 
+// BUG: breakpoint cannot set in ebreak !!! wait PA2 to fix it
 static int cmd_w(char *args){
   if(args == NULL){
     printf("command w need args.\n");
@@ -149,7 +153,7 @@ static int cmd_w(char *args){
   return 0;
 }
 
-static int cmd_d(char *args){
+static int cmd_dw(char *args){
   int wp_th = 0;
 
   if(args == NULL){
@@ -161,6 +165,44 @@ static int cmd_d(char *args){
     delete_wp(wp_th);
   }else{
     printf("Invalid d command input.\n");
+  }
+  return 0;
+}
+
+static int cmd_b(char *args){
+  int b_place = 0;
+  bool success_flag = true;
+  
+  if(args == NULL){
+    printf("command b need args.\n");
+    return 0;
+  }
+  
+  if(sscanf(args, "%d", &b_place) == 1){
+    create_bp(b_place, &success_flag);
+    if(success_flag){
+      printf("Create breakpoint at Step %d.\n", b_place);
+    }else{
+      printf("Failed to create breakpoint.\n");
+    }
+  }else{
+    printf("Invalid b command input.\n");
+  }
+  return 0;
+}
+
+static int cmd_db(char *args){
+  int bp_th = 0;
+
+  if(args == NULL){
+    printf("command db need args.\n");
+    return 0;
+  }
+
+  if(sscanf(args, "%d", &bp_th) == 1){
+    delete_bp(bp_th);
+  }else{
+    printf("Invalid db command input.\n");
   }
   return 0;
 }
@@ -178,12 +220,14 @@ static struct {
 
   /* TODO: Add more commands */
   {"si", "Step to the pointed instruction.usage: si [stepNum]" , cmd_si},
-  {"info", "Display the value of regs or watch.usage: info <r/w>", cmd_info},
+  {"info", "Display the value of regs or watch.usage: info <r/w/b>", cmd_info},
   {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
   {"echo", "echo something.wsage: echo <str>", cmd_echo},
   {"w", "Add watchpoint.usage: w <expression>", cmd_w},
-  {"d", "Delete watchpoint.usage: d <wp_th>", cmd_d},
+  {"dw", "Delete watchpoint.usage: d <wp_th>", cmd_dw},
+  {"b", "Add breakpoint.usage: b <pc_step>", cmd_b},
+  {"db", "Delete breakpoint.usage: db <bp_th>", cmd_db},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
@@ -261,4 +305,7 @@ void init_sdb() {
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
+
+  /* Initialize the breakpoint pool. */
+  init_bp_pool();
 }
