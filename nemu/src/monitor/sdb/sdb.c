@@ -227,7 +227,6 @@ void init_sdb() {
   WP *wp1 = new_wp();
   WP *wp2 = new_wp();
   assert(wp1 != wp2);
-
   free_wp(wp1);
   free_wp(wp2);
   WP *wp3 = new_wp();
@@ -238,4 +237,16 @@ void init_sdb() {
   WP *wp6 = new_wp();
   free_wp(wp5);
   free_wp(wp6);
+
+  init_wp_pool();
+  WP *wpa = new_wp();
+  WP *wpb = new_wp();
+  WP *wpc = new_wp();
+  WP *wpd = new_wp();
+  free_wp(wpa);
+  free_wp(wpb);
+  free_wp(wpc);
+  WP * wpe = new_wp();
+  free_wp(wpd);
+  free_wp(wpe);
 }
