@@ -40,7 +40,6 @@ void init_wp_pool(void) {
 WP* new_wp(void) {
   if (wp_num >= NR_WP) {
     panic("Max WP number reached");
-    return NULL;
   }
 
   assert(free_ != NULL);
@@ -61,7 +60,6 @@ WP* new_wp(void) {
 void free_wp(WP *wp) {
   if (wp_num <= 0 || wp == NULL) {
     panic("No WP to free");
-    return;
   }
 
   assert(!wp->isfree);
@@ -81,7 +79,7 @@ void free_wp(WP *wp) {
     wp->next = free_;
     free_ = wp;
   }
-  
+
   wp->expr = NULL;
   wp->prev_value = 0;
   wp->curr_value = 0;
@@ -89,7 +87,14 @@ void free_wp(WP *wp) {
   wp_num--;
 }
 
-void create_wp(char *e){
+void Create_wp(char *e){
   WP *wp = new_wp();
   wp->expr = e;
+}
+
+void Trace_wp(void){
+  WP *wp = head;
+  while(wp != NULL){
+    
+  }
 }

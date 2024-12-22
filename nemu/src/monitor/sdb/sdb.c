@@ -228,4 +228,6 @@ void init_sdb() {
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
+  WP *wp1 = new_wp();
+  free_wp(wp1);
 }
