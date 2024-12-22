@@ -9,7 +9,7 @@ static BP bp_pool[NR_BP] = {};
 static BP *head = NULL, *free_ = NULL;
 static int bp_num = 0;
 
-void breakpoint_init(void) {
+void init_bp_pool(void) {
     int i;
     for(i = 0; i < NR_BP; i++){
         bp_pool[i].NO = i;
