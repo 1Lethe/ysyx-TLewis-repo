@@ -124,7 +124,7 @@ static int cmd_p(char *args){
     printf("Command p need args.");
     return 0;
   }
-  val = expr(args, &success_flag);// FIXME: cannot assert wrong expression like "1++1"
+  val = expr(args, &success_flag);
   if(success_flag){
     printf("Expression %s val :\n DEC: %d HEX : 0x%x\n", args, val, val);
   }
@@ -136,7 +136,7 @@ static int cmd_echo(char *args){
   return 0;
 }
 
-// FIXME: breakpoint cannot set in ebreak !!! wait PA2 to fix it
+// BUG: breakpoint cannot set in ebreak !!! wait PA2 to fix it
 static int cmd_w(char *args){
   if(args == NULL){
     printf("command w need args.\n");
