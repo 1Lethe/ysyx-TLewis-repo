@@ -2,6 +2,7 @@
 
 #include "sdb.h"
 #include <cpu/decode.h>
+#include <memory/paddr.h>
 
 #define NR_BP 32
 
@@ -73,6 +74,12 @@ void create_bp(vaddr_t pc_break, bool *success){
         *success = false;
         return;
     }
+    if(pc_break < PMEM_LEFT || pc_break > PMEM_RIGHT){
+        printf("Invalid input.This arg should be valid.\n");
+        printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
+        *success = false;
+        return;
+    }
     bp->pc_break = pc_break;
     *success = true;
 }
@@ -81,9 +88,10 @@ bool trace_bp(Decode *s){
     BP *bp = head;
     bool isStop = false;
     vaddr_t pc_guest = isa_pc_step(s);
+    vaddr_t pc = s->pc;
 
     while(bp != NULL){
-        if(bp->pc_break == pc_guest){
+        if(bp->pc_break == pc){
             printf("Breakpoint %d hit at PC: 0x%x Step: %d\n", bp->NO, s->pc, pc_guest);
             isStop = true;
         }
