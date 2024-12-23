@@ -81,9 +81,10 @@ bool trace_bp(Decode *s){
     BP *bp = head;
     bool isStop = false;
     vaddr_t pc_guest = isa_pc_step(s);
+    vaddr_t pc = s->pc;
 
     while(bp != NULL){
-        if(bp->pc_break == pc_guest){
+        if(bp->pc_break == pc){
             printf("Breakpoint %d hit at PC: 0x%x Step: %d\n", bp->NO, s->pc, pc_guest);
             isStop = true;
         }
