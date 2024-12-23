@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 module ps2_keyboard(clk,clrn,ps2_clk,ps2_data,data,
                     ready,nextdata_n,overflow);
     input clk,clrn,ps2_clk,ps2_data;
