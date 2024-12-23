@@ -58,10 +58,10 @@ sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 # For sta
 PROJ_PATH = $(NPC_HOME)
 
-DESIGN ?= top
-SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
-RTL_FILES ?= $(VSRCS)
-export CLK_FREQ_MHZ ?= 100
+DESIGN = top
+SDC_FILE = $(PROJ_PATH)/sdc/top.sdc
+RTL_FILES = ./vsrc/*.v
+export CLK_FREQ_MHZ ?= 500
 
 RESULT_DIR = $(PROJ_PATH)/sta_result/$(DESIGN)-$(CLK_FREQ_MHZ)MHz
 SCRIPT_DIR = $(PROJ_PATH)/scripts
@@ -91,7 +91,7 @@ run: $(BIN)
 	@$^
 
 # For clean build files
-clean:
+clean_build:
 	rm -rf $(BUILD_DIR)
 
 WAVE_DIR = wave
@@ -103,7 +103,7 @@ clean_wave:
 clean_sta:
 	rm -rf $(STA_DIR)/*
 
-clean_all: clean clean_wave clean_sta
+clean: clean_build clean_wave clean_sta
 	@echo "Clean all complete."
 
 include ../Makefile
