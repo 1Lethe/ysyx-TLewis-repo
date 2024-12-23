@@ -177,7 +177,7 @@ static int cmd_b(char *args){
     printf("command b need args.\n");
     return 0;
   }
-  
+
   if(sscanf(args, "0x%x", &b_place) == 1){
     create_bp(b_place, &success_flag);
     if(success_flag){
