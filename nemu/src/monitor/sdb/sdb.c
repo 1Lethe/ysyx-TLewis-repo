@@ -181,7 +181,7 @@ static int cmd_b(char *args){
   if(sscanf(args, "%d", &b_place) == 1){
     create_bp(b_place, &success_flag);
     if(success_flag){
-      printf("Create breakpoint at Step %d.\n", b_place);
+      printf("Create breakpoint at PC = 0x%x.\n", b_place);
     }else{
       printf("Failed to create breakpoint.\n");
     }

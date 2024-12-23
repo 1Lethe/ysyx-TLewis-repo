@@ -2,6 +2,7 @@
 
 #include "sdb.h"
 #include <cpu/decode.h>
+#include <memory/paddr.h>
 
 #define NR_BP 32
 
@@ -70,6 +71,12 @@ void free_bp(BP* bp){
 void create_bp(vaddr_t pc_break, bool *success){
     BP *bp = new_bp();
     if(bp == NULL){
+        *success = false;
+        return;
+    }
+    if(pc_break < PMEM_LEFT || pc_break > PMEM_RIGHT){
+        printf("Invalid input.This arg should be valid.\n");
+        printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
         *success = false;
         return;
     }
