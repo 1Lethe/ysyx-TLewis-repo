@@ -158,6 +158,7 @@ static bool make_token(char *e) {
             memset(tokens[nr_token].str, '\0', TOKEN_STR_LEN);
             bool success = true;
             char reg_str[5];
+            memset(reg_str, '\0', 5);
             memcpy(reg_str, substr_start + 1, substr_len - 1);
             snprintf(tokens[nr_token].str, TOKEN_STR_LEN, "%x", isa_reg_str2val(reg_str,&success));
             if(!success) return false;

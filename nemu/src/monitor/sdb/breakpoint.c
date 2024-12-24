@@ -107,7 +107,7 @@ void info_bp(void){
     }
     BP *bp = head;
     while(bp != NULL){
-        printf("Breakpoint %d: Step: %d\n", bp->NO, bp->pc_break);
+        printf("Breakpoint %d: Step: 0x%x\n", bp->NO, bp->pc_break);
         bp = bp->next;
     }
 }
