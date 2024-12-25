@@ -139,10 +139,10 @@ void info_wp(void){
     return;
   }
 
-  WP* wp = wp_pool;
   for(int i = 0;i < NR_WP;i++){
     if(wp_setflag[i] == 1){
-      printf("Watchpoint %d expr: %s val: 0x%x\n", wp->NO, wp->expr, wp->curr_value);
+      assert(wp_pool[i].isfree == false);
+      printf("Watchpoint %d expr: %s val: 0x%x\n", wp_pool[i].NO, wp_pool[i].expr, wp_pool[i].curr_value);
     }
   }
 }
