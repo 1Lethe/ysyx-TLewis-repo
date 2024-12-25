@@ -18,7 +18,6 @@
 #define NR_WP 32
 
 static WP wp_pool[NR_WP] = {};
-static int wp_setflag[NR_WP] = {0};
 static WP *head = NULL, *free_ = NULL;
 static int wp_num = 0;
 
@@ -31,7 +30,6 @@ void init_wp_pool(void) {
     memset(wp_pool[i].expr, '\0', WP_EXPR_LEN);
     wp_pool[i].prev_value = 0;
     wp_pool[i].curr_value = 0;
-    wp_setflag[i] = 0;
   }
 
   head = NULL;
@@ -106,7 +104,6 @@ void create_wp(char *e, bool *success){
     strncpy(wp->expr, e, WP_EXPR_LEN);
     wp->prev_value = result;
     wp->curr_value = result;
-    wp_setflag[wp->NO] = 1;
   }
 }
 
@@ -139,12 +136,11 @@ void info_wp(void){
     return;
   }
 
-  for(int i = 0;i < NR_WP;i++){
-    if(wp_setflag[i] == 1){
-      assert(wp_pool[i].isfree == false);
-      printf("Watchpoint %d expr: %s val: 0x%x\n", wp_pool[i].NO, wp_pool[i].expr, wp_pool[i].curr_value);
+  WP* wp = head;
+  while(wp != NULL){
+    printf("Watchpoint %d expr %s value: 0x%x\n", wp->NO, wp->expr, wp->curr_value);
+    wp = wp->next;
     }
-  }
 }
 
 void delete_wp(int x){
@@ -153,7 +149,6 @@ void delete_wp(int x){
     if(wp->NO == x){
       printf("Remove watchpoint %d.\n", wp->NO);
       free_wp(wp);
-      wp_setflag[wp->NO] = 0;
       return;
     }
     wp = wp->next;
