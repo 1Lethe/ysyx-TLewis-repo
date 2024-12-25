@@ -139,7 +139,7 @@ void info_wp(void){
     return;
   }
 
-  WP* wp = head;
+  WP* wp = wp_pool;
   for(int i = 0;i < NR_WP;i++){
     if(wp_setflag[i] == 1){
       printf("Watchpoint %d expr: %s val: 0x%x\n", wp->NO, wp->expr, wp->curr_value);
