@@ -58,6 +58,7 @@ static int decode_exec(Decode *s) {
   __VA_ARGS__ ; \
 }
 
+  /* Here to decode */
   INSTPAT_START();
   INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(rd) = s->pc + imm);
   INSTPAT("??????? ????? ????? 100 ????? 00000 11", lbu    , I, R(rd) = Mr(src1 + imm, 1));
@@ -73,6 +74,10 @@ static int decode_exec(Decode *s) {
 }
 
 int isa_exec_once(Decode *s) {
-  s->isa.inst = inst_fetch(&s->snpc, 4);
-  return decode_exec(s);
+  s->isa.inst = inst_fetch(&s->snpc, 4); // fetch command in mem & update static nextpc
+  return decode_exec(s); // decode & execute command. here s->dnpc = s->snpc
+}
+
+vaddr_t isa_pc_step(Decode *s){
+  return (s->pc - CONFIG_MBASE) / 4; // return PC in words (4 bytes)
 }
