@@ -24,19 +24,8 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-  for(int i = 0;i < MUXDEF(CONFIG_RVE, 16, 32);i++){
-    printf("%s = 0x%x\n", reg_name(i), gpr(i));// display all regs' value.
-  }
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-  for(int i = 0;i < MUXDEF(CONFIG_RVE, 16, 32);i++){
-    if(strncmp(s, reg_name(i), 3) == 0){
-      *success = true;
-      return gpr(i);
-    }
-  }
-  *success = false;
-  printf("Unknown reg name %s.\n",s);
   return 0;
 }
