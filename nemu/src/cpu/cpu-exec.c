@@ -16,7 +16,11 @@
 #include <cpu/cpu.h>
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
+#include <memory/paddr.h>
 #include <locale.h>
+
+bool trace_wp();
+bool trace_bp(Decode *s);
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -38,6 +42,17 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+
+  /* Trace watchpoint */
+  bool is_wp_stop = false;
+  bool is_bp_stop = false;
+#ifdef CONFIG_WATCHPOINT
+  is_wp_stop = trace_wp();
+#endif
+#ifdef CONFIG_BREAKPOINT
+  is_bp_stop = trace_bp(_this);
+#endif
+  if(is_wp_stop || is_bp_stop) nemu_state.state = NEMU_STOP;
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
