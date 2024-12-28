@@ -289,7 +289,7 @@ void sdb_mainloop() {
     int i;
     for (i = 0; i < NR_CMD; i ++) { 
       if (strcmp(cmd, cmd_table[i].name) == 0) { // Match the instruction table item by item , If match then
-        if (cmd_table[i].handler(args) < 0) { return; } // execution instruction till return
+        if (cmd_table[i].handler(args) < 0) { return; } // execution instruction till return -1 (cmd_q)
         break;
       }
     }
