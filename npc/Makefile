@@ -90,12 +90,20 @@ run: $(BIN)
 	@echo "Link in NVBoard."
 	@$^
 
+# For clean build files
+clean:
+	rm -rf $(BUILD_DIR)
+
 WAVE_DIR = wave
 STA_DIR = $(PROJ_PATH)/sta_result
-clean: 
-	rm -rf $(BUILD_DIR)
-	rm -rf $(STA_DIR)/*
+
+clean_wave:
 	rm -rf $(WAVE_DIR)/*
+
+clean_sta:
+	rm -rf $(STA_DIR)/*
+
+clean_all: clean clean_wave clean_sta
 	@echo "Clean all complete."
 
 include ../Makefile

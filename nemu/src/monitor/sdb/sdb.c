@@ -15,14 +15,19 @@
 
 #include <isa.h>
 #include <cpu/cpu.h>
+#include <utils.h>
+#include <memory/paddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+
+extern NEMUState nemu_state;
 
 static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+void init_bp_pool();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -47,9 +52,159 @@ static int cmd_c(char *args) {
   return 0;
 }
 
-
 static int cmd_q(char *args) {
+  nemu_state.state = NEMU_QUIT; // Elegantly exit.
   return -1;
+}
+
+static int cmd_si(char *args) {
+  int stepNum = 1;
+
+  if(args == NULL){
+    cpu_exec(1);
+  }else{
+    sscanf(args, "%d", &stepNum);
+    cpu_exec(stepNum);
+  }
+  return 0;
+}
+
+static int cmd_info(char *args){
+  char *arg = strtok(NULL, " ");
+
+  if(arg == NULL){
+    printf("Command need args.r: regs,w: watchpoints.b: breakpoints.\n");
+  }else{
+    if(*arg == 'r'){
+      isa_reg_display();
+    }else if(*arg == 'w'){
+      info_wp();
+    }else if(*arg == 'b'){
+      info_bp();
+    }else{
+      printf("Invalid info command input.\n");
+    }
+  }
+  return 0;
+}
+
+static int cmd_x(char *args){
+  uint8_t *pmem_scan = NULL;
+  uint32_t scan_num;
+  uint32_t mem_start_place;
+
+  if(args == NULL){
+    printf("Command x need args.\n");
+    return 0;
+  }
+  if(sscanf(args, "%d %x", &scan_num, &mem_start_place) == 2){
+    if(scan_num <= 0){
+      printf("Invalid scan_num input.This arg should > 0.\n");
+      return 0;
+    }
+    if(mem_start_place < PMEM_LEFT || mem_start_place + scan_num > PMEM_RIGHT){
+      printf("Invalid input.This arg should be valid.\n");
+      printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
+      return 0;
+    }
+    for(int i = 0;i < scan_num;i++){
+      pmem_scan = guest_to_host(mem_start_place + i);
+      printf("0x%08x = 0x%02x\n", mem_start_place+i, *pmem_scan);
+    }
+  }else{
+    printf("Invalid x command input.\n");
+  }
+  return 0;
+}
+
+static int cmd_p(char *args){
+  word_t val = 0;
+  bool success_flag;
+  if(args == NULL){
+    printf("Command p need args.");
+    return 0;
+  }
+  val = expr(args, &success_flag);
+  if(success_flag){
+    printf("Expression %s val :\n DEC: %d HEX : 0x%x\n", args, val, val);
+  }
+  return 0;
+}
+
+static int cmd_echo(char *args){
+  printf("%s\n", args);
+  return 0;
+}
+
+// BUG: breakpoint cannot set in ebreak !!! wait PA2 to fix it
+static int cmd_w(char *args){
+  if(args == NULL){
+    printf("command w need args.\n");
+    return 0;
+  }
+
+  bool success = true;
+  create_wp(args, &success);
+  if(!success){
+    printf("Failed to create watchpoint.\n");
+  }else{
+    printf("Create watchpoint.\n");
+  }
+  return 0;
+}
+
+static int cmd_dw(char *args){
+  int wp_th = 0;
+
+  if(args == NULL){
+    printf("command d need args.\n");
+    return 0;
+  }
+
+  if(sscanf(args, "%d", &wp_th) == 1){
+    delete_wp(wp_th);
+  }else{
+    printf("Invalid d command input.\n");
+  }
+  return 0;
+}
+
+static int cmd_b(char *args){
+  int b_place = 0;
+  bool success_flag = true;
+  
+  if(args == NULL){
+    printf("command b need args.\n");
+    return 0;
+  }
+
+  if(sscanf(args, "0x%x", &b_place) == 1){
+    create_bp(b_place, &success_flag);
+    if(success_flag){
+      printf("Create breakpoint at PC = 0x%x.\n", b_place);
+    }else{
+      printf("Failed to create breakpoint.\n");
+    }
+  }else{
+    printf("Invalid b command input.\n");
+  }
+  return 0;
+}
+
+static int cmd_db(char *args){
+  int bp_th = 0;
+
+  if(args == NULL){
+    printf("command db need args.\n");
+    return 0;
+  }
+
+  if(sscanf(args, "%d", &bp_th) == 1){
+    delete_bp(bp_th);
+  }else{
+    printf("Invalid db command input.\n");
+  }
+  return 0;
 }
 
 static int cmd_help(char *args);
@@ -64,7 +219,15 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-
+  {"si", "Step to the pointed instruction.usage: si [stepNum]" , cmd_si},
+  {"info", "Display the value of regs or watch.usage: info <r/w/b>", cmd_info},
+  {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
+  {"p", "Solve the expression.usage: p <expression>", cmd_p},
+  {"echo", "echo something.wsage: echo <str>", cmd_echo},
+  {"w", "Add watchpoint.usage: w <expression>", cmd_w},
+  {"dw", "Delete watchpoint.usage: d <wp_th>", cmd_dw},
+  {"b", "Add breakpoint.usage: b <pc_step>", cmd_b},
+  {"db", "Delete breakpoint.usage: db <bp_th>", cmd_db},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
@@ -122,10 +285,11 @@ void sdb_mainloop() {
     sdl_clear_event_queue();
 #endif
 
+    /* decode input instructions */
     int i;
-    for (i = 0; i < NR_CMD; i ++) {
-      if (strcmp(cmd, cmd_table[i].name) == 0) {
-        if (cmd_table[i].handler(args) < 0) { return; }
+    for (i = 0; i < NR_CMD; i ++) { 
+      if (strcmp(cmd, cmd_table[i].name) == 0) { // Match the instruction table item by item , If match then
+        if (cmd_table[i].handler(args) < 0) { return; } // execution instruction till return
         break;
       }
     }
@@ -134,10 +298,14 @@ void sdb_mainloop() {
   }
 }
 
+
 void init_sdb() {
   /* Compile the regular expressions. */
   init_regex();
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
+
+  /* Initialize the breakpoint pool. */
+  init_bp_pool();
 }
