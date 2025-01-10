@@ -9,7 +9,7 @@
 !*.cpp
 !.gitignore
 !README.md
-!constr/
+!constr/*
 sta_result/
 build/
 wave/
