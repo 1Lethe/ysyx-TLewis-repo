@@ -74,8 +74,8 @@ static int decode_exec(Decode *s) {
 }
 
 int isa_exec_once(Decode *s) {
-  s->isa.inst = inst_fetch(&s->snpc, 4); // fetch command in mem & update static nextpc
-  return decode_exec(s); // decode & execute command. here s->dnpc = s->snpc
+  s->isa.inst = inst_fetch(&s->snpc, 4); // fetch inst in mem (4 bytes) and update s->snpc.
+  return decode_exec(s); // decode & execute inst and let s->dnpc = s->snpc
 }
 
 vaddr_t isa_pc_step(Decode *s){

@@ -57,8 +57,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
-  s->snpc = pc;
-  isa_exec_once(s); // fetch and execute code s->pc & update static nextpc s->snpc.
+  s->snpc = pc;// update s->pc and s->snpc.
+  isa_exec_once(s); // fetch and execute code s->pc.update s-> dnpc.
   cpu.pc = s->dnpc; // update pc
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
