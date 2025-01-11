@@ -56,10 +56,20 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
+  /* NOTE: static next pc and dynamic next pc:
+   * - snpc: static next pc, the next pc in the binary code
+   * - dnpc: dynamic next pc, the next pc that will be executed
+   * For example, 
+   * 100: jmp 102
+   * 101: add 
+   * 102: xor
+   * snpc of 100 is 101, dnpc of 100 is 102.
+   * Thus, we should use dnpc to update pc and maintain dnpc when executing instructions.
+   */
   s->pc = pc;
   s->snpc = pc;// update s->pc and s->snpc.
-  isa_exec_once(s); // fetch and execute code s->pc.update s-> dnpc.
-  cpu.pc = s->dnpc; // update pc
+  isa_exec_once(s); // fetch inst to isa->inst and execute inst s->pc and update s-> dnpc.
+  cpu.pc = s->dnpc; // update cpu.pc
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
