@@ -112,9 +112,10 @@ static int cmd_x(char *args){
     for(int i = 0;i < scan_num;i++){
       int offset = i % 4;
       if(offset == 0){
-        if(i != 0){
-          printf("\n");
+        if(i == 0){
+          continue;
         }
+        printf("\n");
         printf("0x%08x : ", mem_start_place + i);
         base_add += 0x4;
       }
