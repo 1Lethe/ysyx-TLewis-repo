@@ -113,6 +113,7 @@ static int cmd_x(char *args){
       int offset = i % 4;
       if(offset == 0){
         if(i == 0){
+          printf("0x%08x : ", mem_start_place);
           continue;
         }
         printf("\n");
