@@ -223,7 +223,7 @@ static struct {
   {"info", "Display the value of regs or watch.usage: info <r/w/b>", cmd_info},
   {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
-  {"echo", "echo something.wsage: echo <str>", cmd_echo},
+  {"echo", "echo something.usage: echo <str>", cmd_echo},
   {"w", "Add watchpoint.usage: w <expression>", cmd_w},
   {"dw", "Delete watchpoint.usage: d <wp_th>", cmd_dw},
   {"b", "Add breakpoint.usage: b <pc_step>", cmd_b},
