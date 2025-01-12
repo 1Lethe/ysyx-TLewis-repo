@@ -107,7 +107,7 @@ static int cmd_x(char *args){
       printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
       return 0;
     }
-    
+
     int base_add = mem_start_place;
     for(int i = 0;i < scan_num;i++){
       int offset = i % 4;
@@ -118,7 +118,7 @@ static int cmd_x(char *args){
         printf("0x%08x : ", mem_start_place + i);
         base_add += 0x4;
       }
-      pmem_scan = guest_to_host(base_add + offset);
+      pmem_scan = guest_to_host(base_add + 4 - offset);
       printf("%02x", *pmem_scan);
     }
   }else{
