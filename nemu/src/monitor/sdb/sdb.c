@@ -107,8 +107,9 @@ static int cmd_x(char *args){
       printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
       return 0;
     }
+    
+    int base_add = mem_start_place;
     for(int i = 0;i < scan_num;i++){
-      int base_add = mem_start_place;
       int offset = i % 4;
       if(offset == 0){
         if(i != 0){
