@@ -114,15 +114,16 @@ static int cmd_x(char *args){
       if(offset == 0){
         if(i == 0){
           printf("0x%08x : ", mem_start_place);
-          continue;
+        }else{
+          printf("\n");
+          printf("0x%08x : ", mem_start_place + i);
+          base_add += 0x4;
         }
-        printf("\n");
-        printf("0x%08x : ", mem_start_place + i);
-        base_add += 0x4;
       }
       pmem_scan = guest_to_host(base_add + 3 - offset);
       printf("%02x", *pmem_scan);
     }
+    printf("\n");
   }else{
     printf("Invalid x command input.\n");
   }
