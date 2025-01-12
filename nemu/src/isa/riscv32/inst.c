@@ -34,9 +34,9 @@ enum {
 #define immS() do { *imm = (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); } while(0)
 #define immJ() \
   do { \
-    *imm = (SEXT(((i >> 31) << 20 ) | \
+    *imm = (SEXT((BITS(i, 31, 31) << 20 ) | \
           (BITS(i, 19, 12) << 12) | \
-          ((i >> 20) << 11) | \
+          (BITS(i, 20, 20) << 11) | \
           (BITS(i, 30, 21) << 1), 21)); \
   } while(0)
 
