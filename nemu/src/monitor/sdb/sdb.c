@@ -120,7 +120,7 @@ static int cmd_x(char *args){
         printf("0x%08x : ", mem_start_place + i);
         base_add += 0x4;
       }
-      pmem_scan = guest_to_host(base_add + 4 - offset);
+      pmem_scan = guest_to_host(base_add + 3 - offset);
       printf("%02x", *pmem_scan);
     }
   }else{
