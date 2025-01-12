@@ -108,14 +108,14 @@ static int cmd_x(char *args){
       return 0;
     }
     for(int i = 0;i < scan_num;i++){
-      pmem_scan = guest_to_host(mem_start_place + i);
       int offset = i % 4;
       if(offset == 0){
         if(i != 0){
           printf("\n");
         }
-        printf("0x%08x = ", mem_start_place + i);
+        printf("0x%08x : ", mem_start_place + i);
       }
+      pmem_scan = guest_to_host(mem_start_place + i + offset);
       printf("%02x", *pmem_scan);
     }
   }else{
