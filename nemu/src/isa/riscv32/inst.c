@@ -122,8 +122,7 @@ static int decode_exec(Decode *s) {
   
   /* RV32M */
   /* Multiplication */
-  INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(rd) = (sword_t)((int64_t)(sword_t)src1 * (int64_t)(sword_t)src2) & 0xFFFFFFFF;
-);
+  INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(rd) = (sword_t)(SEXT(src1, 64) * SEXT(src2, 64)) & 0xFFFFFFFF);
   INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(rd) = (sword_t)(((int64_t)src1 * (int64_t)src2) >> 32));
   /* Division */
   INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem    , R, R(rd) = (sword_t)src1 % (sword_t)src2);
