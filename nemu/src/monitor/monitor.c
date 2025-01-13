@@ -147,5 +147,6 @@ void am_init_monitor() {
   load_img();
   IFDEF(CONFIG_DEVICE, init_device());
   welcome();
+  sdb_set_batch_mode();
 }
 #endif
