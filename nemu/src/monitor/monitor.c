@@ -131,6 +131,7 @@ void init_monitor(int argc, char *argv[]) {
   /* Display welcome message. */
   welcome();
 
+  sdb_set_batch_mode();
 }
 #else // CONFIG_TARGET_AM
 static long load_img() {
