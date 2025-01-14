@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
     #endif
     //if not use testbench HERE
     #ifndef USE_TESTBENCH
-    while(!contextp->getFinish() && sim_time >= 0){
+    while(!contextp->gotFinish() && sim_time >= 0){
         dump_wave(SIM_MODULE_NAME);
     }
     #endif
