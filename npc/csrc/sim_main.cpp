@@ -1,5 +1,5 @@
-//Still need to change this #include and SIM_TOPNAME in makefile to change sim module.
-#include "Vkeyboard_sim.h"
+//Still need to change this #include and SIM_ysyx_24120013_topNAME in makefile to change sim module.
+#include "Vysyx_24120013_top.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
 #include <stdio.h>
@@ -9,8 +9,8 @@
 //If you want to use testbench just keep this #define otherwise delete it
 //#define USE_TESTBENCH
 
-#define SIM_MODULE Vkeyboard_sim
-#define SIM_MODULE_NAME keyboard_sim
+#define SIM_MODULE Vysyx_24120013_top
+#define SIM_MODULE_NAME ysyx_24120013_top
 
 //sim time
 int sim_time = 50;
@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
     #endif
     //if not use testbench HERE
     #ifndef USE_TESTBENCH
-    while(!contextp->getFinish() && sim_time >= 0){
+    while(!contextp->gotFinish() && sim_time >= 0){
         dump_wave(SIM_MODULE_NAME);
     }
     #endif

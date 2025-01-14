@@ -9,7 +9,11 @@
 !*.cpp
 !.gitignore
 !README.md
-!constr/*
+!*.sdc
+!*.nxdc
+bin/
+scripts/
+constr/*
 sta_result/
 build/
 wave/

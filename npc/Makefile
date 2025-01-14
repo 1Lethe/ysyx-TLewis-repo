@@ -1,6 +1,6 @@
 .PHONY = all run sim clean clean_wave clean_all syn fix-fanout sta clean_sta
 
-TOPNAME = top
+TOPNAME = ysyx_24120013_top
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 
@@ -42,16 +42,17 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
-SIM_TOPNAME = keyboard_sim
-VER_SIM_V_PATH = vsrc/ps2_keyboard.v vsrc_tb/ps2_keyboard_model.v vsrc_tb/ps2_keyboard_tb.v vsrc/keyboard_display.v
+SIM_TOPNAME = ysyx_24120013_top
+VER_SIM_V_PATH = $(VSRCS)
 VER_SIM_C_PATH = csrc/sim_main.cpp
 VER_SIM_CFLAGS = -cc --exe -trace-fst --build
 sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
+	mkdir ./wave
 	$(call git_commit, "sim RTL")
 	verilator -cc --exe --trace-fst --build --timing --top-module $(SIM_TOPNAME) $^ \
 	--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
-	./build/top
+	./build/$(SIM_TOPNAME)
 	@echo "Sim Complete."
 
 
