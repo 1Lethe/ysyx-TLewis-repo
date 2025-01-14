@@ -9,8 +9,8 @@
 //If you want to use testbench just keep this #define otherwise delete it
 //#define USE_TESTBENCH
 
-#define SIM_MODULE Vtop
-#define SIM_MODULE_NAME top
+#define SIM_MODULE Vysyx_24120013_top
+#define SIM_MODULE_NAME ysyx_24120013_top
 
 //sim time
 int sim_time = 50;
