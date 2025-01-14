@@ -10,7 +10,7 @@
 //#define USE_TESTBENCH
 
 #define SIM_MODULE Vysyx_24120013_top
-#define SIM_MODULE_NAME ysyx_24120013_top
+#define SIM_MODULE_NAME top
 
 //sim time
 int sim_time = 50;
