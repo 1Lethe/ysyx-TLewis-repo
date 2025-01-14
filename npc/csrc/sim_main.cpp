@@ -42,8 +42,8 @@ void dump_wave(SIM_MODULE* top){
 
 #ifndef USE_TESTBENCH
 void single_cycle(SIM_MODULE* top){
-    top->clk = 0;top->eval();dump_wave(SIM_MODULE_NAME);
-    top->clk = 1;top->eval();dump_wave(SIM_MODULE_NAME);
+    top->clk = 0;top->eval();
+    top->clk = 1;top->eval();
 }
 
 void reset(SIM_MODULE* top, int n){
@@ -66,6 +66,7 @@ int main(int argc, char** argv) {
 #ifndef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){
         top->pmem = pmem_read(RESET_VECTOR);
+        dump_wave(SIM_MODULE_NAME);
     }
 #endif
 
