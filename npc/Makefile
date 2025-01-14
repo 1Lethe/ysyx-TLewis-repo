@@ -42,7 +42,7 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
-SIM_TOPNAME = keyboard_sim
+SIM_TOPNAME = ysyx_24120013_top
 VER_SIM_V_PATH = 
 VER_SIM_C_PATH = csrc/sim_main.cpp
 VER_SIM_CFLAGS = -cc --exe -trace-fst --build
