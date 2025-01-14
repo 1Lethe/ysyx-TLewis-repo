@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "Vysyx_24120013_top.h"
-#include "verilated.h"
 #include "memory.h"
 
 uint32_t* guest_to_host(uint32_t paddr) { return pmem + paddr - RESET_VECTOR; }
