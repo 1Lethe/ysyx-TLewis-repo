@@ -1,4 +1,4 @@
-//Still need to change this #include and SIM_TOPNAME in makefile to change sim module.
+//Still need to change this #include and SIM_ysyx_24120013_topNAME in makefile to change sim module.
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
