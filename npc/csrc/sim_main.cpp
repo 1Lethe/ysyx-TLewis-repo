@@ -2,7 +2,7 @@
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
-#include "npcsrc/memory.c"
+#include "npcsrc/memory.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -35,9 +35,9 @@ void dump_wave(SIM_MODULE* top){
     top->eval();
     tfp->dump(contextp->time());
     contextp->timeInc(1);
-    #ifndef USE_TESTBENCH
+#ifndef USE_TESTBENCH
     sim_time--;
-    #endif
+#endif
 }
 
 #ifndef USE_TESTBENCH
@@ -57,18 +57,18 @@ int main(int argc, char** argv) {
     
     sim_init(argc, argv);
 
-    #ifdef USE_TESTBENCH
+#ifdef USE_TESTBENCH
     while(!contextp->gotFinish()){   
         dump_wave(SIM_MODULE_NAME);
     }
-    #endif
+#endif
     //if not use testbench HERE
-    #ifndef USE_TESTBENCH
+#ifndef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){
         top->pmem = pmem_read(RESET_VECTOR);
         dump_wave(SIM_MODULE_NAME);
     }
-    #endif
+#endif
 
     tfp->close();
     return 0;
