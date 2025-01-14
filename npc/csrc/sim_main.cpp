@@ -1,5 +1,5 @@
 //Still need to change this #include and SIM_TOPNAME in makefile to change sim module.
-#include "Vkeyboard_sim.h"
+#include "Vtop.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
 #include <stdio.h>
