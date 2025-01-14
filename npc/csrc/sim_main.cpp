@@ -2,7 +2,7 @@
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
-#include "npcsrc/memory.h"
+#include "npcsrc/memory.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
