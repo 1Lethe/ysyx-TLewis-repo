@@ -71,47 +71,4 @@ ps2_keyboard ps2_keyboard(
     .overflow(overflow)
 );
 
-// output declaration of module ps2_keyboard
-wire [7:0] data;
-reg ready;
-reg overflow;
-
-ps2_keyboard u_ps2_keyboard(
-    .clk        	(clk         ),
-    .clrn       	(clrn        ),
-    .ps2_clk    	(ps2_clk     ),
-    .ps2_data   	(ps2_data    ),
-    .nextdata_n 	(nextdata_n  ),
-    .data       	(data        ),
-    .ready      	(ready       ),
-    .overflow   	(overflow    )
-);
-
-// output declaration of module keyboard_display
-wire segs_enable;
-reg [7:0] ps2dis_seg0_1;
-reg [7:0] ps2dis_seg2_3;
-reg [7:0] keytime_cnt;
-reg shift_flag;
-reg ctrl_flag;
-
-keyboard_display #(
-    .IDLE      	(0001  ),
-    .MAKE      	(0010  ),
-    .BREAK     	(0100  ),
-    .BREAK_KEY 	(1000  ))
-u_keyboard_display(
-    .clk            	(clk             ),
-    .rst            	(rst             ),
-    .ps2dis_data    	(ps2dis_data     ),
-    .ps2dis_recFlag 	(ps2dis_recFlag  ),
-    .segs_enable    	(segs_enable     ),
-    .ps2dis_seg0_1  	(ps2dis_seg0_1   ),
-    .ps2dis_seg2_3  	(ps2dis_seg2_3   ),
-    .keytime_cnt    	(keytime_cnt     ),
-    .shift_flag     	(shift_flag      ),
-    .ctrl_flag      	(ctrl_flag       )
-);
-
-
 endmodule

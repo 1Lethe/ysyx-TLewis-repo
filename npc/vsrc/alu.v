@@ -1,14 +1,14 @@
 module alu(
-        input clk,
-        input rst,
-        input [2:0] alu_command,
-        input [3:0] inA,
-        input [3:0] inB,
-        output reg[3:0] alu_out,
-        output reg alu_iszero,
-        output reg alu_is_overflow,
-        output reg alu_cout
-    );
+    input clk,
+    input rst,
+    input [2:0] alu_command,
+    input [3:0] inA,
+    input [3:0] inB,
+    output reg[3:0] alu_out,
+    output reg alu_iszero,
+    output reg alu_is_overflow,
+    output reg alu_cout
+);
     wire[3:0] t_add_Cin;
     wire overflow_flag;
     wire[3:0] compare_out;
@@ -54,7 +54,7 @@ module alu(
                 alu_is_overflow = 1'b0;
             end
             3'b111 : begin
-                alu_out = (inA == inB) ? 4'b1 : 4'b0;
+                alu_out = (inA == inB) ? 4'b1 : 4'b0; 
                 alu_cout = 1'b0;
                 alu_is_overflow = 1'b0;
             end
