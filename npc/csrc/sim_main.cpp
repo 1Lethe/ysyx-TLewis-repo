@@ -9,8 +9,8 @@
 //If you want to use testbench just keep this #define otherwise delete it
 //#define USE_TESTBENCH
 
-#define SIM_MODULE Vkeyboard_sim
-#define SIM_MODULE_NAME keyboard_sim
+#define SIM_MODULE Vtop
+#define SIM_MODULE_NAME top
 
 //sim time
 int sim_time = 50;
