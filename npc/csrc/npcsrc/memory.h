@@ -2,7 +2,7 @@
 #define __MEMORY_H__
 
 #include <stdint.h>
-#include "memory.c"
+#include "memory.h"
 
 #define RESET_VECTOR 0x80000000
 
