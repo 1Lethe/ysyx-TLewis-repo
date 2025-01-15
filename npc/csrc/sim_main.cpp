@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
     
     sim_init(argc, argv);
 
-    reset(top);
+    reset(top, 10);
 
 #ifdef USE_TESTBENCH
     while(!contextp->gotFinish()){   
