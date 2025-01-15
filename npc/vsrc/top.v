@@ -33,9 +33,9 @@ reg [19:0] IDU_imm;
 reg [1:0] IDU_command;
 
 ysyx_24120013_IDU #(
-    .COMMAND_WIDTH = 2,
-    .ADDR_WIDTH = 32,
-    .DATA_WIDTH = 32
+    .COMMAND_WIDTH (2),
+    .ADDR_WIDTH (32),
+    .DATA_WIDTH (32)
 )u_ysyx_24120013_IDU(
     .clk         	(clk          ),
     .rst         	(rst          ),
