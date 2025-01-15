@@ -32,7 +32,11 @@ wire [ADDR_WIDTH-1:0] IDU_des;
 reg [19:0] IDU_imm;
 reg [1:0] IDU_command;
 
-ysyx_24120013_IDU u_ysyx_24120013_IDU(
+ysyx_24120013_IDU #(
+    .COMMAND_WIDTH = 2,
+    .ADDR_WIDTH = 32,
+    .DATA_WIDTH = 32
+)u_ysyx_24120013_IDU(
     .clk         	(clk          ),
     .rst         	(rst          ),
     .inst        	(IFU_inst     ),
@@ -51,10 +55,13 @@ ysyx_24120013_IDU u_ysyx_24120013_IDU(
 reg [DATA_WIDTH-1:0] rdata1;
 reg [DATA_WIDTH-1:0] rdata2;
 
-ysyx_24120013_RegisterFile u_ysyx_24120013_RegisterFile(
+ysyx_24120013_RegisterFile #(
+    .ADDR_WIDTH = 32,
+    .DATA_WIDTH = 32
+)u_ysyx_24120013_RegisterFile(
     .clk    	(clk     ),
     .rst    	(rst     ),
-    .wdata  	(wdata   ),
+    .wdata  	(EXU_wdata   ),
     .waddr  	(EXU_waddr   ),
     .wen    	(EXU_wen     ),
     .raddr1 	(IDU_raddr1  ),
@@ -68,7 +75,10 @@ reg EXU_wen;
 reg [ADDR_WIDTH-1:0] EXU_waddr;
 reg [DATA_WIDTH-1:0] EXU_wdata;
 
-ysyx_24120013_EXU u_ysyx_24120013_EXU(
+ysyx_24120013_EXU #(
+    .ADDR_WIDTH = 32,
+    .DATA_WIDTH = 32
+)u_ysyx_24120013_EXU(
     .clk       	(clk        ),
     .rst       	(rst        ),
     .imm       	(IDU_imm    ),
