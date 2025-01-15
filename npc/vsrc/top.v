@@ -5,8 +5,8 @@ module ysyx_24120013_top (
     output reg [31:0] pc
 );
 
-`define ADDR_WIDTH = 32;
-`define DATA_WIDTH = 32;
+parameter ADDR_WIDTH = 32;
+parameter DATA_WIDTH = 32;
 
 ysyx_24120013_PC u_ysyx_24120013_PC(
     .clk        	(clk         ),
@@ -32,7 +32,7 @@ wire [ADDR_WIDTH-1:0] IDU_raddr2;
 wire [DATA_WIDTH-1:0] IDU_src1;
 wire [DATA_WIDTH-1:0] IDU_src2;
 wire [ADDR_WIDTH-1:0] IDU_des;
-reg [19:0] IDU_imm;
+wire [19:0] IDU_imm;
 reg [1:0] IDU_command;
 
 ysyx_24120013_IDU #(
