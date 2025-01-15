@@ -32,14 +32,7 @@ wire [ADDR_WIDTH-1:0] IDU_des;
 reg [19:0] IDU_imm;
 reg [1:0] IDU_command;
 
-ysyx_24120013_IDU #(
-    .R_TYPE 	(000001  ),
-    .I_TYPE 	(000010  ),
-    .S_TYPE 	(000100  ),
-    .B_TYPE 	(001000  ),
-    .U_TYPE 	(010000  ),
-    .J_TYPE 	(100000  ))
-u_ysyx_24120013_IDU(
+ysyx_24120013_IDU u_ysyx_24120013_IDU(
     .clk         	(clk          ),
     .rst         	(rst          ),
     .inst        	(IFU_inst     ),
