@@ -35,7 +35,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     always @(*) begin
         case (opcode)
-            7'b0110011 :
+            7'b0010011 :
                 imm_type = I_TYPE;
             default :
                 imm_type = 6'b000000;
