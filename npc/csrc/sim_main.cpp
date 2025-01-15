@@ -32,7 +32,6 @@ void sim_init(int argc, char** argv){
 }
 
 void dump_wave(SIM_MODULE* top){
-    top->eval();
     tfp->dump(contextp->time());
     contextp->timeInc(1);
 #ifndef USE_TESTBENCH
@@ -57,7 +56,7 @@ int main(int argc, char** argv) {
     
     sim_init(argc, argv);
 
-    reset(top, 10);
+    reset(SIM_MODULE_NAME, 10);
 
 #ifdef USE_TESTBENCH
     while(!contextp->gotFinish()){   
@@ -69,7 +68,7 @@ int main(int argc, char** argv) {
     while(!contextp->gotFinish() && sim_time >= 0){
         mem_out_of_bound(top->pc);
         top->pmem = pmem_read(top->pc);
-        single_cycle(top);
+        single_cycle(SIM_MODULE_NAME);
         dump_wave(SIM_MODULE_NAME);
     }
 #endif
