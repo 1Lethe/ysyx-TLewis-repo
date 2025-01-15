@@ -17,7 +17,7 @@ ysyx_24120013_PC u_ysyx_24120013_PC(
 );
 
 // output declaration of module ysyx_24120023_IFU
-wire IFU_inst;
+wire [31:0]IFU_inst;
 
 ysyx_24120023_IFU u_ysyx_24120023_IFU(
     .clk      	(clk       ),
