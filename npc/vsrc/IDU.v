@@ -48,7 +48,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         else
         case (imm_type)
             I_TYPE :
-                IDU_imm <= {8'b0,inst[31:20]};
+                IDU_imm <= {8'b0,inst[31:0]};
             default :
                 IDU_imm <= 20'b0;
         endcase
