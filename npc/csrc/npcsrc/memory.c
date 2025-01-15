@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "memory.h"
 
-uint32_t pmem[] = {
+uint32_t pmem[0x800] = {
     0x12345678,
     0x12312312,
 };
