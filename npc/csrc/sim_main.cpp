@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
     //if not use testbench HERE
 #ifndef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){
-        top->pmem = pmem_read(RESET_VECTOR);
+        top->pmem = pmem_read(top->pc);
         dump_wave(SIM_MODULE_NAME);
     }
 #endif
