@@ -57,6 +57,8 @@ int main(int argc, char** argv) {
     
     sim_init(argc, argv);
 
+    reset(top);
+
 #ifdef USE_TESTBENCH
     while(!contextp->gotFinish()){   
         dump_wave(SIM_MODULE_NAME);
