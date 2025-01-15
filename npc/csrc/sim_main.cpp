@@ -41,8 +41,8 @@ void dump_wave(SIM_MODULE* top){
 
 #ifndef USE_TESTBENCH
 void single_cycle(SIM_MODULE* top){
-    top->clk = 0;top->eval();dump_wave();
-    top->clk = 1;top->eval();dump_wave();
+    top->clk = 0;top->eval();dump_wave(top);
+    top->clk = 1;top->eval();dump_wave(top);
 }
 
 void reset(SIM_MODULE* top, int n){
