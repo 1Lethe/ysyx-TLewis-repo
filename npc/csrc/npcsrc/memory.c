@@ -5,7 +5,6 @@
 #include "memory.h"
 
 uint32_t pmem[1024] = {
-    0x12345678,
     0x12312312,
 };
 
@@ -17,8 +16,8 @@ uint32_t pmem_read(uint32_t addr){
 }
 
 void mem_out_of_bound(uint32_t addr){
-    printf("\npc = 0x%x\n", addr);
     if(addr < RESET_VECTOR || addr > RESET_VECTOR + MAX_MEMORY){
+        printf("pc = 0x%x\n", addr);
         assert(0);
     }
 }
