@@ -2,7 +2,7 @@ module ysyx_24120013_PC (
     input clk,
     input rst,
     input pc_jmp_en,
-    input pc_jmp_val,
+    input [31:0] pc_jmp_val,
     output reg[31:0] pc
 );
 
