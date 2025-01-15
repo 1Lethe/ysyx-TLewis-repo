@@ -6,7 +6,8 @@
 
 uint32_t pmem[1024] = {
     0x01008113,
-    //0x01008013
+    0x01008013,
+    0x01008093,
 };
 
 uint32_t* guest_to_host(uint32_t paddr) { return pmem + paddr - RESET_VECTOR; }
