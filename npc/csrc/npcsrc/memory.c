@@ -17,7 +17,7 @@ uint32_t pmem_read(uint32_t addr){
 }
 
 void mem_out_of_bound(uint32_t addr){
-    printf("pc = 0x%x", addr);
+    printf("\npc = 0x%x\n", addr);
     if(addr < RESET_VECTOR || addr > RESET_VECTOR + MAX_MEMORY){
         assert(0);
     }
