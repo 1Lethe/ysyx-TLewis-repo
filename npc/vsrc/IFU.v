@@ -1,7 +1,7 @@
 module ysyx_24120023_IFU (
     input clk,
     input rst,
-    input inst,
+    input [31:0] inst,
     output wire IFU_inst
 );
 
