@@ -5,7 +5,7 @@ module ysyx_24120013_top (
     output reg [31:0] pc
 );
 
-parameter ADDR_WIDTH = 32;
+parameter ADDR_WIDTH = 5;
 parameter DATA_WIDTH = 32;
 
 ysyx_24120013_PC u_ysyx_24120013_PC(
@@ -37,7 +37,7 @@ reg [1:0] IDU_command;
 
 ysyx_24120013_IDU #(
     .COMMAND_WIDTH (2),
-    .ADDR_WIDTH (32),
+    .ADDR_WIDTH (5),
     .DATA_WIDTH (32)
 )u_ysyx_24120013_IDU(
     .clk         	(clk          ),
@@ -59,7 +59,7 @@ reg [DATA_WIDTH-1:0] rdata1;
 reg [DATA_WIDTH-1:0] rdata2;
 
 ysyx_24120013_RegisterFile #(
-    .ADDR_WIDTH (32),
+    .ADDR_WIDTH (5),
     .DATA_WIDTH (32)
 )u_ysyx_24120013_RegisterFile(
     .clk    	(clk     ),
@@ -79,7 +79,7 @@ reg [ADDR_WIDTH-1:0] EXU_waddr;
 reg [DATA_WIDTH-1:0] EXU_wdata;
 
 ysyx_24120013_EXU #(
-    .ADDR_WIDTH (32),
+    .ADDR_WIDTH (5),
     .DATA_WIDTH (32)
 )u_ysyx_24120013_EXU(
     .clk       	(clk        ),
