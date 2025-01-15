@@ -5,6 +5,9 @@ module ysyx_24120013_top (
     output reg [31:0] pc
 );
 
+`define ADDR_WIDTH = 32;
+`define DATA_WIDTH = 32;
+
 ysyx_24120013_PC u_ysyx_24120013_PC(
     .clk        	(clk         ),
     .rst        	(rst         ),
@@ -19,7 +22,7 @@ wire IFU_inst;
 ysyx_24120023_IFU u_ysyx_24120023_IFU(
     .clk      	(clk       ),
     .rst      	(rst       ),
-    .inst     	(inst      ),
+    .inst     	(pmem      ),
     .IFU_inst 	(IFU_inst  )
 );
 
