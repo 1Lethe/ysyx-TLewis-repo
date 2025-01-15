@@ -59,7 +59,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
             IDU_command <= 2'b0;
         else
         case(opcode)
-            7'b0110011 :
+            7'b0010011 :
                 IDU_command <= 2'b01;
             default :
                 IDU_command <= 2'b00;
