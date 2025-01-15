@@ -17,7 +17,11 @@ module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
             EXU_wen <= 0;
             EXU_waddr <= 0;
         end
-        else if(des_addr != 0) begin
+        else if(des_addr == 0) begin
+            EXU_wen <= 0;
+            EXU_waddr <= 0;
+        end
+        else begin
             EXU_wen <= 1;
             EXU_waddr <= des_addr;
         end
