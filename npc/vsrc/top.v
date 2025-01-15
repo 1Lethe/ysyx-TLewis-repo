@@ -56,8 +56,8 @@ reg [DATA_WIDTH-1:0] rdata1;
 reg [DATA_WIDTH-1:0] rdata2;
 
 ysyx_24120013_RegisterFile #(
-    .ADDR_WIDTH = 32,
-    .DATA_WIDTH = 32
+    .ADDR_WIDTH (32),
+    .DATA_WIDTH (32)
 )u_ysyx_24120013_RegisterFile(
     .clk    	(clk     ),
     .rst    	(rst     ),
@@ -76,8 +76,8 @@ reg [ADDR_WIDTH-1:0] EXU_waddr;
 reg [DATA_WIDTH-1:0] EXU_wdata;
 
 ysyx_24120013_EXU #(
-    .ADDR_WIDTH = 32,
-    .DATA_WIDTH = 32
+    .ADDR_WIDTH (32),
+    .DATA_WIDTH (32)
 )u_ysyx_24120013_EXU(
     .clk       	(clk        ),
     .rst       	(rst        ),
