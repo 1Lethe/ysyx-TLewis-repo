@@ -1,4 +1,4 @@
-module ysyx_24120013_EXU #(ADDR_WIDTH = 32, DATA_WIDTH = 32)(
+module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
         input rst,
         input [19:0] imm,
