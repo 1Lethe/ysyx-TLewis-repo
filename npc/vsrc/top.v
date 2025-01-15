@@ -87,7 +87,7 @@ ysyx_24120013_EXU #(
     .imm       	(IDU_imm    ),
     .src1      	(IDU_src1   ),
     .src2      	(IDU_src2   ),
-    .des       	(IDU_des    ),
+    .des_addr   (IDU_des    ),
     .command   	(IDU_command),
     .EXU_wen   	(EXU_wen    ),
     .EXU_waddr 	(EXU_waddr  ),
