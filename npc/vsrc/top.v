@@ -12,7 +12,7 @@ ysyx_24120013_PC u_ysyx_24120013_PC(
     .clk        	(clk         ),
     .rst        	(rst         ),
     .pc_jmp_en  	(1'b0),
-    .pc_jmp_val 	(1'b0),
+    .pc_jmp_val 	(32'b0),
     .pc         	(pc          )
 );
 
