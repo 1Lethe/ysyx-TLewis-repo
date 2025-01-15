@@ -69,6 +69,7 @@ int main(int argc, char** argv) {
     while(!contextp->gotFinish() && sim_time >= 0){
         mem_out_of_bound(top->pc);
         top->pmem = pmem_read(top->pc);
+        single_cycle(top);
         dump_wave(SIM_MODULE_NAME);
     }
 #endif
