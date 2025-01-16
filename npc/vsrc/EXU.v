@@ -1,7 +1,7 @@
 module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
         input rst,
-        input [19:0] imm,
+        input [31:0] imm,
         input [DATA_WIDTH-1:0] src1,
         input [DATA_WIDTH-1:0] src2,
         input [ADDR_WIDTH-1:0] des_addr,

@@ -32,7 +32,7 @@ wire [ADDR_WIDTH-1:0] IDU_raddr2;
 wire [DATA_WIDTH-1:0] IDU_src1;
 wire [DATA_WIDTH-1:0] IDU_src2;
 wire [ADDR_WIDTH-1:0] IDU_des;
-reg [19:0] IDU_imm;
+reg [31:0] IDU_imm;
 reg [1:0] IDU_command;
 
 ysyx_24120013_IDU #(
