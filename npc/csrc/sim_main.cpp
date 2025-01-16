@@ -22,10 +22,6 @@ VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
 
-void halt(void){
-    sim_time = -1;
-}
-
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);

@@ -2,7 +2,8 @@ module ysyx_24120023_IFU (
     input clk,
     input rst,
     input [31:0] inst,
-    output reg [31:0] IFU_inst
+    output reg [31:0] IFU_inst,
+    output wire halt_flag
 );
 
 always @(posedge clk) begin
