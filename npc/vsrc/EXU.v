@@ -33,3 +33,5 @@ module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     end
 
 endmodule
+
+import "DPI-C" function void halt (void);

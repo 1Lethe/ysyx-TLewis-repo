@@ -62,9 +62,3 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     end
 
 endmodule
-
-export "DPI-C" task halt;
-
-task halt;
-
-endtask
