@@ -96,9 +96,3 @@ ysyx_24120013_EXU #(
 );
 
 endmodule
-
-import "DPI-C" function void halt(void);
-
-initial begin
-    
-end
