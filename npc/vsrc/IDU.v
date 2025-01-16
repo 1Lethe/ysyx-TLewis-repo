@@ -11,8 +11,8 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output wire [DATA_WIDTH-1:0] IDU_src1,
         output wire [DATA_WIDTH-1:0] IDU_src2,
         output wire [ADDR_WIDTH-1:0] IDU_des,
-        output reg [19:0] IDU_imm,
-        output reg [1:0] IDU_command
+        output wire [19:0] IDU_imm,
+        output wire [1:0] IDU_command
     );
 
     parameter R_TYPE = 6'b000001;
@@ -42,27 +42,21 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         endcase
     end
 
-    always @(posedge clk) begin
-        if(rst)
-            IDU_imm <= 20'b0;
-        else
+    always @(*) begin
         case (imm_type)
             I_TYPE :
-                IDU_imm <= {{8{inst[31]}},inst[31:20]};
+                IDU_imm = {{8{inst[31]}},inst[31:20]};
             default :
-                IDU_imm <= 20'b0;
+                IDU_imm = 20'b0;
         endcase
     end
 
-    always @(posedge clk) begin
-        if(rst)
-            IDU_command <= 2'b0;
-        else
+    always @(*) begin
         case(opcode)
             7'b0010011 :
-                IDU_command <= 2'b01;
+                IDU_command = 2'b01;
             default :
-                IDU_command <= 2'b00;
+                IDU_command = 2'b00;
         endcase
     end
 
