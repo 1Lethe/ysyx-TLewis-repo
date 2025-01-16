@@ -57,7 +57,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
             7'b0010011 :
                 IDU_command = 2'b01;
             default :
-                task halt;
+                IDU_command = 2'b00;
         endcase
     end
 
