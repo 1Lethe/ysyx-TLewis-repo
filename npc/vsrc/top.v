@@ -1,5 +1,9 @@
 export "DPI-C" task halt;
 
+task halt;
+
+endtask
+
 module ysyx_24120013_top (
     input clk,
     input rst,
