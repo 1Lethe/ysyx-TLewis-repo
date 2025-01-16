@@ -34,4 +34,9 @@ module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         endcase
     end
 
+    always @(*) begin
+        if(command == 2'b11)
+            halt();
+    end
+
 endmodule
