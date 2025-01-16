@@ -23,7 +23,7 @@ VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
 
 void halt(void){
-    printf("\nProgram FInished at sim time %d.\n,sim_time");
+    printf("\nProgram Finished at sim time %d.\n,sim_time");
     sim_time = -1;
 }
 
