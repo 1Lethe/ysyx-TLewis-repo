@@ -1,8 +1,4 @@
-export "DPI-C" task halt;
-
-task halt;
-
-endtask
+import "DPI-C" function halt (input int a);
 
 module ysyx_24120013_top (
     input clk,
