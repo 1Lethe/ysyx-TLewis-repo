@@ -19,8 +19,7 @@ SIM_MODULE* SIM_MODULE_NAME;
 
 void halt(void){
     printf("\nProgram Finished at clock time %d.\n", SIM_TIME_MAX - sim_time);
-    top->eval();dump_wave(SIM_MODULE_NAME);
-    sim_time = -1;
+    sim_time = 0;
 }
 
 void sim_init(int argc, char** argv){
