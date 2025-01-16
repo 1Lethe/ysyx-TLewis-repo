@@ -1,4 +1,4 @@
-import "DPI-C" function void \$halt;
+export "DPI-C" function void \$halt;
 
 module ysyx_24120013_top (
     input clk,
