@@ -95,5 +95,7 @@ ysyx_24120013_EXU #(
     .EXU_wdata 	(EXU_wdata  )
 );
 
+import "DPI-C" function void halt (void);
+
 
 endmodule
