@@ -65,6 +65,6 @@ endmodule
 
 export "DPI-C" task halt;
 
-task halt
+task halt;
 
 endtask
