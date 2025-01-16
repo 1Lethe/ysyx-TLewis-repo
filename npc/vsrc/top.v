@@ -1,4 +1,3 @@
-import "DPI-C" function void halt (input int a);
 
 module ysyx_24120013_top (
     input clk,

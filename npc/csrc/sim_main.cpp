@@ -22,7 +22,7 @@ VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
 
-void halt(int a){
+void halt(void){
     sim_time = -1;
 }
 

@@ -1,3 +1,5 @@
+import "DPI-C" function void halt ();
+
 module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
         input rst,
