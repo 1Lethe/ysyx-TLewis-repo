@@ -19,7 +19,7 @@ SIM_MODULE* SIM_MODULE_NAME;
 
 void halt(void){
     printf("\nProgram Finished at clock time %d.\n", SIM_TIME_MAX - sim_time);
-    sim_time = 0;
+    sim_time = 1;
 }
 
 void sim_init(int argc, char** argv){
