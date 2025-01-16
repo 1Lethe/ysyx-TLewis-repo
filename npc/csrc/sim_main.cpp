@@ -12,13 +12,18 @@
 
 #define SIM_MODULE Vysyx_24120013_top
 #define SIM_MODULE_NAME top
+#define SIM_TIME_MAX 100
 
 //sim time
-int sim_time = 100;
+int sim_time = SIM_TIME_MAX;
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
+
+void halt(void){
+    sim_time = -1;
+}
 
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;

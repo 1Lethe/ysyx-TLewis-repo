@@ -21,6 +21,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     parameter B_TYPE = 6'b001000;
     parameter U_TYPE = 6'b010000;
     parameter J_TYPE = 6'b100000;
+    parameter N_TYPE = 6'b000000;
 
     wire [6:0] opcode;
 
@@ -38,7 +39,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
             7'b0010011 :
                 imm_type = I_TYPE;
             default :
-                imm_type = 6'b000000;
+                imm_type = N_TYPE;
         endcase
     end
 

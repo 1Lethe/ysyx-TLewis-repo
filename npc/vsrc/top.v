@@ -1,3 +1,5 @@
+import "DPI-C" function void halt(void);
+
 module ysyx_24120013_top (
     input clk,
     input rst,
@@ -5,6 +7,7 @@ module ysyx_24120013_top (
     output reg [31:0] pc
 );
 
+parameter COMMAND_WIDTH = 2;
 parameter ADDR_WIDTH = 5;
 parameter DATA_WIDTH = 32;
 
