@@ -1,22 +1,16 @@
-//Still need to change this #include and SIM_ysyx_24120013_topNAME in makefile to change sim module.
+//Still need to change this #include and SIM_NAME in makefile to change sim module.
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
 #include "Vysyx_24120013_top__Dpi.h"
+
 #include "npcsrc/memory.h"
+#include "sim_main.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
-//If you want to use testbench just keep this #define otherwise delete it
-//#define USE_TESTBENCH
-
-#define SIM_MODULE Vysyx_24120013_top
-#define SIM_MODULE_NAME top
-//Usually use DPI-C to end sim, we need to put ebreak in pmem .
-#define SIM_TIME_MAX 500
-
-//sim time
 int sim_time = SIM_TIME_MAX;
 
 VerilatedContext* contextp = NULL;
@@ -65,7 +59,7 @@ int main(int argc, char** argv) {
     
     sim_init(argc, argv);
 
-    reset(SIM_MODULE_NAME, 10);
+    reset(SIM_MODULE_NAME, 1);
 
 #ifdef USE_TESTBENCH
     while(!contextp->gotFinish()){   
@@ -78,7 +72,6 @@ int main(int argc, char** argv) {
         mem_out_of_bound(top->pc);
         top->pmem = pmem_read(top->pc);
         single_cycle(SIM_MODULE_NAME);
-        //dump_wave(SIM_MODULE_NAME);
     }
 #endif
 
