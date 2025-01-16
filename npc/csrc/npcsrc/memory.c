@@ -5,10 +5,10 @@
 #include "memory.h"
 
 uint32_t pmem[1024] = {
-    0x01008113, // 0 0 16
-    0x01008113, // 0 0 16
-    0x01010093, // 0 32 16
-    0x01008113, // 0 32 48
+    0x01008113, // addi x2,x1,16 (0,16)
+    0x01008113, // addi x2,x1,16 (0,16)
+    0x01010093, // addi x1,x2,16 (32,16)
+    0x01008113, // addi x2,x1,16 (32,48)
 };
 
 uint32_t* guest_to_host(uint32_t paddr) { return pmem + paddr - RESET_VECTOR; }
