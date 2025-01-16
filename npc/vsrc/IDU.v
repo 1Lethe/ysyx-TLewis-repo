@@ -59,6 +59,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 2, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
             7'b1110011 :
                 IDU_command = 2'b11;
             default :
+                IDU_command = 2'b00;
         endcase
     end
 
