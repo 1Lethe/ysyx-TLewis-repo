@@ -13,7 +13,7 @@
 
 #define SIM_MODULE Vysyx_24120013_top
 #define SIM_MODULE_NAME top
-#define SIM_TIME_MAX 100
+#define SIM_TIME_MAX 500
 
 //sim time
 int sim_time = SIM_TIME_MAX;
@@ -23,6 +23,7 @@ VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
 
 void halt(void){
+    printf("\nProgram FInished at sim time %d.\n,sim_time");
     sim_time = -1;
 }
 
