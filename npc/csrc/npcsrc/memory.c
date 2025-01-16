@@ -4,7 +4,7 @@
 #include <assert.h>
 #include "memory.h"
 
-uint32_t pmem[1024] = {
+uint32_t pmem[MAX_MEMORY] = {
     0x01008113, // addi x2,x1,16 (0,16)
     0x01008113, // addi x2,x1,16 (0,16)
     0x01010093, // addi x1,x2,16 (32,16)
