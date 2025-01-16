@@ -14,7 +14,7 @@
 #define SIM_MODULE_NAME top
 
 //sim time
-int sim_time = 50;
+int sim_time = 100;
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
