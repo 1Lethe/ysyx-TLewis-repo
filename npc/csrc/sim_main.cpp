@@ -2,7 +2,6 @@
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
-#include "svdpi.h"
 #include "Vysyx_24120013_top__Dpi.h"
 #include "npcsrc/memory.h"
 #include <stdio.h>
