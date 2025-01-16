@@ -12,18 +12,14 @@ module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output reg [DATA_WIDTH-1:0] EXU_wdata
     );
 
-    always @(posedge clk) begin
-        if(rst) begin
-            EXU_wen <= 0;
-            EXU_waddr <= 0;
-        end
-        else if(des_addr == 0) begin
-            EXU_wen <= 0;
-            EXU_waddr <= 0;
+    always @(*) begin
+        if(des_addr == 0) begin
+            EXU_wen = 0;
+            EXU_waddr = 0;
         end
         else begin
-            EXU_wen <= 1;
-            EXU_waddr <= des_addr;
+            EXU_wen = 1;
+            EXU_waddr = des_addr;
         end
     end
 
