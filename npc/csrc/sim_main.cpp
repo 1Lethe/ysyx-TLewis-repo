@@ -42,9 +42,7 @@ void dump_wave(SIM_MODULE* top){
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
     top->clk = 1;top->eval();dump_wave(top);
-#ifndef USE_TESTBENCH
     sim_time--;
-#endif
 }
 
 void reset(SIM_MODULE* top, int n){
@@ -65,7 +63,6 @@ int main(int argc, char** argv) {
         dump_wave(SIM_MODULE_NAME);
     }
 #endif
-    //if not use testbench HERE
 #ifndef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){
         mem_out_of_bound(top->pc);
