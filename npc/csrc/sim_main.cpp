@@ -1,23 +1,26 @@
-//Still need to change this #include and SIM_ysyx_24120013_topNAME in makefile to change sim module.
+//Still need to change this #include and SIM_NAME in makefile to change sim module.
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 #include "verilated_fst_c.h"
+#include "Vysyx_24120013_top__Dpi.h"
+
+#include "npcsrc/memory.h"
+#include "sim_main.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 
-//If you want to use testbench just keep this #define otherwise delete it
-//#define USE_TESTBENCH
-
-#define SIM_MODULE Vysyx_24120013_top
-#define SIM_MODULE_NAME ysyx_24120013_top
-
-//sim time
-int sim_time = 50;
+int sim_time = SIM_TIME_MAX;
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
+
+void halt(void){
+    printf("\nProgram Finished at clock time %d.\n", SIM_TIME_MAX - sim_time);
+    sim_time = 1;
+}
 
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;
@@ -31,18 +34,17 @@ void sim_init(int argc, char** argv){
 }
 
 void dump_wave(SIM_MODULE* top){
-    top->eval();
     tfp->dump(contextp->time());
     contextp->timeInc(1);
-    #ifndef USE_TESTBENCH
-    sim_time--;
-    #endif
 }
 
 #ifndef USE_TESTBENCH
 void single_cycle(SIM_MODULE* top){
-    top->clk = 0;top->eval();
-    top->clk = 1;top->eval();
+    top->clk = 0;top->eval();dump_wave(top);
+    top->clk = 1;top->eval();dump_wave(top);
+#ifndef USE_TESTBENCH
+    sim_time--;
+#endif
 }
 
 void reset(SIM_MODULE* top, int n){
@@ -56,17 +58,21 @@ int main(int argc, char** argv) {
     
     sim_init(argc, argv);
 
-    #ifdef USE_TESTBENCH
+    reset(SIM_MODULE_NAME, 1);
+
+#ifdef USE_TESTBENCH
     while(!contextp->gotFinish()){   
         dump_wave(SIM_MODULE_NAME);
     }
-    #endif
+#endif
     //if not use testbench HERE
-    #ifndef USE_TESTBENCH
+#ifndef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){
-        dump_wave(SIM_MODULE_NAME);
+        mem_out_of_bound(top->pc);
+        top->pmem = pmem_read(top->pc);
+        single_cycle(SIM_MODULE_NAME);
     }
-    #endif
+#endif
 
     tfp->close();
     return 0;
