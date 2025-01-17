@@ -44,7 +44,7 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 #For sim
 SIM_TOPNAME = ysyx_24120013_top
 VER_SIM_V_PATH = $(VSRCS)
-VER_SIM_C_PATH = csrc/sim_main.cpp
+VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 VER_SIM_CFLAGS = -cc --exe -trace-fst --build
 sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
