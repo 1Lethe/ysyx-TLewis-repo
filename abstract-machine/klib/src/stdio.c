@@ -41,8 +41,7 @@ int sprintf(char *out, const char *fmt, ...) {
           bool is_negetive = (d < 0) ? true : false;
 
           do{
-            *buffer_ptr = '0' + (d % 10);
-            buffer_ptr--;
+            *--buffer_ptr = '0' + (d % 10);
             d = d / 10;
             len++;
           }while(d > 0);
