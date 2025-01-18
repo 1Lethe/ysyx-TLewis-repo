@@ -47,12 +47,10 @@ int sprintf(char *out, const char *fmt, ...) {
             d = -d;
           }
 
-
-            do{
-              *buffer_ptr-- = '0' + (d % 10);
-              d = d / 10;
-            }while(d > 0);
-          
+          do{
+            *buffer_ptr-- = '0' + (d % 10);
+            d = d / 10;
+          }while(d > 0);
           if(is_negative){
             *buffer_ptr-- = '-'; 
           }
