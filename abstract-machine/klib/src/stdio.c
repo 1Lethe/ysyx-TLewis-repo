@@ -43,12 +43,10 @@ int sprintf(char *out, const char *fmt, ...) {
           do{
             *--buffer_ptr = '0' + (d % 10);
             d = d / 10;
-            len++;
           }while(d > 0);
 
           if(is_negetive){
             *buffer_ptr = '-'; 
-            len++;
           }
 
           while(*buffer_ptr){
