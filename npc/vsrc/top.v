@@ -1,98 +1,74 @@
-module ysyx_24120013_top (
+module top(
     input clk,
     input rst,
-    input [31:0] pmem,
-    output reg [31:0] pc
+    input ps2_clk,
+    input ps2_data,
+    output wire [7:0] o_seg0,
+    output wire [7:0] o_seg1,
+    output wire [7:0] o_seg2,
+    output wire [7:0] o_seg3,
+    output wire [7:0] o_seg4,
+    output wire [7:0] o_seg5,
+    output wire shift,
+    output wire ctrl
 );
 
-parameter COMMAND_WIDTH = 2;
-parameter ADDR_WIDTH = 5;
-parameter DATA_WIDTH = 32;
+wire overflow;
+wire ps2_ready;
+wire [7:0] data;
+wire nextdata_n;
+wire [7:0]dataget;
+wire datarec;
+wire segs_enable;
+wire [7:0]seg0_1;
+wire [7:0]seg2_3;
+wire [7:0]seg4_5;
 
-ysyx_24120013_PC u_ysyx_24120013_PC(
-    .clk        	(clk         ),
-    .rst        	(rst         ),
-    .pc_jmp_en  	(1'b0),
-    .pc_jmp_val 	(32'b0),
-    .pc         	(pc          )
+segs segs(
+    .segs_input0_1(seg0_1),
+    .segs_input2_3(seg2_3),
+    .segs_input4_5(seg4_5),
+    .segs_enable(segs_enable),
+    .seg0_output(o_seg0),
+    .seg1_output(o_seg1),
+    .seg2_output(o_seg2),
+    .seg3_output(o_seg3),
+    .seg4_output(o_seg4),
+    .seg5_output(o_seg5)
 );
 
-// output declaration of module ysyx_24120023_IFU
-wire [31:0]IFU_inst;
-
-ysyx_24120023_IFU u_ysyx_24120023_IFU(
-    .clk      	(clk       ),
-    .rst      	(rst       ),
-    .inst     	(pmem      ),
-    .IFU_inst 	(IFU_inst  )
+keyboard_display keyboard_display(
+    .clk(clk),
+    .rst(rst),
+    .ps2dis_data(dataget),
+    .ps2dis_recFlag(datarec),
+    .segs_enable(segs_enable),
+    .ps2dis_seg0_1(seg0_1),
+    .ps2dis_seg2_3(seg2_3),
+    .keytime_cnt(seg4_5),
+    .shift_flag(shift),
+    .ctrl_flag(ctrl)
 );
 
-// output declaration of module ysyx_24120013_IDU
-wire [ADDR_WIDTH-1:0] IDU_raddr1;
-wire [ADDR_WIDTH-1:0] IDU_raddr2;
-wire [DATA_WIDTH-1:0] IDU_src1;
-wire [DATA_WIDTH-1:0] IDU_src2;
-wire [ADDR_WIDTH-1:0] IDU_des;
-reg [31:0] IDU_imm;
-reg [1:0] IDU_command;
-
-ysyx_24120013_IDU #(
-    .COMMAND_WIDTH (2),
-    .ADDR_WIDTH (5),
-    .DATA_WIDTH (32)
-)u_ysyx_24120013_IDU(
-    .clk         	(clk          ),
-    .rst         	(rst          ),
-    .inst        	(IFU_inst     ),
-    .rdata1      	(rdata1       ),
-    .rdata2      	(rdata2       ),
-    .IDU_raddr1  	(IDU_raddr1   ),
-    .IDU_raddr2  	(IDU_raddr2   ),
-    .IDU_src1    	(IDU_src1     ),
-    .IDU_src2    	(IDU_src2     ),
-    .IDU_des     	(IDU_des      ),
-    .IDU_imm     	(IDU_imm      ),
-    .IDU_command 	(IDU_command  )
+keyboard_read keyboard_read(
+    .clk(clk),
+    .rst(rst),
+    .ps2read_data(data),
+    .ps2read_ready(ps2_ready),
+    .ps2read_nextdata(nextdata_n),
+    .ps2read_dataget(dataget),
+    .ps2read_datarec(datarec)
 );
 
-// output declaration of module ysyx_24120013_RegisterFile
-wire [DATA_WIDTH-1:0] rdata1;
-wire [DATA_WIDTH-1:0] rdata2;
-
-ysyx_24120013_RegisterFile #(
-    .ADDR_WIDTH (5),
-    .DATA_WIDTH (32)
-)u_ysyx_24120013_RegisterFile(
-    .clk    	(clk     ),
-    .rst    	(rst     ),
-    .wdata  	(EXU_wdata   ),
-    .waddr  	(EXU_waddr   ),
-    .wen    	(EXU_wen     ),
-    .raddr1 	(IDU_raddr1  ),
-    .raddr2 	(IDU_raddr2  ),
-    .rdata1 	(rdata1  ),
-    .rdata2 	(rdata2  )
-);
-
-// output declaration of module ysyx_24120013_EXU
-reg EXU_wen;
-reg [ADDR_WIDTH-1:0] EXU_waddr;
-reg [DATA_WIDTH-1:0] EXU_wdata;
-
-ysyx_24120013_EXU #(
-    .ADDR_WIDTH (5),
-    .DATA_WIDTH (32)
-)u_ysyx_24120013_EXU(
-    .clk       	(clk        ),
-    .rst       	(rst        ),
-    .imm       	(IDU_imm    ),
-    .src1      	(IDU_src1   ),
-    .src2      	(IDU_src2   ),
-    .des_addr   (IDU_des    ),
-    .command   	(IDU_command),
-    .EXU_wen   	(EXU_wen    ),
-    .EXU_waddr 	(EXU_waddr  ),
-    .EXU_wdata 	(EXU_wdata  )
+ps2_keyboard ps2_keyboard(
+    .clk(clk),
+    .clrn(~rst),
+    .ps2_clk(ps2_clk),
+    .ps2_data(ps2_data),
+    .data(data),
+    .ready(ps2_ready),
+    .nextdata_n(nextdata_n),
+    .overflow(overflow)
 );
 
 endmodule

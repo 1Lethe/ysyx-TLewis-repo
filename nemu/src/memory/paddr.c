@@ -33,6 +33,7 @@ static word_t pmem_read(paddr_t addr, int len) {
 }
 
 static void pmem_write(paddr_t addr, int len, word_t data) {
+  /* convert addr and fetch instruction */
   host_write(guest_to_host(addr), len, data);
 }
 
