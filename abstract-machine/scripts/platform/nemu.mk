@@ -13,7 +13,7 @@ LDSCRIPTS += $(AM_HOME)/scripts/linker.ld
 LDFLAGS   += --defsym=_pmem_start=0x80000000 --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _start
 # NEMUFLAGS used to add extra arguments to NEMU compliation
-NEMUFLAGS += -l -b $(shell dirname $(IMAGE).elf)/nemu-log.txt
+NEMUFLAGS += -l -b # $(shell dirname $(IMAGE).elf)/nemu-log.txt
 
 MAINARGS_MAX_LEN = 64
 MAINARGS_PLACEHOLDER = The insert-arg rule in Makefile will insert mainargs here.
