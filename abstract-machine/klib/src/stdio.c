@@ -20,7 +20,7 @@ int sprintf(char *out, const char *fmt, ...) {
   va_start(ap, fmt);
   while(*fmt){
     if(*fmt == '%'){
-      fmt++;
+      //fmt++;
       switch(*fmt++){
         case 's':
           char *s = va_arg(ap, char *);
@@ -38,7 +38,8 @@ int sprintf(char *out, const char *fmt, ...) {
           int d = va_arg(ap, int);
           char buffer[50];
           char *buffer_ptr = buffer + sizeof(buffer) - 1;
-          *buffer_ptr = '\0';buffer_ptr--;
+          *buffer_ptr = '\0';
+          buffer_ptr--;
           bool is_negative = false;
 
           if(d < 0){
