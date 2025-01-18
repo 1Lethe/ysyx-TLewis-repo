@@ -34,6 +34,30 @@ int sprintf(char *out, const char *fmt, ...) {
           *out++ = c;
           len++;
           break;
+        case 'd':
+          int d = va_arg(ap, int);
+          char buffer[50];
+          char *buffer_ptr = buffer + sizeof(buffer) - 1;
+          bool is_negetive = (d < 0) ? true : false;
+
+          do{
+            *buffer_ptr = '0' + (d % 10);
+            buffer_ptr--;
+            d = d / 10;
+            len++;
+          }while(d > 0);
+
+          if(is_negetive){
+            *buffer_ptr = '-'; 
+            len++;
+          }
+
+          while(*buffer_ptr){
+            *out++ = *buffer_ptr++;
+            len++;
+          }
+
+          break;
       }
     }else{
       *out++ = *fmt++;
