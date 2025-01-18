@@ -27,7 +27,7 @@ enum {
   TYPE_N, // none
 };
 
-#define DIV_SRC2_EQU_0 Assert((int64_t)(sword_t)src2 != 0, "src1 div by 0")
+#define DIV_SRC2_EQU_0 Assert((uint64_t)src2 != 0, "src1 div by 0")
 
 #define src1R() do { *src1 = R(rs1); } while (0)
 #define src2R() do { *src2 = R(rs2); } while (0)
