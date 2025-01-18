@@ -24,7 +24,7 @@ int sprintf(char *out, const char *fmt, ...) {
       switch(*fmt++){
         case 's':
           char *s = va_arg(ap, char *);
-          while(*out){
+          while(*s){
             *out++ = *s++;
             len++;
           }
