@@ -28,7 +28,7 @@ int sprintf(char *out, const char *fmt, ...) {
       case 'c':
         char c = va_arg(ap, int);
         len += 1;
-        strcat(out, &c);
+        *out++ = c;
         break;
     }
   }
