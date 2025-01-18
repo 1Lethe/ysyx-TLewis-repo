@@ -35,6 +35,9 @@ int sprintf(char *out, const char *fmt, ...) {
           len++;
           break;
       }
+    }else{
+      *out++ = *fmt++;
+      len++;
     }
   }
   va_end(ap);
