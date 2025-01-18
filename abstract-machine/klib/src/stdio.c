@@ -14,7 +14,27 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 }
 
 int sprintf(char *out, const char *fmt, ...) {
-  panic("Not implemented");
+  va_list ap;
+  size_t len = 0;
+  
+  va_start(ap, fmt);
+  while(*fmt){
+    switch(*fmt++){
+      case 's':
+        char *s = va_arg(ap, char *);
+        len += strlen(s);
+        strcat(out, s);
+        break;
+      case 'c':
+        char c = va_arg(ap, int);
+        len += 1;
+        strcat(out, &c);
+        break;
+    }
+  }
+  va_end(ap);
+
+  return len;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
