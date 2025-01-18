@@ -177,6 +177,7 @@ int memcmp(const void *s1, const void *s2, size_t n) {
     if(*s1_ptr != *s2_ptr){
       return *s1_ptr - *s2_ptr;
     }
+    s1_ptr++;s2_ptr++;
   }
 
   return 0;
