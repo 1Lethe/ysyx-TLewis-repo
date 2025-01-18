@@ -38,11 +38,11 @@ int sprintf(char *out, const char *fmt, ...) {
           int d = va_arg(ap, int);
           char buffer[50];
           char *buffer_ptr = buffer + sizeof(buffer) - 1;
-          *buffer_ptr-- = '\0';
-          bool is_negetive = false;
+          *buffer_ptr = '\0';buffer_ptr--;
+          bool is_negative = false;
 
           if(d < 0){
-            is_negetive = true;
+            is_negative = true;
             d = -d;
           }
 
@@ -54,10 +54,11 @@ int sprintf(char *out, const char *fmt, ...) {
               d = d / 10;
             }while(d > 0);
           }
-          if(is_negetive){
+          if(is_negative){
             *buffer_ptr = '-'; 
           }
 
+          buffer_ptr++;
           while(*buffer_ptr){
             *out++ = *buffer_ptr++;
             len++;
