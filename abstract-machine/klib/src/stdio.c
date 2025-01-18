@@ -19,24 +19,26 @@ int sprintf(char *out, const char *fmt, ...) {
   
   va_start(ap, fmt);
   while(*fmt){
-    switch(*fmt++){
-      case 's':
-        char *s = va_arg(ap, char *);
-        while(*out){
-          *out++ = *s++;
+    if(*fmt == '%'){
+      fmt++;
+      switch(*fmt++){
+        case 's':
+          char *s = va_arg(ap, char *);
+          while(*out){
+            *out++ = *s++;
+            len++;
+          }
+          break;
+        case 'c':
+          char c = va_arg(ap, int);
+          *out++ = c;
           len++;
-        }
-        break;
-      case 'c':
-        char c = va_arg(ap, int);
-        len += 1;
-        *out++ = c;
-        break;
+          break;
+      }
     }
   }
   va_end(ap);
 
-  out++;
   *out = '\0';
 
   return len;
