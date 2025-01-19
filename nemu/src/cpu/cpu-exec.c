@@ -22,6 +22,8 @@
 bool trace_wp();
 bool trace_bp(Decode *s);
 
+#define IRING_BUF_SIZE 16
+
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -29,7 +31,6 @@ bool trace_bp(Decode *s);
  */
 #define MAX_INST_TO_PRINT 10
 
-#define IRING_BUF_SIZE 16
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
@@ -103,13 +104,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   memset(instbuf, '\0', 128*sizeof(char));
   memcpy(instbuf, s->logbuf, 128*sizeof(char));
   iringbuf[iring_index++] = instbuf;
-  for(int i = 0; i < IRING_BUF_SIZE; i++){
-    if(iringbuf[i] == NULL) {
-      printf("test\n");
-      break;
-    }
-    printf("%s\n", iringbuf[i]);
-  }
+
 
 #endif
 }

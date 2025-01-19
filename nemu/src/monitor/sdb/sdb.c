@@ -21,6 +21,7 @@
 #include <readline/history.h>
 #include "sdb.h"
 
+extern char *iringbuf[IRING_BUF_SIZE];
 extern NEMUState nemu_state;
 
 static int is_batch_mode = false;
@@ -220,6 +221,30 @@ static int cmd_db(char *args){
   return 0;
 }
 
+static int cmd_t(char *args){
+  char trace_type = '\0';
+
+  if(args == NULL){
+    printf("cmd t need args.\n");
+    return 0;
+  }
+  
+  if(sscanf(args, "%c", &trace_type) == 1){
+    if(trace_type == 'i'){
+      for(int i = 0; i < IRING_BUF_SIZE; i++){
+        if(iringbuf[i] == NULL) break;
+        printf("%s\n", iringbuf[i]);
+      }
+    }else{
+      printf("Invalid t command input.\n");
+    }
+  }else{
+    printf("Invalid t command input.\n");
+  }
+
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -241,6 +266,7 @@ static struct {
   {"dw", "Delete watchpoint.usage: d <wp_th>", cmd_dw},
   {"b", "Add breakpoint.usage: b <pc_step>", cmd_b},
   {"db", "Delete breakpoint.usage: db <bp_th>", cmd_db},
+  {"t", "Trace tool", cmd_t},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
