@@ -27,7 +27,7 @@ char *strcpy(char *dst, const char *src) {
   }
 
   size_t srclen = strlen(src);
-  if((dst >= src && dst < src + srclen + 1) || (dst <= src && src < dst + srclen + 1)){
+  if((dst > src && dst < src + srclen + 1) || (dst < src && src < dst + srclen + 1)){
     panic("dst and src overlap.");
   }
 
@@ -44,7 +44,7 @@ char *strncpy(char *dst, const char *src, size_t n) {
     panic("dst or src is NULL.");
   }
 
-  if((dst >= src && dst < src + n) || (dst <= src && src < dst + n)){
+  if((dst > src && dst < src + n) || (dst < src && src < dst + n)){
     panic("dst and src that need to copy overlap.");
   }
 
@@ -67,7 +67,7 @@ char *strcat(char *dst, const char *src) {
 
   size_t srclen = strlen(src);
   size_t dstlen = strlen(dst);
-  if((dst >= src && dst < src + srclen + 1) || (src >= dst && src < dst + dstlen + 1)){
+  if((dst > src && dst < src + srclen + 1) || (src > dst && src < dst + dstlen + 1)){
     panic("dst and src overlap.");
   }
 
