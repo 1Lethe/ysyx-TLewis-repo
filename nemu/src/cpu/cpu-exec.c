@@ -111,7 +111,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   memset(instbuf, '\0', 128*sizeof(char));
   memcpy(instbuf, s->logbuf, 128*sizeof(char));
   iringbuf[iring_index++] = instbuf;
-  assert(0);
+  Assert(0,"test\n");
 #endif
 }
 
