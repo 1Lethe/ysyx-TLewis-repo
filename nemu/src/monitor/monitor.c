@@ -87,10 +87,8 @@ static void parse_elf(){
   Assert(fseek(fp, sizeof(Elf32_Shdr), SEEK_CUR) != -1, "Failed to read '%s' elf_shd ", elf_file);
   Elf32_Sym elf_sym;
   Assert(fread(&elf_sym, sizeof(uint8_t), sizeof(Elf32_Sym), fp) == sizeof(Elf32_Sym), "Failed to read '%s' elf_sym", elf_file);
-  printf("%x\n", elf_sym.st_name);
+  printf("%x\n", elf_ehdr.e_shstrndx);
   printf("%x\n", elf_sym.st_value);
-  printf("%x\n", ELF32_ST_BIND(elf_sym.st_info));
-  printf("%x\n", ELF32_ST_TYPE(elf_sym.st_info));
 }
 
 static int parse_args(int argc, char *argv[]) {
