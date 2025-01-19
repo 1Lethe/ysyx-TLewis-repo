@@ -13,6 +13,8 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
+#include <stdint.h>
+
 #include <isa.h>
 #include <elf.h>
 #include <memory/paddr.h>
@@ -81,7 +83,7 @@ static void parse_elf(){
   Assert(elf_ehdr.e_ident[0] == 0x7f || elf_ehdr.e_ident[1] == 'E' || \
     elf_ehdr.e_ident[2] != 'L' || elf_ehdr.e_ident[3] == 'F', "Wrong Elf file.");
 
-  Assert(fseek(fp, sizeof(Elf32_Phdr), SEEK_CUR) > 0, "Failed to read '%s' elf_phd", elf_file);
+  //Assert(fseek(fp, sizeof(Elf32_Phdr), SEEK_CUR) > 0, "Failed to read '%s' elf_phd", elf_file);
   Assert(fseek(fp, sizeof(Elf32_Shdr), SEEK_CUR) > 0, "Failed to read '%s' elf_shd ", elf_file);
   Elf32_Sym elf_sym;
   Assert(fread(&elf_sym, sizeof(uint8_t), sizeof(Elf32_Sym), fp) > 0, "Failed to read '%s' elf_sym", elf_file);
