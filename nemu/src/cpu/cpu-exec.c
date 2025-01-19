@@ -105,7 +105,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   iringbuf[iring_index++] = instbuf;
   for(int i = 0; i < IRING_BUF_SIZE; i++){
     if(iringbuf[i] == NULL) {
-      printf("test");
+      printf("test\n");
       break;
     }
     printf("%s\n", iringbuf[i]);
