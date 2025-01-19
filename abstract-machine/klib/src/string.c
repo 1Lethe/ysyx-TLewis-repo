@@ -27,7 +27,7 @@ char *strcpy(char *dst, const char *src) {
   }
 
   size_t srclen = strlen(src);
-  if((dst >= src && dst < src + srclen + 1) || (dst <= src && src < dst + srclen + 1)){
+  if((dst > src && dst < src + srclen + 1) || (dst < src && src < dst + srclen + 1)){
     panic("dst and src overlap.");
   }
 
@@ -44,7 +44,7 @@ char *strncpy(char *dst, const char *src, size_t n) {
     panic("dst or src is NULL.");
   }
 
-  if((dst >= src && dst < src + n) || (dst <= src && src < dst + n)){
+  if((dst > src && dst < src + n) || (dst < src && src < dst + n)){
     panic("dst and src that need to copy overlap.");
   }
 
@@ -67,7 +67,7 @@ char *strcat(char *dst, const char *src) {
 
   size_t srclen = strlen(src);
   size_t dstlen = strlen(dst);
-  if((dst >= src && dst < src + srclen + 1) || (src >= dst && src < dst + dstlen + 1)){
+  if((dst > src && dst < src + srclen + 1) || (src > dst && src < dst + dstlen + 1)){
     panic("dst and src overlap.");
   }
 
@@ -87,13 +87,13 @@ int strcmp(const char *s1, const char *s2) {
   }
 
   while(*s1 != '\0' && *s2 != '\0'){
-    if((unsigned char)*s1 != (unsigned char) *s2){
-      return (unsigned char)*s1 - (unsigned char)*s2;
+    if((uint8_t)*s1 != (uint8_t) *s2){
+      return (uint8_t)*s1 - (uint8_t)*s2;
     }
     s1++;s2++;
   }
 
-  return (unsigned char)*s1 - (unsigned char)*s2;
+  return (uint8_t)*s1 - (uint8_t)*s2;
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
@@ -102,8 +102,8 @@ int strncmp(const char *s1, const char *s2, size_t n) {
   }
 
   for(size_t i = 0; i < n && (*s1 != '\0' && (*s2 != '\0')); i++){
-    if((unsigned char)*s1 != (unsigned char)*s2){
-      return (unsigned char)*s1 - (unsigned char)*s2;
+    if((uint8_t)*s1 != (uint8_t)*s2){
+      return (uint8_t)*s1 - (uint8_t)*s2;
     }
     s1++;s2++;
   }
@@ -116,9 +116,9 @@ void *memset(void *s, int c, size_t n) {
     panic("s is NULL.");
   }
 
-  unsigned char *ptr = (unsigned char *)s;
+  uint8_t *ptr = (uint8_t *)s;
   for(size_t i = 0; i < n; i++){
-    *ptr++ = (unsigned char)c;
+    *ptr++ = (uint8_t)c;
   }
 
   return s;
@@ -129,13 +129,13 @@ void *memmove(void *dst, const void *src, size_t n) {
     panic("dst or src is NULL.");
   }
 
-  unsigned char *temp = (unsigned char *)malloc(n);
+  uint8_t *temp = (uint8_t *)malloc(n);
   if(temp == NULL){
     panic("failed to malloc.");
   }
-  unsigned char *original_temp = temp;
-  unsigned char *ptr_src = (unsigned char *)src;
-  unsigned char *ptr_dst = (unsigned char *)dst;
+  uint8_t *original_temp = temp;
+  uint8_t *ptr_src = (uint8_t *)src;
+  uint8_t *ptr_dst = (uint8_t *)dst;
   for(size_t i = 0; i < n; i++){
     *temp++ = *ptr_src++;
   }
@@ -157,8 +157,8 @@ void *memcpy(void *out, const void *in, size_t n) {
     panic("out and in overlap.");
   }
 
-  unsigned char *ptr_out = (unsigned char *)out;
-  unsigned char *ptr_in = (unsigned char *)in;
+  uint8_t *ptr_out = (uint8_t *)out;
+  uint8_t *ptr_in = (uint8_t *)in;
   for(size_t i = 0; i < n; i++){
     *ptr_out++ = *ptr_in++;
   }
@@ -171,8 +171,8 @@ int memcmp(const void *s1, const void *s2, size_t n) {
     panic("s1 or s2 is NULL.");
   }
 
-  unsigned char *s1_ptr = (unsigned char *)s1;
-  unsigned char *s2_ptr = (unsigned char *)s2;
+  uint8_t *s1_ptr = (uint8_t *)s1;
+  uint8_t *s2_ptr = (uint8_t *)s2;
   for (size_t i = 0; i < n; i++){
     if(*s1_ptr != *s2_ptr){
       return *s1_ptr - *s2_ptr;
