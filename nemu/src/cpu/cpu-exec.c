@@ -107,7 +107,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
       printf("^^^^^^ Program Here.\n");
       break;
     }
-    printf("%s\n", iringbuf[i]);
+    //printf("%s\n", iringbuf[i]);
   }
 
 #endif
