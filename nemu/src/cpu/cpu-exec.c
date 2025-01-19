@@ -29,10 +29,13 @@ bool trace_bp(Decode *s);
  */
 #define MAX_INST_TO_PRINT 10
 
+#define IRING_BUF_SIZE 16
+
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
+char *iringbuf[IRING_BUF_SIZE];
 
 void device_update();
 
@@ -86,13 +89,16 @@ static void exec_once(Decode *s, vaddr_t pc) {
 
   /* iringbuf implementation */
   static int iring_index = 0;
-  char *iringbuf[16];
-  memset(iringbuf, '\0', sizeof(iringbuf));
+  if(iring_index == IRING_BUF_SIZE - 1){
+    iring_index = 0;
+  }
   char instbuf[64];
   memset(instbuf, '\0', sizeof(instbuf));
   memcpy(instbuf, s->logbuf, sizeof(instbuf));
   iringbuf[iring_index] = instbuf;
-  printf("%s\n", iringbuf[iring_index++]);
+  for(int i = 0; i < IRING_BUF_SIZE; i++){
+    printf("%s", iringbuf[i]);
+  }
 
 #endif
 }
@@ -133,6 +139,7 @@ void cpu_exec(uint64_t n) {
   }
 
   uint64_t timer_start = get_time();
+  memset(iringbuf, '\0', sizeof(iringbuf)); // Init iringbuf
 
   execute(n);// execute command
 
