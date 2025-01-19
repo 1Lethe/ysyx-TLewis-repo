@@ -101,7 +101,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   char *instbuf = (char *)malloc(128*sizeof(char));
   Assert(instbuf != NULL, "failed to malloc instbuf");
   memset(instbuf, '\0', 128*sizeof(char));
-  memcpy(instbuf, s->logbuf, 64*sizeof(char));
+  memcpy(instbuf, s->logbuf, 128*sizeof(char));
   iringbuf[iring_index++] = instbuf;
   for(int i = 0; i < IRING_BUF_SIZE; i++){
     if(iringbuf[i] == NULL) break;
