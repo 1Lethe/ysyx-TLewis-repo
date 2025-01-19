@@ -54,7 +54,7 @@ void init_mem() {
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) {
     word_t ret = pmem_read(addr, len);
-    printf("PMEM read Addr: 0x%x, Ret: %x\n", addr, ret);
+    printf("PMEM read Addr: 0x%8x, Ret: %8x\n", addr, ret);
     return ret;
   }
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
