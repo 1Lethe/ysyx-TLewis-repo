@@ -335,6 +335,14 @@ void sdb_mainloop() {
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
   }
+
+  /* free iringbuf */
+  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
+    if(iringbuf[i] == NULL){
+      continue;
+    }
+    free(iringbuf[i]);
+  }
 }
 
 

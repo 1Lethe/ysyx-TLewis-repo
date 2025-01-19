@@ -159,13 +159,6 @@ void cpu_exec(uint64_t n) {
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
-      /* free iringbuf */
-      for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
-        if(iringbuf[i] == NULL){
-          continue;
-        }
-        free(iringbuf[i]);
-      }
       // fall through
     case NEMU_QUIT: statistic();
   }
