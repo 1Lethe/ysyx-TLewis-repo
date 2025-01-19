@@ -105,9 +105,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
   if(iring_cycle_flag){
     Assert(iringbuf[i] == NULL, "iringbuf[i] == NULL");
     free(iringbuf[i]);
-    static int time = 0;
-    if(time == 5) Assert(0,"");
-    else time++;
   }
   char *instbuf = (char *)malloc(128*sizeof(char));
   Assert(instbuf != NULL, "failed to malloc instbuf");
@@ -144,7 +141,7 @@ static void iringbuf_display(void){
     if(i != iring_index){
       printf("\n");
     }else{
-      printf("<----- Program here.\n");
+      printf("<----- Program crash.\n");
     }
   }
 }
