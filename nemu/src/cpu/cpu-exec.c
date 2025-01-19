@@ -89,12 +89,18 @@ static void exec_once(Decode *s, vaddr_t pc) {
 
   /* iringbuf implementation */
   static int iring_index = 0;
+  static bool iring_cycle_flag = false;
   if(iring_index == IRING_BUF_SIZE - 1){
+    iring_cycle_flag = true;
     iring_index = 0;
   }
-  char instbuf[64];
-  memset(instbuf, '\0', sizeof(instbuf));
-  memcpy(instbuf, s->logbuf, sizeof(instbuf));
+  if(iring_cycle_flag){
+    Assert(iringbuf[i] != NULL, "iringbuf[i] == NULL");
+    free(iringbuf[i]);
+  }
+  char *instbuf = (char *)calloc(32, sizeof(char));
+  memset(instbuf, '\0', sizeof(char));
+  memcpy(instbuf, s->logbuf, sizeof(char));
   iringbuf[iring_index] = instbuf;
   for(int i = 0; i < IRING_BUF_SIZE; i++){
     printf("%s", iringbuf[i]);
@@ -155,6 +161,9 @@ void cpu_exec(uint64_t n) {
            (nemu_state.halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
+      for(int i = 0; i < IRING_BUF_SIZE; i++){
+        free(iringbuf[i]);
+      }
       // fall through
     case NEMU_QUIT: statistic();
   }
