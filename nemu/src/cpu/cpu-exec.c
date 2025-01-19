@@ -138,9 +138,13 @@ static void statistic() {
 
 static void iringbuf_display(void){
   for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
-    if(i == iring_index) printf("^^^^^^ Program Here.\n");
-      if(iringbuf[i] == NULL) break;
-      printf("%s\n", iringbuf[i]);
+    if(iringbuf[i] == NULL) break;
+    printf("%s", iringbuf[i]);
+    if(i != iring_index){
+      printf("\n");
+    }else{
+      printf("<----- Program here.");
+    }
   }
 }
 
