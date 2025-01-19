@@ -92,7 +92,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   memset(instbuf, '\0', sizeof(instbuf));
   memcpy(instbuf, p, 32);
   iringbuf[iring_index] = instbuf;
-  printf("%s", iringbuf[iring_index++]);
+  printf("%s\n", iringbuf[iring_index++]);
 
 #endif
 }
