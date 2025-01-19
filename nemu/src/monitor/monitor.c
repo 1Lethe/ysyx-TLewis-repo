@@ -83,6 +83,8 @@ static void parse_elf(){
 
   Elf32_Shdr elf_shdr[elf_ehdr.e_shnum];
   Assert(fseek(fp, sizeof(Elf32_Shdr)*(elf_ehdr.e_shstrndx - 1), SEEK_CUR) != -1, "Failed to read '%s' elf_shd", elf_file);
+  printf("%x", elf_shdr[elf_ehdr.e_shnum].sh_addr);
+
   Assert(fread(&elf_shdr[0], 1, sizeof(Elf32_Shdr), fp) == sizeof(Elf32_Shdr), "Failed to read '%s' elf_phd", elf_file);
   Assert(fseek(fp, sizeof(Elf32_Shdr), SEEK_CUR) != -1, "Failed to read '%s' elf_shd ", elf_file);
 
