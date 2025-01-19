@@ -78,7 +78,9 @@ static void parse_elf(){
 
   Elf32_Ehdr elf_ehdr;
   size_t ret = fread(&elf_ehdr, sizeof(uint8_t), sizeof(Elf32_Ehdr), fp);
-  assert(ret);
+  Assert(ret > 0, "Failed to read '%s", elf_file);
+  Assert(elf_ehdr.e_ident[0] == 0x7f || elf_ehdr.e_ident[1] == 'E' || \
+    elf_ehdr.e_ident[2] != 'L' || elf_ehdr.e_ident[3] == 'F', "Wrong Elf file.");
   printf("%x\n", elf_ehdr.e_ident[0]);
   printf("%x\n", elf_ehdr.e_type);
   printf("%x\n", elf_ehdr.e_machine);
