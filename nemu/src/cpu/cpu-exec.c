@@ -22,6 +22,9 @@
 bool trace_wp();
 bool trace_bp(Decode *s);
 
+/* Size of inst ring buffer */
+#define IRING_BUF_SIZE 16
+
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the `si' command.
@@ -33,6 +36,8 @@ CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
+char *iringbuf[IRING_BUF_SIZE];
+int iring_index = 0;
 
 void device_update();
 
@@ -83,6 +88,29 @@ static void exec_once(Decode *s, vaddr_t pc) {
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
+
+  /* iringbuf implementation */
+  static bool iring_cycle_flag = false;
+  static bool iring_buf_init_flag = false;
+  if(!iring_buf_init_flag){
+    iring_buf_init_flag = true;
+    for(int i = 0; i < IRING_BUF_SIZE; i++){
+      iringbuf[i] = NULL;
+    }
+  }
+  if(iring_index == IRING_BUF_SIZE - 1){
+    iring_cycle_flag = true;
+    iring_index = 0;
+  }
+  if(iring_cycle_flag){
+    Assert(iringbuf[i] == NULL, "iringbuf[i] == NULL");
+    free(iringbuf[i]);
+  }
+  char *instbuf = (char *)malloc(128*sizeof(char));
+  Assert(instbuf != NULL, "failed to malloc instbuf");
+  memset(instbuf, '\0', 128*sizeof(char));
+  memcpy(instbuf, s->logbuf, 128*sizeof(char));
+  iringbuf[iring_index++] = instbuf;
 #endif
 }
 
@@ -106,8 +134,23 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
+static void iringbuf_display(void){
+  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
+    if(iringbuf[i] == NULL) break;
+    printf("%s", iringbuf[i]);
+    if(i != iring_index){
+      printf("\n");
+    }else{
+      printf("<----- Program crash.\n");
+    }
+  }
+}
+
 void assert_fail_msg() {
   isa_reg_display();
+#ifdef CONFIG_ITRACE
+  iringbuf_display();
+#endif
   statistic();
 }
 
