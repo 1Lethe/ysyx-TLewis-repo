@@ -233,9 +233,9 @@ static int cmd_t(char *args){
   if(sscanf(args, "%c", &trace_type) == 1){
     if(trace_type == 'i'){
       for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
+        if(i == iring_index) printf("^^^^^^ Program Here.\n");
         if(iringbuf[i] == NULL) break;
         printf("%s\n", iringbuf[i]);
-        if(i == iring_index) printf("^^^^^^ Program Here.\n");
       }
     }else{
       printf("Invalid t command input.\n");
