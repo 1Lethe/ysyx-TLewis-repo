@@ -89,6 +89,8 @@ static void parse_elf(){
   Assert(fread(&elf_sym, sizeof(uint8_t), sizeof(Elf32_Sym), fp) == sizeof(Elf32_Sym), "Failed to read '%s' elf_sym", elf_file);
   printf("%x\n", elf_sym.st_name);
   printf("%x\n", elf_sym.st_value);
+  printf("%x\n", ELF32_ST_BIND(elf_sym.st_info));
+  printf("%x\n", ELF32_ST_TYPE(elf_sym.st_info));
 }
 
 static int parse_args(int argc, char *argv[]) {
