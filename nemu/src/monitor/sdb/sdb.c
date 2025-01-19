@@ -347,4 +347,8 @@ void init_sdb() {
 
   /* Initialize the breakpoint pool. */
   init_bp_pool();
+
+  for(int i = 0; i < IRING_BUF_SIZE; i++){
+    iringbuf[i] = NULL;
+  }
 }

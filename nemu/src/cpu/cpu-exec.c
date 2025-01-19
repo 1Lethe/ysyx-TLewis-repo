@@ -144,9 +144,6 @@ void cpu_exec(uint64_t n) {
   }
 
   uint64_t timer_start = get_time();
-  for(int i = 0; i < IRING_BUF_SIZE; i++){
-    iringbuf[i] = NULL;
-  }
 
   execute(n);// execute command
 
