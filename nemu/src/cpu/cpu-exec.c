@@ -105,7 +105,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
   memcpy(instbuf, s->logbuf, 128*sizeof(char));
   iringbuf[iring_index++] = instbuf;
 
-
 #endif
 }
 
