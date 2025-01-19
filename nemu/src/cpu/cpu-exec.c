@@ -106,7 +106,9 @@ static void exec_once(Decode *s, vaddr_t pc) {
     Assert(iringbuf[i] == NULL, "iringbuf[i] == NULL");
     free(iringbuf[i]);
 
-    Assert(0,"test");
+    static int time = 0;
+    if(time == 1) Assert(0,"test");
+    else time++;
   }
   char *instbuf = (char *)malloc(128*sizeof(char));
   Assert(instbuf != NULL, "failed to malloc instbuf");
