@@ -101,7 +101,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   char *instbuf = (char *)calloc(32, sizeof(char));
   memset(instbuf, '\0', 32*sizeof(char));
   memcpy(instbuf, s->logbuf, 32*sizeof(char));
-  iringbuf[iring_index] = instbuf;
+  iringbuf[iring_index++] = instbuf;
   for(int i = 0; i < IRING_BUF_SIZE; i++){
     if(iringbuf[i] == NULL){
       break;
