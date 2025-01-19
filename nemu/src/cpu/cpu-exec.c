@@ -90,7 +90,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   memset(iringbuf, '\0', sizeof(iringbuf));
   char instbuf[64];
   memset(instbuf, '\0', sizeof(instbuf));
-  memcpy(instbuf, p, sizeof(instbuf));
+  memcpy(instbuf, s->logbuf, sizeof(instbuf));
   iringbuf[iring_index] = instbuf;
   printf("%s\n", iringbuf[iring_index++]);
 
