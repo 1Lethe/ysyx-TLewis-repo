@@ -143,7 +143,7 @@ static void iringbuf_display(void){
     if(i != iring_index){
       printf("\n");
     }else{
-      printf("<----- Program here.");
+      printf("<----- Program here.\n");
     }
   }
 }
