@@ -101,14 +101,13 @@ static void exec_once(Decode *s, vaddr_t pc) {
   if(iring_index == IRING_BUF_SIZE - 1){
     iring_cycle_flag = true;
     iring_index = 0;
-  
-    static int time = 0;
-    if(time == 5) Assert(0,"");
-    else time++;
   }
   if(iring_cycle_flag){
     Assert(iringbuf[i] == NULL, "iringbuf[i] == NULL");
     free(iringbuf[i]);
+    static int time = 0;
+    if(time == 5) Assert(0,"");
+    else time++;
   }
   char *instbuf = (char *)malloc(128*sizeof(char));
   Assert(instbuf != NULL, "failed to malloc instbuf");
