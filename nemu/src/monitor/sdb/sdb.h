@@ -19,8 +19,6 @@
 #include <common.h>
 #include <cpu/decode.h>
 
-#define IRING_BUF_SIZE 16
-
 #define TOKEN_STR_LEN 32
 #define WP_EXPR_LEN 256
 

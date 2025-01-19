@@ -21,7 +21,6 @@
 #include <readline/history.h>
 #include "sdb.h"
 
-extern char *iringbuf[];
 extern NEMUState nemu_state;
 
 static int is_batch_mode = false;
@@ -55,15 +54,6 @@ static int cmd_c(char *args) {
 
 static int cmd_q(char *args) {
   nemu_state.state = NEMU_QUIT; // Elegantly exit.
-#ifdef CONFIG_ITRACE
-  /* free iringbuf */
-  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
-    if(iringbuf[i] == NULL){
-      continue;
-    }
-    free(iringbuf[i]);
-  }
-#endif
   return -1;
 }
 
@@ -319,7 +309,6 @@ void sdb_mainloop() {
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
   }
-
 }
 
 
