@@ -88,9 +88,9 @@ static void exec_once(Decode *s, vaddr_t pc) {
   static int iring_index = 0;
   char *iringbuf[16];
   memset(iringbuf, '\0', sizeof(iringbuf));
-  char instbuf[32];
+  char instbuf[ilen];
   memset(instbuf, '\0', sizeof(instbuf));
-  memcpy(instbuf, p, 32);
+  memcpy(instbuf, p, ilen);
   iringbuf[iring_index] = instbuf;
   printf("%s\n", iringbuf[iring_index++]);
 
