@@ -89,6 +89,13 @@ static void exec_once(Decode *s, vaddr_t pc) {
 
   /* iringbuf implementation */
   static bool iring_cycle_flag = false;
+  static bool iring_buf_init_flag = false;
+  if(!iring_buf_init_flag){
+    iring_buf_init_flag = true;
+    for(int i = 0; i < IRING_BUF_SIZE; i++){
+      iringbuf[i] = NULL;
+    }
+  }
   if(iring_index == IRING_BUF_SIZE - 1){
     iring_cycle_flag = true;
     iring_index = 0;
