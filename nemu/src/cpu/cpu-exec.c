@@ -101,6 +101,10 @@ static void exec_once(Decode *s, vaddr_t pc) {
   if(iring_index == IRING_BUF_SIZE - 1){
     iring_cycle_flag = true;
     iring_index = 0;
+  
+    static int time = 0;
+    if(time == 5) Assert(0,"");
+    else time++;
   }
   if(iring_cycle_flag){
     Assert(iringbuf[i] == NULL, "iringbuf[i] == NULL");
@@ -153,7 +157,6 @@ void assert_fail_msg() {
 #endif
   statistic();
 }
-
 
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {
