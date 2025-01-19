@@ -101,7 +101,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
     iring_index = 0;
   }
   if(iring_cycle_flag){
-    Assert(iringbuf[i] != NULL, "iringbuf[i] == NULL");
+    Assert(iringbuf[i] == NULL, "iringbuf[i] == NULL");
     free(iringbuf[i]);
   }
   char *instbuf = (char *)malloc(128*sizeof(char));
