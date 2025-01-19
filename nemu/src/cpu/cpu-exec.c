@@ -105,13 +105,14 @@ static void exec_once(Decode *s, vaddr_t pc) {
   if(iring_cycle_flag){
     Assert(iringbuf[i] == NULL, "iringbuf[i] == NULL");
     free(iringbuf[i]);
+
+    Assert(0,"test");
   }
   char *instbuf = (char *)malloc(128*sizeof(char));
   Assert(instbuf != NULL, "failed to malloc instbuf");
   memset(instbuf, '\0', 128*sizeof(char));
   memcpy(instbuf, s->logbuf, 128*sizeof(char));
   iringbuf[iring_index++] = instbuf;
-  Assert(0,"test\n");
 #endif
 }
 
