@@ -76,7 +76,13 @@ static void parse_elf(){
   FILE *fp = fopen(elf_file, "r");
   Assert(fp, "Can out open '%s'",elf_file);
 
-
+  Elf32_Ehdr elf_ehdr;
+  size_t ret = fread(&elf_ehdr, sizeof(uint8_t), sizeof(Elf32_Ehdr), fp);
+  assert(ret);
+  printf("%hhn\n", elf_ehdr.e_ident);
+  printf("%x\n", elf_ehdr.e_type);
+  printf("%x\n", elf_ehdr.e_machine);
+  printf("%x\n", elf_ehdr.e_version);
 }
 
 static int parse_args(int argc, char *argv[]) {
