@@ -81,11 +81,11 @@ static void parse_elf(){
   Assert(elf_ehdr.e_ident[0] == 0x7f || elf_ehdr.e_ident[1] == 'E' || \
     elf_ehdr.e_ident[2] != 'L' || elf_ehdr.e_ident[3] == 'F', "Wrong Elf file.");
 
-  Elf32_Shdr elf_shdr[elf_ehdr.e_shnum];
+  Elf32_Shdr elf_shdr_str;
   Assert(fseek(fp, sizeof(Elf32_Shdr)*(elf_ehdr.e_shstrndx - 1), SEEK_CUR) != -1, "Failed to read '%s' elf_shd", elf_file);
-  printf("%x\n", elf_shdr[elf_ehdr.e_shnum].sh_addr);
-
-  Assert(fread(&elf_shdr[0], 1, sizeof(Elf32_Shdr), fp) == sizeof(Elf32_Shdr), "Failed to read '%s' elf_phd", elf_file);
+  Assert(fread(&elf_shdr_str, 1, sizeof(Elf32_Shdr), fp) == sizeof(Elf32_Shdr), "Failed to read '%s' elf_phd", elf_file);
+  printf("%x\n", elf_shdr_str.sh_addr);
+  
   Assert(fseek(fp, sizeof(Elf32_Shdr), SEEK_CUR) != -1, "Failed to read '%s' elf_shd ", elf_file);
 
   Elf32_Sym elf_sym;
