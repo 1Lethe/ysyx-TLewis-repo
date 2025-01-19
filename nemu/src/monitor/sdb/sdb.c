@@ -22,6 +22,7 @@
 #include "sdb.h"
 
 extern char *iringbuf[IRING_BUF_SIZE];
+extern int iring_index;
 extern NEMUState nemu_state;
 
 static int is_batch_mode = false;
@@ -234,6 +235,7 @@ static int cmd_t(char *args){
       for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
         if(iringbuf[i] == NULL) break;
         printf("%s\n", iringbuf[i]);
+        if(i == iring_index) printf("^^^^^^ Program Here.\n");
       }
     }else{
       printf("Invalid t command input.\n");

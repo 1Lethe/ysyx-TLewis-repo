@@ -37,6 +37,7 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 char *iringbuf[IRING_BUF_SIZE];
+int iring_index = 0;
 
 void device_update();
 
@@ -89,7 +90,6 @@ static void exec_once(Decode *s, vaddr_t pc) {
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
 
   /* iringbuf implementation */
-  static int iring_index = 0;
   static bool iring_cycle_flag = false;
   if(iring_index == IRING_BUF_SIZE - 1){
     iring_cycle_flag = true;
