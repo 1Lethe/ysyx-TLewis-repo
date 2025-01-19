@@ -13,8 +13,6 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#include <stdint.h>
-
 #include <isa.h>
 #include <elf.h>
 #include <memory/paddr.h>
@@ -84,9 +82,10 @@ static void parse_elf(){
     elf_ehdr.e_ident[2] != 'L' || elf_ehdr.e_ident[3] == 'F', "Wrong Elf file.");
 
   Elf32_Shdr elf_shdr[elf_ehdr.e_shnum];
-  Assert(fseek(fp, elf_ehdr.e_shentsize*(elf_ehdr.e_shstrndx - 1), SEEK_CUR) != -1, "Failed to read '%s' elf_shd", elf_file);
-  Assert(fread(&elf_shdr[0], 1, elf_ehdr.e_shentsize, fp) == sizeof(elf_ehdr.e_shentsize), "Failed to read '%s' elf_phd", elf_file);
+  Assert(fseek(fp, sizeof(Elf32_Shdr)*(elf_ehdr.e_shstrndx - 1), SEEK_CUR) != -1, "Failed to read '%s' elf_shd", elf_file);
+  Assert(fread(&elf_shdr[0], 1, sizeof(Elf32_Shdr), fp) == sizeof(Elf32_Shdr), "Failed to read '%s' elf_phd", elf_file);
   Assert(fseek(fp, sizeof(Elf32_Shdr), SEEK_CUR) != -1, "Failed to read '%s' elf_shd ", elf_file);
+
   Elf32_Sym elf_sym;
   Assert(fread(&elf_sym, sizeof(uint8_t), sizeof(Elf32_Sym), fp) == sizeof(Elf32_Sym), "Failed to read '%s' elf_sym", elf_file);
   printf("%x\n", elf_ehdr.e_shstrndx);
