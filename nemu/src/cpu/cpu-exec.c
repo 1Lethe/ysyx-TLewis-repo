@@ -85,8 +85,14 @@ static void exec_once(Decode *s, vaddr_t pc) {
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
 
   /* iringbuf implementation */
-  char iringbuf[16];
+  static int iring_index = 0;
+  char *iringbuf[16];
   memset(iringbuf, '\0', sizeof(iringbuf));
+  char instbuf[32];
+  memset(instbuf, '\0', sizeof(instbuf));
+  memcpy(instbuf, p, 32);
+  iringbuf[iring_index] = instbuf;
+  printf("%s", iringbuf[iring_index++]);
 
 #endif
 }
