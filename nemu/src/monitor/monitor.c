@@ -79,11 +79,12 @@ static void parse_elf(){
   Assert(fp, "Can out open '%s'",elf_file);
 
   Elf32_Ehdr elf_ehdr;
+  Elf32_Shdr elf_shdr;
   Assert(fread(&elf_ehdr, 1, sizeof(Elf32_Ehdr), fp) == sizeof(Elf32_Ehdr), "Failed to read '%s' elf_ehd", elf_file);
   Assert(elf_ehdr.e_ident[0] == 0x7f || elf_ehdr.e_ident[1] == 'E' || \
     elf_ehdr.e_ident[2] != 'L' || elf_ehdr.e_ident[3] == 'F', "Wrong Elf file.");
 
-  Assert(fseek(fp, sizeof(Elf32_Phdr), SEEK_CUR) != -1, "Failed to read '%s' elf_phd", elf_file);
+  Assert(fread(&elf_shdr, elf_ehdr.e_shnum,sizeof(Elf32_Phdr), fp) == elf_ehdr.e_shnum * sizeof(Elf32_Phdr), "Failed to read '%s' elf_phd", elf_file);
   Assert(fseek(fp, sizeof(Elf32_Shdr), SEEK_CUR) != -1, "Failed to read '%s' elf_shd ", elf_file);
   Elf32_Sym elf_sym;
   Assert(fread(&elf_sym, sizeof(uint8_t), sizeof(Elf32_Sym), fp) == sizeof(Elf32_Sym), "Failed to read '%s' elf_sym", elf_file);
