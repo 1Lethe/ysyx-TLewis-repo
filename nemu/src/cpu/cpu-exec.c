@@ -22,6 +22,8 @@
 bool trace_wp();
 bool trace_bp(Decode *s);
 
+/* Size of inst ring buffer */
+#define IRING_BUF_SIZE 16
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -133,10 +135,22 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
+static void iringbuf_display(void){
+  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
+    if(i == iring_index) printf("^^^^^^ Program Here.\n");
+      if(iringbuf[i] == NULL) break;
+      printf("%s\n", iringbuf[i]);
+  }
+}
+
 void assert_fail_msg() {
   isa_reg_display();
+#ifdef CONFIG_ITRACE
+  iringbuf_display();
+#endif
   statistic();
 }
+
 
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {
