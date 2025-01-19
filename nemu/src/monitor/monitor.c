@@ -79,7 +79,7 @@ static void parse_elf(){
   Elf32_Ehdr elf_ehdr;
   size_t ret = fread(&elf_ehdr, sizeof(uint8_t), sizeof(Elf32_Ehdr), fp);
   assert(ret);
-  printf("%d\n", elf_ehdr.e_ident[0]);
+  printf("%x\n", elf_ehdr.e_ident[0]);
   printf("%x\n", elf_ehdr.e_type);
   printf("%x\n", elf_ehdr.e_machine);
   printf("%x\n", elf_ehdr.e_version);
