@@ -18,6 +18,9 @@
 
 #include <common.h>
 
+/* Size of inst ring buffer */
+#define IRING_BUF_SIZE 16
+
 void cpu_exec(uint64_t n);
 
 void set_nemu_state(int state, vaddr_t pc, int halt_ret);

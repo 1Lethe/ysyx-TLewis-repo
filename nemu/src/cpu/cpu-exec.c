@@ -22,7 +22,6 @@
 bool trace_wp();
 bool trace_bp(Decode *s);
 
-#define IRING_BUF_SIZE 16
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -30,7 +29,6 @@ bool trace_bp(Decode *s);
  * You can modify this value as you want.
  */
 #define MAX_INST_TO_PRINT 10
-
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
