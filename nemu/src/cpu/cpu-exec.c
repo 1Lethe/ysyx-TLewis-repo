@@ -183,6 +183,9 @@ static void parse_symtab(Decode *s){
       Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
       }
+  printf("%x\n", shdr_symtab.sh_offset);
+  printf("%x\n", shdr_strtab.sh_offset);
+
     }
 
   vaddr_t pc = s->pc;
