@@ -200,7 +200,7 @@ static void ftrace(Decode *s){
         /* call function or return from function */
 
         /* maintain a stack which contain the value of fun in symbol table */
-        if(funcall_value_stack[funcall_time] != sym_value){
+        if(funcall_value_stack[funcall_time - 1] != sym_value && funcall_time > 1){
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
           /* call function */
