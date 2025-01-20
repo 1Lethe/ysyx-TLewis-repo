@@ -180,8 +180,6 @@ static void parse_symtab(Decode *s){
       Assert(fread(&elf_sym[i], 1, shdr_symtab.sh_entsize, fp) == shdr_symtab.sh_entsize, \
         "Failed to read '%s' symtab[%d]", elf_file, i);
 
-      Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
-        "Failed to read '%s' strtab", elf_file);
       }
     }
 
@@ -189,6 +187,8 @@ static void parse_symtab(Decode *s){
   for(int i = 0; i < elf_sym_num; i++){
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
+      Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
+        "Failed to read '%s' strtab", elf_file);
       printf("value = %x ", elf_sym[i].st_value);
       printf("size = %x\n", elf_sym[i].st_size);
       char str_buf;
