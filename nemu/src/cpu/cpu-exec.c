@@ -223,7 +223,7 @@ static void ftrace(Decode *s){
           if(funcall_value_stack[funcall_time - 1] == sym_value_prev && \
               funcall_value_stack[funcall_time - 2] == sym_value){
             funcall_value_stack[funcall_time - 1] = 0;
-            for(int i = 0;i < funcall_time - 1; i++) printf("  ");
+            for(int i = 0;i < funcall_time - 1; i++) printf(" ");
             printf("ret");
             funcall_time--;
 
@@ -238,7 +238,7 @@ static void ftrace(Decode *s){
           }else{
             funcall_value_stack[funcall_time] = sym_value;
             funcall_time++;
-            for(int i = 0;i < funcall_time - 1; i++) printf("  ");
+            for(int i = 0;i < funcall_time - 1; i++) printf(" ");
             printf("call");
 
 
