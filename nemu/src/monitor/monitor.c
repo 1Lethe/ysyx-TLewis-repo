@@ -126,6 +126,7 @@ static void parse_elf(){
       printf("%x\n", elf_sym[i].st_name);
       printf("%s\n", str);
     }
+
   }
 }
 
