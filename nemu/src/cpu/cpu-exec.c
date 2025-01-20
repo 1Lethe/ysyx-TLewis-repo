@@ -181,7 +181,7 @@ static void ftrace(Decode *s){
       Assert(fread(&elf_sym[i], 1, shdr_symtab.sh_entsize, fp) == shdr_symtab.sh_entsize, \
         "Failed to read '%s' symtab[%d]", elf_file, i);
       }
-
+      funcall_time = 1;
     }
 
   vaddr_t pc = s->pc;
