@@ -186,10 +186,11 @@ static void parse_symtab(Decode *s){
     }
 
   vaddr_t pc = s->pc;
-  printf("0x%x\n", pc);
   for(int i = 0; i < elf_sym_num; i++){
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
+      printf("value = %x", elf_sym[i].st_value);
+      printf("size = %x\n", elf_sym[i].st_size);
       char str_buf;
       char str[20];
       char *str_ptr = str;
