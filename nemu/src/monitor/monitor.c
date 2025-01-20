@@ -101,6 +101,15 @@ static void parse_elf(){
   printf("%x\n", elf_shdr_symtab.sh_offset);
   printf("%d\n", elf_shdr_symtab.sh_size);
   printf("%d\n", elf_shdr_symtab.sh_entsize);
+
+  uint32_t elf_sym_num = elf_shdr_symtab.sh_size / elf_shdr_symtab.sh_entsize;
+  Elf32_Sym elf_sym[elf_sym_num];
+  Assert(fseek(fp, elf_shdr_symtab.sh_offset, SEEK_SET), \
+    "Failed to read '%s' symtab", elf_file);
+  for(int i = 0; i < elf_sym_num; i++){
+    Assert(fread(&elf_sym[i], 1, elf_shdr_symtab.sh_entsize, fp) != -1, \
+      "Failed to read '%s' symtab[%d]", elf_file, i);
+  }
 }
 
 static int parse_args(int argc, char *argv[]) {
