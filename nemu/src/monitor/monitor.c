@@ -93,7 +93,7 @@ static void parse_elf(){
       "Failed to read '%s' shdr[%d]", elf_file, i);
     if(elf_shdr.sh_type == SHT_SYMTAB){
       memcpy(&elf_shdr_symtab, &elf_shdr, elf_ehdr.e_shentsize);
-    }else if(elf_shdr.sh_type == SHT_STRTAB){
+    }else if(elf_shdr.sh_type == SHT_STRTAB && i != elf_ehdr.e_shstrndx){
       memcpy(&elf_shdr_strtab, &elf_shdr, elf_ehdr.e_shentsize);
     }
   }
