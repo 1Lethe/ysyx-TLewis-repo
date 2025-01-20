@@ -186,6 +186,8 @@ static void ftrace(Decode *s){
   vaddr_t pc = s->pc;
   static Elf32_Word sym_value_prev = 0;
   static Elf32_Word sym_value = 0;
+  static int sym_off_prev = 0;
+  static int sym_off = 0;
   for(int i = 0; i < elf_sym_num; i++){
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
@@ -198,7 +200,9 @@ static void ftrace(Decode *s){
       char *str_ptr = str;
 
       sym_value_prev = sym_value;
+      sym_off_prev = sym_off;
       sym_value = elf_sym[i].st_value;
+      sym_off = i;
       if(sym_value != sym_value_prev){
         /* call function or return from function */
         printf("0x%x: ", pc);
@@ -215,6 +219,8 @@ static void ftrace(Decode *s){
             printf("ret");
             funcall_time--;
 
+            Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off_prev].st_name, SEEK_SET) != -1, \
+              "Failed to read '%s' strtab", elf_file);
             memset(str, '\0', 20);
             while((str_buf = fgetc(fp)) != EOF){
               *str_ptr++ = str_buf;
@@ -227,6 +233,9 @@ static void ftrace(Decode *s){
             for(int i = 0;i < funcall_time - 1; i++) printf("  ");
             printf("call");
 
+
+            Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off].st_name, SEEK_SET) != -1, \
+              "Failed to read '%s' strtab", elf_file);
             memset(str, '\0', 20);
             while((str_buf = fgetc(fp)) != EOF){
               *str_ptr++ = str_buf;
