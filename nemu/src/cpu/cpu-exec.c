@@ -182,7 +182,6 @@ static void ftrace(Decode *s){
         "Failed to read '%s' symtab[%d]", elf_file, i);
       }
 
-      funcall_time = 1;
     }
 
   vaddr_t pc = s->pc;
@@ -201,11 +200,11 @@ static void ftrace(Decode *s){
         /* call function or return from function */
 
         /* maintain a stack which contain the value of fun in symbol table */
-        if(funcall_value_stack[funcall_time - 1] != sym_value){
+        if(funcall_value_stack[funcall_time] != sym_value){
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
           /* call function */
-          printf("call : ");
+          printf("%x %x %x %x call : ", funcall_value_stack[0], funcall_value_stack[1], funcall_value_stack[2], funcall_value_stack[3]);
         }else{
           funcall_value_stack[funcall_time] = 0x0;
           funcall_time--;
