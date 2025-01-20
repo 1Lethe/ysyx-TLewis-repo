@@ -119,6 +119,7 @@ static void parse_elf(){
     *str_ptr++ = str_buf;
     if(str_buf == '\0') break;
   }
+  printf("%s\n", str);
 }
 
 static int parse_args(int argc, char *argv[]) {
