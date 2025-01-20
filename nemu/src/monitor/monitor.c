@@ -102,7 +102,6 @@ static void parse_elf(){
   }
 
   /* Parse ELF symbol table */
-  char str[20];char *str_ptr = str;
   uint32_t elf_sym_num = elf_shdr_symtab.sh_size / elf_shdr_symtab.sh_entsize;
   Elf32_Sym elf_sym[elf_sym_num];
   for(int i = 0; i < elf_sym_num; i++){
@@ -113,8 +112,8 @@ static void parse_elf(){
     
     Assert(fseek(fp, elf_shdr_strtab.sh_offset + elf_sym[i].st_name + 1, SEEK_SET) != -1, \
       "Failed to read '%s' strtab", elf_file);
-    memset(str, '\0', 20);
     char str_buf;
+    char str[20];char *str_ptr = str;
     while((str_buf = fgetc(fp)) != EOF){
       *str_ptr++ = str_buf;
       if(str_buf == '\0') break;
