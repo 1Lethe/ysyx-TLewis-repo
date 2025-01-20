@@ -106,7 +106,9 @@ static void parse_elf(){
     "Failed to read '%s' symtab", elf_file);
   uint32_t elf_sym_num = elf_shdr_symtab.sh_size / elf_shdr_symtab.sh_entsize;
   Elf32_Sym elf_sym[elf_sym_num];
-  for(int i = 0; i < elf_sym_num; i++){
+  for(unsigned int i = 0; i < elf_sym_num; i++){
+    Assert(fseek(fp, elf_shdr_symtab.sh_offset + i * elf_shdr_symtab.sh_entsize, SEEK_SET) != -1, \
+      "Failed to read '%s' symtab", elf_file);
     Assert(fread(&elf_sym[i], 1, elf_shdr_symtab.sh_entsize, fp) == elf_shdr_symtab.sh_entsize, \
       "Failed to read '%s' symtab[%d]", elf_file, i);
 
