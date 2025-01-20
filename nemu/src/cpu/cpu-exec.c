@@ -146,10 +146,21 @@ static void iringbuf_display(void){
   }
 }
 
+static void iringbuf_free(void){
+  /* Free iringbuf */
+  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
+    if(iringbuf[i] == NULL){
+      continue;
+    }
+    free(iringbuf[i]);
+  }
+}
+
 void assert_fail_msg() {
   isa_reg_display();
 #ifdef CONFIG_ITRACE
   iringbuf_display();
+  iringbuf_free();
 #endif
   statistic();
 }
@@ -181,6 +192,6 @@ void cpu_exec(uint64_t n) {
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
       // fall through
-    case NEMU_QUIT: statistic();
+    case NEMU_QUIT: iringbuf_free();statistic();
   }
 }

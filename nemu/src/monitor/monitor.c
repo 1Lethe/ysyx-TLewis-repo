@@ -76,6 +76,7 @@ static void parse_elf(){
   FILE *fp = fopen(elf_file, "r");
   Assert(fp, "Can out open '%s'",elf_file);
 
+  /* Read ELF header */
   Elf32_Ehdr elf_ehdr;
   Assert(fread(&elf_ehdr, 1, sizeof(Elf32_Ehdr), fp) == sizeof(Elf32_Ehdr), \
     "Failed to read '%s' elf_ehd", elf_file);
@@ -85,6 +86,7 @@ static void parse_elf(){
   Assert(fseek(fp, elf_ehdr.e_shoff, SEEK_SET) != -1, \
     "Faided to read '%s'", elf_file);
 
+  /* Read ELF Section header and extract symtab and strtab */
   Elf32_Shdr elf_shdr;
   Elf32_Shdr elf_shdr_symtab;
   Elf32_Shdr elf_shdr_strtab;
@@ -98,10 +100,7 @@ static void parse_elf(){
     }
   }
 
-  printf("%x\n", elf_shdr_symtab.sh_offset);
-  printf("%d\n", elf_shdr_symtab.sh_size);
-  printf("%d\n", elf_shdr_symtab.sh_entsize);
-
+  /* Parse ELF symbol table */
   uint32_t elf_sym_num = elf_shdr_symtab.sh_size / elf_shdr_symtab.sh_entsize;
   Elf32_Sym elf_sym[elf_sym_num];
   Assert(fseek(fp, elf_shdr_symtab.sh_offset, SEEK_SET) != -1, \
@@ -109,10 +108,10 @@ static void parse_elf(){
   for(int i = 0; i < elf_sym_num; i++){
     Assert(fread(&elf_sym[i], 1, elf_shdr_symtab.sh_entsize, fp) == elf_shdr_symtab.sh_entsize, \
       "Failed to read '%s' symtab[%d]", elf_file, i);
-    if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC){
-      printf("%d 0x%x\n", elf_sym[i].st_name, elf_sym[i].st_value);
-    }
   }
+
+  /* Parse ELF string table */
+  
 }
 
 static int parse_args(int argc, char *argv[]) {
