@@ -184,23 +184,31 @@ static void ftrace(Decode *s){
     }
 
   vaddr_t pc = s->pc;
+  static Elf32_Word sym_value_prev = 0;
+  static Elf32_Word sym_value = 0;
   for(int i = 0; i < elf_sym_num; i++){
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
+      /* Find the function that is executing */
       Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
       printf("pc = %x value = %x size = %x", pc,elf_sym[i].st_value, elf_sym[i].st_size);
-      char str_buf;
-      char str[20];
-      char *str_ptr = str;
-      memset(str, '\0', 20);
-      while((str_buf = fgetc(fp)) != EOF){
-        *str_ptr++ = str_buf;
-        if(str_buf == '\0') break;
+
+      sym_value_prev = sym_value;
+      sym_value = elf_sym[i].st_value;
+      if(sym_value != sym_value_prev){
+        char str_buf;
+        char str[20];
+        char *str_ptr = str;
+        memset(str, '\0', 20);
+        while((str_buf = fgetc(fp)) != EOF){
+          *str_ptr++ = str_buf;
+          if(str_buf == '\0') break;
+        }
+        printf("%x\n", elf_sym[i].st_name);
+        printf("%s\n", str);
+        break;
       }
-      printf("%x\n", elf_sym[i].st_name);
-      printf("%s\n", str);
-      break;
     }
   }
 
