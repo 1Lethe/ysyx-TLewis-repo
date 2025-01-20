@@ -117,6 +117,7 @@ static void parse_elf(){
   char str_buf;
   while((str_buf = fgetc(fp)) != EOF){
     *str_ptr++ = str_buf;
+    printf("%c\n", str_buf);
     if(str_buf == '\0') break;
   }
   printf("%s\n", str);
