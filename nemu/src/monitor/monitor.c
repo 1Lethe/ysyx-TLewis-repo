@@ -70,7 +70,8 @@ static long load_img() {
 
 static void parse_elf(){
   if(elf_file == NULL){
-    panic("Invaild ELF file.");
+    Log("No elf file is given.");
+    return ;
   }
 
   FILE *fp = fopen(elf_file, "r");
@@ -111,7 +112,7 @@ static void parse_elf(){
   }
 
   /* Parse ELF string table */
-  
+
 }
 
 static int parse_args(int argc, char *argv[]) {
