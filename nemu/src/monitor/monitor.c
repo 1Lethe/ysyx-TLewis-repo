@@ -116,7 +116,7 @@ static void parse_elf(){
   char str[2000];
   Assert(fscanf(fp, "%s", str) != -1, \
     "Failed to read '%s' str", elf_file);
-  printf("%s", str);
+  printf("%s\n", str);
 }
 
 static int parse_args(int argc, char *argv[]) {
