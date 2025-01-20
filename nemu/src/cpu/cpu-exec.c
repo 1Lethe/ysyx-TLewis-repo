@@ -206,9 +206,12 @@ static void ftrace(Decode *s){
         }
         printf("value : %x  ", elf_sym[i].st_value);
         printf("name : %s\n", str);
-        break;
       }
+
+      break;
     }
+    /* not find FUNC type in symbol tab. Must be wrong. */
+    panic("Not find function type in symbol tab.");
   }
 
   fclose(fp);
