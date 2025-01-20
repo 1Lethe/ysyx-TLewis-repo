@@ -109,13 +109,12 @@ static void parse_elf(){
       "Failed to read '%s' symtab", elf_file);
     Assert(fread(&elf_sym[i], 1, elf_shdr_symtab.sh_entsize, fp) == elf_shdr_symtab.sh_entsize, \
       "Failed to read '%s' symtab[%d]", elf_file, i);
-    
+    printf("%x\n", elf_sym[i].st_name);
     Assert(fseek(fp, elf_shdr_strtab.sh_offset + elf_sym[i].st_name + 1, SEEK_SET) != -1, \
       "Failed to read '%s' strtab", elf_file);
     char str_buf;
     char str[20];char *str_ptr = str;
     memset(str, '\0', 20);
-    printf("%s\n", str);
     while((str_buf = fgetc(fp)) != EOF){
       *str_ptr++ = str_buf;
       if(str_buf == '\0') break;
