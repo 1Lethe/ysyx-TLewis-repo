@@ -110,7 +110,7 @@ static void parse_elf(){
     Assert(fread(&elf_sym[i], 1, elf_shdr_symtab.sh_entsize, fp) == elf_shdr_symtab.sh_entsize, \
       "Failed to read '%s' symtab[%d]", elf_file, i);
     //if(elf_sym[i].st_info == STT_FUNC){
-      printf("%d\n", elf_sym[i].st_size);
+      printf("%d\n", elf_sym[i].st_info);
     //}
   }
 }
