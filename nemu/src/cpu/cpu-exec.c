@@ -208,10 +208,12 @@ static void ftrace(Decode *s){
             printf("ret : ");
             funcall_value_stack[funcall_time - 1] = 0;
             funcall_time--;
+            printf("%x %x %x %x %d\n", funcall_value_stack[1], funcall_value_stack[2], funcall_value_stack[3], funcall_value_stack[4], funcall_time);
           }else{
             printf("call : ");
             funcall_value_stack[funcall_time] = sym_value;
             funcall_time++;
+            printf("%x %x %x %x %d\n", funcall_value_stack[1], funcall_value_stack[2], funcall_value_stack[3], funcall_value_stack[4], funcall_time);
           }
         }
 
