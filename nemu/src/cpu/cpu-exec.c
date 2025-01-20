@@ -211,6 +211,14 @@ static void ftrace(Decode *s){
           printf("call");
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
+          Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off_prev].st_name, SEEK_SET) != -1, \
+            "Failed to read '%s' strtab", elf_file);
+          memset(str, '\0', 20);
+          while((str_buf = fgetc(fp)) != EOF){
+            *str_ptr++ = str_buf;
+            if(str_buf == '\0') break;
+          }
+          printf("[%s]\n", str);
         }else{
           if(funcall_value_stack[funcall_time - 1] == sym_value_prev && \
               funcall_value_stack[funcall_time - 2] == sym_value){
