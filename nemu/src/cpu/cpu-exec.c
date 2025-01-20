@@ -46,7 +46,8 @@ extern char *elf_file;
 extern Elf32_Shdr shdr_strtab;
 extern Elf32_Shdr shdr_symtab;
 
-uint32_t funcall_stack[MAX_FUN_CALL_TRACE];
+uint32_t funcall_value_stack[MAX_FUN_CALL_TRACE] = {0};
+int funcall_time = 0;
 
 void device_update();
 static void ftrace(Decode *s);
@@ -179,7 +180,6 @@ static void ftrace(Decode *s){
         "Failed to read '%s' symtab[%d]", elf_file, i);
       Assert(fread(&elf_sym[i], 1, shdr_symtab.sh_entsize, fp) == shdr_symtab.sh_entsize, \
         "Failed to read '%s' symtab[%d]", elf_file, i);
-
       }
     }
 
@@ -196,6 +196,21 @@ static void ftrace(Decode *s){
       sym_value_prev = sym_value;
       sym_value = elf_sym[i].st_value;
       if(sym_value != sym_value_prev){
+        /* call function or return from function */
+
+        /* maintain a stack which contain the value of fun in symbol table */
+        if(funcall_value_stack[funcall_time] != sym_value){
+          funcall_value_stack[funcall_time] = sym_value;
+          funcall_time++;
+          /* call function */
+          printf("call : ");
+        }else{
+          funcall_value_stack[funcall_time] = 0x0;
+          funcall_time--;
+          /* return function */
+          printf("ret : ");
+        }
+
         char str_buf;
         char str[20];
         char *str_ptr = str;
