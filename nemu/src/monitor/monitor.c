@@ -113,7 +113,7 @@ static void parse_elf(){
 
   Assert(fseek(fp, elf_shdr_strtab.sh_offset, SEEK_SET) != -1, \
     "Failed to read '%s' strtab", elf_file);
-  char str[20];
+  char str[200];
   Assert(fscanf(fp, "%s", str) != -1, \
     "Failed to read '%s' str", elf_file);
   printf("%s", str);
