@@ -197,7 +197,7 @@ static void ftrace(Decode *s){
       sym_value = elf_sym[i].st_value;
       if(sym_value != sym_value_prev){
         /* call function or return from function */
-        printf("0x%x:", pc);
+        printf("0x%x: ", pc);
         /* maintain a stack which contain the value of fun in symbol table */
         if(sym_value == 0x80000000){
           printf("call");
