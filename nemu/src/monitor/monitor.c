@@ -99,7 +99,7 @@ static void parse_elf(){
   }
 
   printf("%x\n", elf_shdr_symtab.sh_offset);
-  printf("%x\n", elf_shdr_symtab.sh_entsize);
+  printf("%x\n", elf_shdr_symtab.sh_size / elf_shdr_symtab.sh_entsize);
 }
 
 static int parse_args(int argc, char *argv[]) {
