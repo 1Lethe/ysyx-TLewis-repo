@@ -102,25 +102,25 @@ static void parse_elf(){
   }
 
   /* Parse ELF symbol table */
+  char str[20];char *str_ptr = str;
   uint32_t elf_sym_num = elf_shdr_symtab.sh_size / elf_shdr_symtab.sh_entsize;
   Elf32_Sym elf_sym[elf_sym_num];
-  Assert(fseek(fp, elf_shdr_symtab.sh_offset, SEEK_SET) != -1, \
-    "Failed to read '%s' symtab", elf_file);
   for(int i = 0; i < elf_sym_num; i++){
+    Assert(fseek(fp, elf_shdr_symtab.sh_offset, SEEK_SET) != -1, \
+      "Failed to read '%s' symtab", elf_file);
     Assert(fread(&elf_sym[i], 1, elf_shdr_symtab.sh_entsize, fp) == elf_shdr_symtab.sh_entsize, \
       "Failed to read '%s' symtab[%d]", elf_file, i);
+    
+    Assert(fseek(fp, elf_shdr_strtab.sh_offset + elf_sym[12].st_name + 1, SEEK_SET) != -1, \
+      "Failed to read '%s' strtab", elf_file);
+    memset(str, '\0', 20);
+    char str_buf;
+    while((str_buf = fgetc(fp)) != EOF){
+      *str_ptr++ = str_buf;
+      if(str_buf == '\0') break;
+    }
+    printf("%s\n", str);
   }
-
-  Assert(fseek(fp, elf_shdr_strtab.sh_offset + elf_sym[12].st_name + 1, SEEK_SET) != -1, \
-    "Failed to read '%s' strtab", elf_file);
-  char str[20];char *str_ptr = str;
-  char str_buf;
-  while((str_buf = fgetc(fp)) != EOF){
-    *str_ptr++ = str_buf;
-    printf("%c\n", str_buf);
-    if(str_buf == '\0') break;
-  }
-  printf("%s\n", str);
 }
 
 static int parse_args(int argc, char *argv[]) {
