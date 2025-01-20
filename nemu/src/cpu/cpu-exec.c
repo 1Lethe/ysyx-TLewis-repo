@@ -49,7 +49,7 @@ extern Elf32_Shdr shdr_symtab;
 uint32_t funcall_stack[MAX_FUN_CALL_TRACE];
 
 void device_update();
-static void parse_symtab(Decode *s);
+static void ftrace(Decode *s);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
@@ -123,7 +123,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   iringbuf[iring_index++] = instbuf;
 #endif
 
-  parse_symtab(s);
+  ftrace(s);
 
 }
 
@@ -159,7 +159,7 @@ static void iringbuf_display(void){
   }
 }
 
-static void parse_symtab(Decode *s){
+static void ftrace(Decode *s){
   static bool symtab_init_flag = false;
   static Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
   static uint32_t elf_sym_num = 0;
