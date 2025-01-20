@@ -192,7 +192,6 @@ static void ftrace(Decode *s){
       /* Find the function that is executing */
       Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
-      printf("pc = %x value = %x size = %x", pc,elf_sym[i].st_value, elf_sym[i].st_size);
 
       sym_value_prev = sym_value;
       sym_value = elf_sym[i].st_value;
