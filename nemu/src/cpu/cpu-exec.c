@@ -200,6 +200,7 @@ static void ftrace(Decode *s){
 
         /* maintain a stack which contain the value of fun in symbol table */
         if(pc == 0x80000000){
+          printf("call : ");
           funcall_time++;
         }else{
           if(funcall_value_stack[funcall_time - 1] == sym_value_prev && \
