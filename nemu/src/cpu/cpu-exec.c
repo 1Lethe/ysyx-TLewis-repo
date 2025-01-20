@@ -226,7 +226,7 @@ static void ftrace(Decode *s){
               *str_ptr++ = str_buf;
               if(str_buf == '\0') break;
             }
-            printf("[%s@0x%x]\n", str, elf_sym[i].st_value);
+            printf("[%s]\n", str);
           }else{
             funcall_value_stack[funcall_time] = sym_value;
             funcall_time++;
