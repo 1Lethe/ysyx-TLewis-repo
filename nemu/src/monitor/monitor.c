@@ -95,6 +95,7 @@ static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
   Elf32_Shdr elf_shdr_symtab;
   Elf32_Shdr elf_shdr_strtab;
   for(int i = 0; i < elf_ehdr.e_shnum; i++){
+    memset(&elf_shdr, 0, sizeof(Elf32_Shdr));
     Assert(fread(&elf_shdr, 1, elf_ehdr.e_shentsize, fp) != -1, \
       "Failed to read '%s' shdr[%d]", elf_file, i);
     if(elf_shdr.sh_type == SHT_SYMTAB){
@@ -103,6 +104,7 @@ static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
       memcpy(&elf_shdr_strtab, &elf_shdr, elf_ehdr.e_shentsize);
     }
   }
+
 
   fclose(fp);
   *shdr_strtab_ret = elf_shdr_strtab;
