@@ -115,15 +115,17 @@ static void parse_elf(){
     Assert(fseek(fp, elf_shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
       "Failed to read '%s' strtab", elf_file);
 
-    char str_buf;
-    char str[20];char *str_ptr = str;
-    memset(str, '\0', 20);
-    while((str_buf = fgetc(fp)) != EOF){
-      *str_ptr++ = str_buf;
-      if(str_buf == '\0') break;
+    if(elf_sym[i].st_name != 0){
+      char str_buf;
+      char str[20];char *str_ptr = str;
+      memset(str, '\0', 20);
+      while((str_buf = fgetc(fp)) != EOF){
+        *str_ptr++ = str_buf;
+        if(str_buf == '\0') break;
+      }
+      printf("%x\n", elf_sym[i].st_name);
+      printf("%s\n", str);
     }
-    printf("%x\n", elf_sym[i].st_name);
-    printf("%s\n", str);
   }
 }
 
