@@ -181,6 +181,8 @@ static void ftrace(Decode *s){
       Assert(fread(&elf_sym[i], 1, shdr_symtab.sh_entsize, fp) == shdr_symtab.sh_entsize, \
         "Failed to read '%s' symtab[%d]", elf_file, i);
       }
+
+      funcall_time = 1;
     }
 
   vaddr_t pc = s->pc;
@@ -199,7 +201,7 @@ static void ftrace(Decode *s){
         /* call function or return from function */
 
         /* maintain a stack which contain the value of fun in symbol table */
-        if(funcall_value_stack[funcall_time] != sym_value){
+        if(funcall_value_stack[funcall_time - 1] != sym_value){
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
           /* call function */
