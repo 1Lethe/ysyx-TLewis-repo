@@ -110,7 +110,8 @@ static void parse_elf(){
     Assert(fread(&elf_sym[i], 1, elf_shdr_symtab.sh_entsize, fp) == elf_shdr_symtab.sh_entsize, \
       "Failed to read '%s' symtab[%d]", elf_file, i);
     printf("%x\n", elf_sym[i].st_info);
-    Assert(fseek(fp, elf_shdr_strtab.sh_offset + elf_sym[i].st_name + 1, SEEK_SET) != -1, \
+  }
+    Assert(fseek(fp, elf_shdr_strtab.sh_offset + elf_sym[3].st_name + 1, SEEK_SET) != -1, \
       "Failed to read '%s' strtab", elf_file);
     
     char str_buf;
@@ -121,7 +122,6 @@ static void parse_elf(){
       if(str_buf == '\0') break;
     }
     printf("%s\n", str);
-  }
 }
 
 static int parse_args(int argc, char *argv[]) {
