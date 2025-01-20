@@ -111,8 +111,12 @@ static void parse_elf(){
       "Failed to read '%s' symtab[%d]", elf_file, i);
   }
 
-  /* Parse ELF string table */
-
+  Assert(fseek(fp, elf_shdr_strtab.sh_offset, SEEK_SET) != -1, \
+    "Failed to read '%s' strtab", elf_file);
+  char str[20];
+  Assert(fscanf(fp, "%s", str) != -1, \
+    "Failed to read '%s' str", elf_file);
+  printf("%s", str);
 }
 
 static int parse_args(int argc, char *argv[]) {
