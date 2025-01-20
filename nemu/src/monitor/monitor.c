@@ -122,6 +122,7 @@ static void parse_elf(){
       *str_ptr++ = str_buf;
       if(str_buf == '\0') break;
     }
+    printf("%x\n", elf_sym[i].st_size);
     printf("%s\n", str);
   }
 }
