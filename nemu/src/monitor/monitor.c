@@ -77,21 +77,26 @@ static void parse_elf(){
   Assert(fp, "Can out open '%s'",elf_file);
 
   Elf32_Ehdr elf_ehdr;
-  Assert(fread(&elf_ehdr, 1, sizeof(Elf32_Ehdr), fp) == sizeof(Elf32_Ehdr), "Failed to read '%s' elf_ehd", elf_file);
+  Assert(fread(&elf_ehdr, 1, sizeof(Elf32_Ehdr), fp) == sizeof(Elf32_Ehdr), \
+    "Failed to read '%s' elf_ehd", elf_file);
   Assert(elf_ehdr.e_ident[0] == 0x7f || elf_ehdr.e_ident[1] == 'E' || \
     elf_ehdr.e_ident[2] != 'L' || elf_ehdr.e_ident[3] == 'F', "Wrong Elf file.");
 
-  Elf32_Shdr elf_shdr_str;
-  Assert(fseek(fp, sizeof(Elf32_Shdr)*(elf_ehdr.e_shstrndx - 1), SEEK_CUR) != -1, "Failed to read '%s' elf_shd", elf_file);
-  Assert(fread(&elf_shdr_str, 1, sizeof(Elf32_Shdr), fp) == sizeof(Elf32_Shdr), "Failed to read '%s' elf_phd", elf_file);
-  printf("%x\n", elf_shdr_str.sh_name);
-  
-  Assert(fseek(fp, sizeof(Elf32_Shdr), SEEK_CUR) != -1, "Failed to read '%s' elf_shd ", elf_file);
+  Assert(fseek(fp, elf_ehdr.e_shoff, SEEK_SET) != -1, \
+    "Faided to read '%s'", elf_file);
 
-  Elf32_Sym elf_sym;
-  Assert(fread(&elf_sym, sizeof(uint8_t), sizeof(Elf32_Sym), fp) == sizeof(Elf32_Sym), "Failed to read '%s' elf_sym", elf_file);
-  printf("%x\n", elf_ehdr.e_shstrndx);
-  printf("%x\n", elf_sym.st_value);
+  Elf32_Shdr elf_shdr;
+  Elf32_Shdr elf_shdr_symtab;
+  Elf32_Shdr elf_shdr_strtab;
+  for(int i = 0; i < elf_ehdr.e_shnum; i++){
+    Assert(fread(&elf_shdr, 1, elf_ehdr.e_shentsize, fp) != -1, \
+      "Failed to read '%s' shdr[%d]", elf_file, i);
+    if(elf_shdr.sh_type == SHT_SYMTAB){
+      memcpy(&elf_shdr_symtab, &elf_shdr, elf_ehdr.e_shentsize);
+    }else if(elf_shdr.sh_type == SHT_STRTAB){
+      memcpy(&elf_shdr_strtab, &elf_shdr, elf_ehdr.e_shentsize);
+    }
+  }
 }
 
 static int parse_args(int argc, char *argv[]) {
