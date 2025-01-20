@@ -189,8 +189,7 @@ static void parse_symtab(Decode *s){
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
       Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
-      printf("value = %x ", elf_sym[i].st_value);
-      printf("size = %x\n", elf_sym[i].st_size);
+      printf("pc = %x value = %x size = %x", pc,elf_sym[i].st_value, elf_sym[i].st_size);
       char str_buf;
       char str[20];
       char *str_ptr = str;
