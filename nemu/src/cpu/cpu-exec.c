@@ -199,6 +199,7 @@ static void parse_symtab(Decode *s){
       }
       printf("%x\n", elf_sym[i].st_name);
       printf("%s\n", str);
+      break;
     }
   }
 
