@@ -111,9 +111,9 @@ static void parse_elf(){
       "Failed to read '%s' symtab[%d]", elf_file, i);
   }
 
-  Assert(fseek(fp, elf_shdr_strtab.sh_offset, SEEK_SET) != -1, \
+  Assert(fseek(fp, elf_shdr_strtab.sh_offset + elf_sym[3].st_name, SEEK_SET) != -1, \
     "Failed to read '%s' strtab", elf_file);
-  uint8_t str[20];
+  char str[20];
   Assert(fscanf(fp, "%s", str) != -1, \
     "Failed to read '%s' str", elf_file);
   printf("%s\n", str);
