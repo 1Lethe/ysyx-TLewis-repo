@@ -204,7 +204,7 @@ static void ftrace(Decode *s){
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
           /* call function */
-          printf("%x %x %x %x call : ", funcall_value_stack[0], funcall_value_stack[1], funcall_value_stack[2], funcall_value_stack[3]);
+          printf("%x %x %x %x %d call : ", funcall_value_stack[0], funcall_value_stack[1], funcall_value_stack[2], funcall_value_stack[3], funcall_time);
         }else{
           funcall_value_stack[funcall_time] = 0x0;
           funcall_time--;
