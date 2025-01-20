@@ -115,6 +115,7 @@ static void parse_elf(){
     char str_buf;
     char str[20];char *str_ptr = str;
     memset(str, '\0', 20);
+    printf("%s\n", str);
     while((str_buf = fgetc(fp)) != EOF){
       *str_ptr++ = str_buf;
       if(str_buf == '\0') break;
