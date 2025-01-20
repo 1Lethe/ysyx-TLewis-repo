@@ -97,6 +97,8 @@ static void parse_elf(){
       memcpy(&elf_shdr_strtab, &elf_shdr, elf_ehdr.e_shentsize);
     }
   }
+  printf("%x\n", elf_shdr_symtab.sh_offset);
+  printf("%x\n", elf_shdr_strtab.sh_offset);
 }
 
 static int parse_args(int argc, char *argv[]) {
