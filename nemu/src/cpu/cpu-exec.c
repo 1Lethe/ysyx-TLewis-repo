@@ -199,9 +199,9 @@ static void ftrace(Decode *s){
         /* call function or return from function */
 
         /* maintain a stack which contain the value of fun in symbol table */
-        if(pc == 0x80000000){
+        if(sym_value == 0x80000000){
           printf("call : ");
-          funcall_value_stack[funcall_time] = 0x10213;
+          funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
           printf("%x %x %x %x %d | ", funcall_value_stack[1], funcall_value_stack[2], funcall_value_stack[3], funcall_value_stack[4], funcall_time);
         }else{
