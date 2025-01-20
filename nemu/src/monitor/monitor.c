@@ -105,7 +105,6 @@ static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
     }
   }
 
-
   fclose(fp);
   *shdr_strtab_ret = elf_shdr_strtab;
   *shdr_symtab_ret = elf_shdr_symtab;
