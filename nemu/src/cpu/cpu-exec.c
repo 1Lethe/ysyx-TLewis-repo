@@ -193,27 +193,17 @@ static void ftrace(Decode *s){
       Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
 
-      char str_buf;
-      char str[20];
-      char *str_ptr = str;
-
       sym_value_prev = sym_value;
       sym_value = elf_sym[i].st_value;
       if(sym_value != sym_value_prev){
         /* call function or return from function */
         printf("0x%x: ", pc);
-        memset(str, '\0', 20);
-        
-        while((str_buf = fgetc(fp)) != EOF){
-          *str_ptr++ = str_buf;
-          if(str_buf == '\0') break;
-        }
-        
         /* maintain a stack which contain the value of fun in symbol table */
         if(sym_value == 0x80000000){
           printf("call");
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
+          //printf("%x %x %x %x %d | ", funcall_value_stack[0], funcall_value_stack[1], funcall_value_stack[2], funcall_value_stack[3], funcall_time);
         }else{
           if(funcall_value_stack[funcall_time - 1] == sym_value_prev && \
               funcall_value_stack[funcall_time - 2] == sym_value){
@@ -221,23 +211,34 @@ static void ftrace(Decode *s){
             for(int i = 0;i < funcall_time - 1; i++) printf("  ");
             printf("ret");
             funcall_time--;
+            //printf("%x %x %x %x %d | ", funcall_value_stack[0], funcall_value_stack[1], funcall_value_stack[2], funcall_value_stack[3], funcall_time);
           }else{
             funcall_value_stack[funcall_time] = sym_value;
             funcall_time++;
             for(int i = 0;i < funcall_time - 1; i++) printf("  ");
             printf("call");
-
-            printf("[%s@0x%x]\n", str, elf_sym[i].st_value);
+            //printf("%x %x %x %x %d | ", funcall_value_stack[0], funcall_value_stack[1], funcall_value_stack[2], funcall_value_stack[3], funcall_time);
           }
         }
-        break;
+
+        char str_buf;
+        char str[20];
+        char *str_ptr = str;
+        memset(str, '\0', 20);
+        while((str_buf = fgetc(fp)) != EOF){
+          *str_ptr++ = str_buf;
+          if(str_buf == '\0') break;
+        }
+        printf("[%s@0x%x]\n", str, elf_sym[i].st_value);
       }
+
+      break;
+    }
     /* not find FUNC type in symbol tab. Must be wrong. */
     if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
-
-    }
-    fclose(fp);
   }
+
+  fclose(fp);
 }
 
 static void iringbuf_free(void){
