@@ -204,8 +204,8 @@ static void ftrace(Decode *s){
           *str_ptr++ = str_buf;
           if(str_buf == '\0') break;
         }
-        printf("%x\n", elf_sym[i].st_name);
-        printf("%s\n", str);
+        printf("value : %x  ", elf_sym[i].st_value);
+        printf("name : %s\n", str);
         break;
       }
     }
