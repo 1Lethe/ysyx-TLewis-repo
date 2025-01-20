@@ -43,8 +43,11 @@ void sdb_set_batch_mode();
 static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
-static char *elf_file = NULL;
+char *elf_file = NULL;
 static int difftest_port = 1234;
+
+Elf32_Shdr shdr_strtab;
+Elf32_Shdr shdr_symtab;
 
 static long load_img() {
   if (img_file == NULL) {
@@ -68,7 +71,7 @@ static long load_img() {
   return size;
 }
 
-static void parse_elf(){
+static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
   if(elf_file == NULL){
     Log("No elf file is given.");
     return ;
@@ -101,33 +104,10 @@ static void parse_elf(){
     }
   }
 
-  /* Parse ELF symbol table */
-  Assert(fseek(fp, elf_shdr_symtab.sh_offset, SEEK_SET) != -1, \
-    "Failed to read '%s' symtab", elf_file);
-  uint32_t elf_sym_num = elf_shdr_symtab.sh_size / elf_shdr_symtab.sh_entsize;
-  Elf32_Sym elf_sym[elf_sym_num];
-  for(int i = 0; i < elf_sym_num; i++){
-    Assert(fseek(fp, elf_shdr_symtab.sh_offset + i * elf_shdr_symtab.sh_entsize, SEEK_SET) != -1, \
-      "Failed to read '%s' symtab[%d]", elf_file, i);
-    Assert(fread(&elf_sym[i], 1, elf_shdr_symtab.sh_entsize, fp) == elf_shdr_symtab.sh_entsize, \
-      "Failed to read '%s' symtab[%d]", elf_file, i);
-
-    Assert(fseek(fp, elf_shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
-      "Failed to read '%s' strtab", elf_file);
-
-    if(elf_sym[i].st_name != 0){
-      char str_buf;
-      char str[20];char *str_ptr = str;
-      memset(str, '\0', 20);
-      while((str_buf = fgetc(fp)) != EOF){
-        *str_ptr++ = str_buf;
-        if(str_buf == '\0') break;
-      }
-      printf("%x\n", elf_sym[i].st_name);
-      printf("%s\n", str);
-    }
-
-  }
+  fclose(fp);
+  *shdr_strtab_ret = elf_shdr_strtab;
+  *shdr_symtab_ret = elf_shdr_symtab;
+  return ;
 }
 
 static int parse_args(int argc, char *argv[]) {
@@ -187,7 +167,7 @@ void init_monitor(int argc, char *argv[]) {
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
 
-  parse_elf();
+  parse_elf(&shdr_strtab, &shdr_symtab);
 
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);

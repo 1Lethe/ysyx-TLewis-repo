@@ -18,12 +18,14 @@
 #include <cpu/difftest.h>
 #include <memory/paddr.h>
 #include <locale.h>
+#include <elf.h>
 
 bool trace_wp();
 bool trace_bp(Decode *s);
 
 /* Size of inst ring buffer */
 #define IRING_BUF_SIZE 16
+#define MAX_FUN_CALL_TRACE 1000
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -39,7 +41,15 @@ static bool g_print_step = false;
 char *iringbuf[IRING_BUF_SIZE];
 int iring_index = 0;
 
+extern char *elf_file;
+
+extern Elf32_Shdr shdr_strtab;
+extern Elf32_Shdr shdr_symtab;
+
+uint32_t funcall_stack[MAX_FUN_CALL_TRACE];
+
 void device_update();
+static void parse_symtab(Decode *s);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
@@ -112,6 +122,9 @@ static void exec_once(Decode *s, vaddr_t pc) {
   memcpy(instbuf, s->logbuf, 128*sizeof(char));
   iringbuf[iring_index++] = instbuf;
 #endif
+
+  parse_symtab(s);
+
 }
 
 static void execute(uint64_t n) {
@@ -144,6 +157,52 @@ static void iringbuf_display(void){
       printf("<----- Program crash.\n");
     }
   }
+}
+
+static void parse_symtab(Decode *s){
+  static bool symtab_init_flag = false;
+  static Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
+  static uint32_t elf_sym_num = 0;
+
+  FILE *fp = fopen(elf_file, "r");
+  Assert(fp != NULL, "Failed to read elf_file");
+
+  if(!symtab_init_flag){
+    symtab_init_flag = true;
+
+    /* Init ELF symbol table */
+    Assert(fseek(fp, shdr_symtab.sh_offset, SEEK_SET) != -1, \
+      "Failed to read '%s' symtab", elf_file);
+    elf_sym_num = shdr_symtab.sh_size / shdr_symtab.sh_entsize;
+    for(int i = 0; i < elf_sym_num; i++){
+      Assert(fseek(fp, shdr_symtab.sh_offset + i * shdr_symtab.sh_entsize, SEEK_SET) != -1, \
+        "Failed to read '%s' symtab[%d]", elf_file, i);
+      Assert(fread(&elf_sym[i], 1, shdr_symtab.sh_entsize, fp) == shdr_symtab.sh_entsize, \
+        "Failed to read '%s' symtab[%d]", elf_file, i);
+
+      Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
+        "Failed to read '%s' strtab", elf_file);
+      }
+    }
+
+  vaddr_t pc = s->pc;
+  for(int i = 0; i < elf_sym_num; i++){
+    if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
+      pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
+      char str_buf;
+      char str[20];
+      char *str_ptr = str;
+      memset(str, '\0', 20);
+      while((str_buf = fgetc(fp)) != EOF){
+        *str_ptr++ = str_buf;
+        if(str_buf == '\0') break;
+      }
+      printf("%x\n", elf_sym[i].st_name);
+      printf("%s\n", str);
+    }
+  }
+
+  fclose(fp);
 }
 
 static void iringbuf_free(void){
