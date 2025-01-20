@@ -114,6 +114,7 @@ static void parse_elf(){
       "Failed to read '%s' strtab", elf_file);
     char str_buf;
     char str[20];char *str_ptr = str;
+    memset(str, '\0', 20);
     while((str_buf = fgetc(fp)) != EOF){
       *str_ptr++ = str_buf;
       if(str_buf == '\0') break;
