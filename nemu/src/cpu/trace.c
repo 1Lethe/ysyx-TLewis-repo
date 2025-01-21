@@ -36,7 +36,7 @@ void iring_init(void){
 void iring(Decode *s){
   static bool iring_cycle_flag = false;
 
-  if(iring_index == IRING_BUF_SIZE - 1){
+  if(iring_index == IRING_BUF_SIZE){
     iring_cycle_flag = true;
     iring_index = 0;
   }
