@@ -153,14 +153,14 @@ void ftrace(Decode *s){
               for(int i = 0;i < funcall_time; i++) printf(" ");
               printf("ret");
               funcall_time--;
-              printf("%d [%s]\n", funcall_time,read_sym_str(sym_off_prev));
+              printf("[%s]\n", read_sym_str(sym_off_prev));
             }else{
               /* Call */
               funcall_value_stack[funcall_time] = sym_value;
               funcall_time++;
               for(int i = 0;i < funcall_time; i++) printf(" ");
               printf("call");
-              printf("%d [%s@0x%x]\n", funcall_time,read_sym_str(sym_off), elf_sym[i].st_value);
+              printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
             }
           }
         }
