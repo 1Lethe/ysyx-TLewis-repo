@@ -9,7 +9,7 @@
 /* Size of inst ring buffer */
 #define IRING_BUF_SIZE 16
 /* Size of fun call stack */
-#define MAX_FUN_CALL_TRACE 500
+#define MAX_FUN_CALL_TRACE 100
 
 #define PRINTF_SPACE(n) for(int __i = 0; __i < n; __i++) printf(" ");
 
