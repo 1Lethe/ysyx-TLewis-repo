@@ -132,14 +132,13 @@ void ftrace(Decode *s){
           printf("call");
           funcall_name_stack[funcall_time] = sym_name;
           funcall_time++;
-          printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
+          printf("[%s@0x%x],%d\n", read_sym_str(sym_off), elf_sym[i].st_value, funcall_time);
         }else if(funcall_time == 1){
           /* call _trm_init */
-          for(int i = 0;i < funcall_time; i++) printf(" ");
-          printf("call");
+          PRINTF_SPACE(funcall_time);
           funcall_name_stack[funcall_time] = sym_name;
           funcall_time++;
-          printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
+          printf("call[%s@0x%x],%d\n", read_sym_str(sym_off), elf_sym[i].st_value,funcall_time);
         }else{
           if(funcall_time > MAX_FUN_CALL_TRACE){
             panic("fun call time > MAX");
