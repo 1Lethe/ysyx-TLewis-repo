@@ -82,7 +82,7 @@ void ftrace_init(void){
   fclose(fp);
 }
 
-char *read_sym_str(Elf32_Word off){
+char *read_sym_str(int off_from_symtable){
   char str_buf;
   static char sym_str[50];
   char *str_ptr = sym_str;
@@ -90,7 +90,7 @@ char *read_sym_str(Elf32_Word off){
   FILE *fp = fopen(elf_file, "r");
   Assert(fp != NULL, "Failed to read elf_file");
 
-  Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[off].st_name, SEEK_SET) != -1, \
+  Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[off_from_symtable].st_name, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
   memset(sym_str, '\0', 50);
   while((str_buf = fgetc(fp)) != EOF){
@@ -107,7 +107,6 @@ void ftrace(Decode *s){
   static Elf32_Word sym_name = 0;
   static Elf32_Word sym_name_prev = 0;
   static int sym_off = 0;
-  static int sym_off_prev = 0;
 
   vaddr_t pc = s->pc;
 
@@ -118,7 +117,6 @@ void ftrace(Decode *s){
       /* Find the function that is executing */
       sym_name_prev = sym_name;
       sym_name = elf_sym[i].st_name;
-      sym_off_prev = sym_off;
       sym_off = i;
 
       /* call function or return from function */
@@ -140,7 +138,7 @@ void ftrace(Decode *s){
           funcall_name_stack[funcall_time] = sym_name;
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
-        }else{ 
+        }else{
           if(funcall_time > MAX_FUN_CALL_TRACE){
             panic("fun call time > MAX");
           }else if(funcall_time < 0){
@@ -148,33 +146,23 @@ void ftrace(Decode *s){
           }
 
           int search_time = 0;
-          /* The top of stack is the fun called previously */
+          /* The top of stack is the function called previously */
           if(funcall_name_stack[funcall_time - 1] == sym_name_prev){
-            if(funcall_name_stack[funcall_time - 2] != sym_name){
-              /* else => fun Call */
-              funcall_name_stack[funcall_time] = sym_name; // push
-              funcall_time++;
-              for(int i = 0;i < funcall_time; i++) printf(" ");
-              printf("call");
-              printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
-              break;
-            }
-
-            for(int i = funcall_time - 1; i > 0; i--){
+            for(int j = funcall_time - 1; j > 0; j--){
               search_time++;
-              if(funcall_name_stack[i] == sym_name){
+              if(funcall_name_stack[j] == sym_name){
+                /* If find the sym_name in stack, must be ret */
                 funcall_time = funcall_time - search_time + 1;
+                printf("ret[%s]",read_sym_str(funcall_time));
+                return ;
               }
             }
-            if(funcall_name_stack[funcall_time - 2] == sym_name){
-              /* and the previous fun name of the top is the fun called now => fun Ret */
-              funcall_name_stack[funcall_time - 1] = 0; // pop
-              for(int i = 0;i < funcall_time; i++) printf(" ");
-              printf("ret");
-              funcall_time--;
-              printf("[%s]\n", read_sym_str(sym_off_prev));
-              break;
-            }
+
+            /* If not find, must be call */
+            funcall_name_stack[funcall_time] = sym_name;
+            funcall_time++;
+            printf("call[%s@0x%x]", read_sym_str(funcall_time - 1), elf_sym[i].st_value);
+            return ;
           }
         }
       }
