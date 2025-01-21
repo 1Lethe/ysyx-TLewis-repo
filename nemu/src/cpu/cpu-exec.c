@@ -54,7 +54,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_BREAKPOINT
   is_bp_stop = trace_bp(_this);
 #endif
-  if(is_wp_stop || is_bp_stop) nemu_state.state = NEMU_STOP;
+  if(is_wp_stop || is_bp_stop) {Assert(0,"TEST");nemu_state.state = NEMU_STOP;}
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
@@ -88,7 +88,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 
   iring(s);
 #endif
-#ifdef CONFIG_IFTRACE
+#ifdef CONFIG_FTRACE
   ftrace(s);
 #endif
 }
