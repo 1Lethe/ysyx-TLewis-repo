@@ -142,7 +142,6 @@ void ftrace(Decode *s){
             for(int i = 0;i < funcall_time - 1; i++) printf(" ");
             printf("call");
 
-
             Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off].st_name, SEEK_SET) != -1, \
               "Failed to read '%s' strtab", elf_file);
             memset(str, '\0', 20);

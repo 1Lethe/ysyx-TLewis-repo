@@ -15,5 +15,6 @@ void iring_display(void);
 void iring_init(void);
 void iring(Decode *s);
 void iring_free(void);
+void ftrace(Decode *s);
 
 #endif
