@@ -171,7 +171,7 @@ void ftrace(Decode *s){
         }
       }
       /* find the function then break */
-      break;
+      return ;
     }
     /* not find FUNC type in symbol tab. Must be wrong. */
     if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
