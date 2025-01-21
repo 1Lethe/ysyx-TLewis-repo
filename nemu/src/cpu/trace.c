@@ -153,7 +153,7 @@ void ftrace(Decode *s){
             for(int i = funcall_time - 1; i > 0; i--){
               search_time++;
               if(funcall_name_stack[i] == sym_name){
-                funcall_time = funcall_time - search_time;
+                funcall_time = funcall_time - search_time + 1;
               }
             }
             if(funcall_name_stack[funcall_time - 2] == sym_name){
