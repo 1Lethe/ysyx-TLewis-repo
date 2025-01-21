@@ -137,31 +137,31 @@ void ftrace(Decode *s){
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else if(funcall_time == 1){
           /* call _trm_init */
-          printf(" ");
+          for(int i = 0;i < funcall_time - 1; i++) printf(" ");
           printf("call");
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else{
-          if(funcall_value_stack[funcall_time - 1] == sym_value_prev && \
-              funcall_value_stack[funcall_time - 2] == sym_value){
-            funcall_value_stack[funcall_time - 1] = 0;
-            for(int i = 0;i < funcall_time - 1; i++) printf(" ");
-            printf("ret");
-            funcall_time--;
-            printf("[%s]\n", read_sym_str(sym_off_prev));
-          }else{
-            funcall_value_stack[funcall_time] = sym_value;
-            funcall_time++;
-            for(int i = 0;i < funcall_time - 1; i++) printf(" ");
-            printf("call");
-            printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
+          if(funcall_value_stack[funcall_time - 1] == sym_value_prev){
+            if(funcall_value_stack[funcall_time - 2] == sym_value){
+              funcall_value_stack[funcall_time - 1] = 0;
+              for(int i = 0;i < funcall_time - 1; i++) printf(" ");
+              printf("ret");
+              funcall_time--;
+              printf("[%s]\n", read_sym_str(sym_off_prev));
+            }else{
+              funcall_value_stack[funcall_time] = sym_value;
+              funcall_time++;
+              for(int i = 0;i < funcall_time - 1; i++) printf(" ");
+              printf("call");
+              printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
+            }
           }
         }
       }
+      /* find the function then break */
+      break;
     }
-    /* find the function then break */
-    break;
   }
 }
-
