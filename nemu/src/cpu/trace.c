@@ -48,6 +48,7 @@ void iring(Decode *s){
   Assert(instbuf != NULL, "failed to malloc instbuf");
   memset(instbuf, '\0', 128*sizeof(char));
   memcpy(instbuf, s->logbuf, 128*sizeof(char));
+  printf("%d", iring_index);
   iringbuf[iring_index++] = instbuf;
 }
 
