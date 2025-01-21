@@ -112,8 +112,6 @@ void ftrace(Decode *s){
   vaddr_t pc = s->pc;
 
   for(int i = 0; i < elf_sym_num; i++){
-    /* not find FUNC type in symbol tab. Must be wrong. */
-    if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
 
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
@@ -164,5 +162,7 @@ void ftrace(Decode *s){
       /* find the function then break */
       break;
     }
+    /* not find FUNC type in symbol tab. Must be wrong. */
+    if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
   }
 }
