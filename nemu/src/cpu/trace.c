@@ -15,7 +15,7 @@ extern Elf32_Shdr shdr_symtab;
 
 void iring_display(void){
   for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
-    if(iringbuf[i] == NULL) continue;
+    //if(iringbuf[i] == NULL) continue;
     printf("%s", iringbuf[i]);
     if(i != iring_index - 1){
       printf("  %d  %d  \n", i, iring_index);
@@ -51,8 +51,7 @@ void iring(Decode *s){
   Assert(instbuf != NULL, "failed to malloc instbuf");
   memset(instbuf, '\0', 128*sizeof(char));
   memcpy(instbuf, s->logbuf, 128*sizeof(char));
-  iringbuf[iring_index] = instbuf;
-  iring_index++;
+  iringbuf[iring_index++] = instbuf;
 }
 
 /* Free iringbuf */
