@@ -104,8 +104,8 @@ char *read_sym_str(Elf32_Word off){
 }
 
 void ftrace(Decode *s){
-  static Elf32_Word sym_value = 0;
-  static Elf32_Word sym_value_prev = 0;
+  static Elf32_Word sym_name = 0;
+  static Elf32_Word sym_name_prev = 0;
   static int sym_off = 0;
   static int sym_off_prev = 0;
 
@@ -116,27 +116,27 @@ void ftrace(Decode *s){
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
       /* Find the function that is executing */
-      sym_value_prev = sym_value;
-      sym_value = elf_sym[i].st_value;
+      sym_name_prev = sym_name;
+      sym_name = elf_sym[i].st_name;
       sym_off_prev = sym_off;
       sym_off = i;
 
       /* call function or return from function */
-      if(sym_value != sym_value_prev){
+      if(sym_name != sym_name_prev){
         printf("0x%x: ", pc);
 
         /* maintain a stack which contain the value of fun in symbol table */
         if(funcall_time == 0){
           /* call _start */
           printf("call");
-          funcall_value_stack[funcall_time] = sym_value;
+          funcall_value_stack[funcall_time] = sym_name;
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else if(funcall_time == 1){
           /* call _trm_init */
           for(int i = 0;i < funcall_time; i++) printf(" ");
           printf("call");
-          funcall_value_stack[funcall_time] = sym_value;
+          funcall_value_stack[funcall_time] = sym_name;
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else{ 
@@ -146,8 +146,8 @@ void ftrace(Decode *s){
             panic("fun call time < 0");
           }
 
-          if(funcall_value_stack[funcall_time - 1] == sym_value_prev){
-            if(funcall_value_stack[funcall_time - 2] == sym_value){
+          if(funcall_value_stack[funcall_time - 1] == sym_name_prev){
+            if(funcall_value_stack[funcall_time - 2] == sym_name){
               /* Ret */
               funcall_value_stack[funcall_time - 1] = 0;
               for(int i = 0;i < funcall_time; i++) printf(" ");
@@ -156,7 +156,7 @@ void ftrace(Decode *s){
               printf("[%s]\n", read_sym_str(sym_off_prev));
             }else{
               /* Call */
-              funcall_value_stack[funcall_time] = sym_value;
+              funcall_value_stack[funcall_time] = sym_name;
               funcall_time++;
               for(int i = 0;i < funcall_time; i++) printf(" ");
               printf("call");
