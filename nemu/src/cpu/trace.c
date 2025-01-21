@@ -134,7 +134,7 @@ void ftrace(Decode *s){
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else if(funcall_time == 1){
           /* call _trm_init */
-          for(int i = 0;i < funcall_time - 1; i++) printf(" ");
+          for(int i = 0;i < funcall_time; i++) printf(" ");
           printf("call");
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
@@ -144,7 +144,7 @@ void ftrace(Decode *s){
             if(funcall_value_stack[funcall_time - 2] == sym_value){
               /* Ret */
               funcall_value_stack[funcall_time - 1] = 0;
-              for(int i = 0;i < funcall_time - 1; i++) printf(".");
+              for(int i = 0;i < funcall_time; i++) printf(" ");
               printf("ret");
               funcall_time--;
               printf("[%s]\n", read_sym_str(sym_off_prev));
@@ -152,7 +152,7 @@ void ftrace(Decode *s){
               /* Call */
               funcall_value_stack[funcall_time] = sym_value;
               funcall_time++;
-              for(int i = 0;i < funcall_time - 1; i++) printf(".");
+              for(int i = 0;i < funcall_time; i++) printf(" ");
               printf("call");
               printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
             }
