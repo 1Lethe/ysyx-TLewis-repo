@@ -18,7 +18,7 @@ void iring_display(void){
     if(iringbuf[i] == NULL) continue;
     printf("%s", iringbuf[i]);
     if(i != iring_index){
-      printf("\n");
+      printf("%d  ", iring_index);
     }else{
       printf("<----- Program crash.\n");
     }
