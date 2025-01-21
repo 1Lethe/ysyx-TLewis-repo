@@ -40,9 +40,8 @@ void iring(Decode *s){
 
   /* If cycle at least once, free */
   if(iring_cycle_flag){
-    int free_index = iring_index % IRING_BUF_SIZE;
-    Assert(iringbuf[free_index] == NULL, "iringbuf[%d] == NULL", free_index);
-    free(iringbuf[free_index]);
+    Assert(iringbuf[iring_index] == NULL, "iringbuf[%d] == NULL", iring_index);
+    free(iringbuf[iring_index]);
   }
 
   char *instbuf = (char *)malloc(128*sizeof(char));
