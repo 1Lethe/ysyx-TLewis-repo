@@ -127,16 +127,17 @@ void ftrace(Decode *s){
       /* call function or return from function */
       if(sym_value != sym_value_prev){
         printf("0x%x: ", pc);
+
         /* maintain a stack which contain the value of fun in symbol table */
         if(sym_value == 0x80000000){
+          /* call _start */
           printf("call");
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else{
-
-            if(funcall_value_stack[funcall_time - 1] == sym_value_prev){
-              Assert(funcall_time >= 2,"%d", funcall_time);
+            /*  */
+            if(funcall_value_stack[funcall_time - 1] == sym_value_prev && funcall_time != 1){
               if(funcall_value_stack[funcall_time - 2] == sym_value){
                 funcall_value_stack[funcall_time - 1] = 0;
                 for(int i = 0;i < funcall_time - 1; i++) printf(" ");
