@@ -14,11 +14,11 @@ extern Elf32_Shdr shdr_strtab;
 extern Elf32_Shdr shdr_symtab;
 
 void iring_display(void){
-  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
+  for(int i = 0; i < IRING_BUF_SIZE; i++){
     if(iringbuf[i] == NULL) continue;
     printf("%s", iringbuf[i]);
     if(i != iring_index - 1){
-      printf("  %d  %d  \n", i, iring_index);
+      printf("\n");
     }else{
       printf("<----- Program crash. %d %d\n", i, iring_index);
     }
