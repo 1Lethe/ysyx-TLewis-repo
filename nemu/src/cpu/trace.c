@@ -85,15 +85,15 @@ void ftrace_init(void){
 
 char *read_sym_str(Elf32_Word off){
   char str_buf;
-  char str[20];
-  char *str_ptr = str;
+  static char sym_str[20];
+  char *str_ptr = sym_str;
 
   FILE *fp = fopen(elf_file, "r");
   Assert(fp != NULL, "Failed to read elf_file");
 
   Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[off].st_name, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
-  memset(str, '\0', 20);
+  memset(sym_str, '\0', 20);
   while((str_buf = fgetc(fp)) != EOF){
     *str_ptr++ = str_buf;
     if(str_buf == '\0') break;
@@ -101,9 +101,7 @@ char *read_sym_str(Elf32_Word off){
 
   fclose(fp);
 
-  printf("%s", str);
-
-  return str_ptr;
+  return sym_str;
 }
 
 void ftrace(Decode *s){
