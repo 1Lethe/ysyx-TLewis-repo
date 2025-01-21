@@ -91,7 +91,7 @@ char *read_sym_str(Elf32_Word off){
   FILE *fp = fopen(elf_file, "r");
   Assert(fp != NULL, "Failed to read elf_file");
 
-  Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[off].st_name, SEEK_SET) != -1, \
+  Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[off].st_name + 1, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
   memset(str, '\0', 20);
   while((str_buf = fgetc(fp)) != EOF){
