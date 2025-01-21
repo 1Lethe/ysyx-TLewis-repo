@@ -20,7 +20,7 @@ void iring_display(void){
     if(i != iring_index - 1){
       printf("\n");
     }else{
-      printf("<----- Program crash. %d %d\n", i, iring_index);
+      printf("<----- Program crash\n");
     }
   }
 }
