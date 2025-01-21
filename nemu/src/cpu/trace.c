@@ -65,9 +65,9 @@ void iring_free(void){
 }
 
 void ftrace_init(void){
-
   FILE *fp = fopen(elf_file, "r");
-  Assert(fp != NULL, "Failed to read elf_file");
+  Assert(fp != NULL, "Failed to read elf_file.\nMaybe you use build-in image.\
+    In that case, please turn off ftrace.");
 
   /* Init ELF symbol table */
   Assert(fseek(fp, shdr_symtab.sh_offset, SEEK_SET) != -1, \
