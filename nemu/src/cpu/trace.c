@@ -3,6 +3,9 @@
 char *iringbuf[IRING_BUF_SIZE];
 int iring_index = 0;
 
+static Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
+static uint32_t elf_sym_num = 0;
+
 uint32_t funcall_value_stack[MAX_FUN_CALL_TRACE] = {0};
 int funcall_time = 0;
 
@@ -61,29 +64,30 @@ void iring_free(void){
   }
 }
 
-void ftrace(Decode *s){
-  static bool symtab_init_flag = false;
-  static Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
-  static uint32_t elf_sym_num = 0;
+void ftrace_init(void){
 
   FILE *fp = fopen(elf_file, "r");
   Assert(fp != NULL, "Failed to read elf_file");
 
-  if(!symtab_init_flag){
-    symtab_init_flag = true;
+  /* Init ELF symbol table */
+  Assert(fseek(fp, shdr_symtab.sh_offset, SEEK_SET) != -1, \
+    "Failed to read '%s' symtab", elf_file);
+  elf_sym_num = shdr_symtab.sh_size / shdr_symtab.sh_entsize;
+  for(int i = 0; i < elf_sym_num; i++){
+    Assert(fseek(fp, shdr_symtab.sh_offset + i * shdr_symtab.sh_entsize, SEEK_SET) != -1, \
+      "Failed to read '%s' symtab[%d]", elf_file, i);
+    Assert(fread(&elf_sym[i], 1, shdr_symtab.sh_entsize, fp) == shdr_symtab.sh_entsize, \
+      "Failed to read '%s' symtab[%d]", elf_file, i);
+  }
 
-    /* Init ELF symbol table */
-    Assert(fseek(fp, shdr_symtab.sh_offset, SEEK_SET) != -1, \
-      "Failed to read '%s' symtab", elf_file);
-    elf_sym_num = shdr_symtab.sh_size / shdr_symtab.sh_entsize;
-    for(int i = 0; i < elf_sym_num; i++){
-      Assert(fseek(fp, shdr_symtab.sh_offset + i * shdr_symtab.sh_entsize, SEEK_SET) != -1, \
-        "Failed to read '%s' symtab[%d]", elf_file, i);
-      Assert(fread(&elf_sym[i], 1, shdr_symtab.sh_entsize, fp) == shdr_symtab.sh_entsize, \
-        "Failed to read '%s' symtab[%d]", elf_file, i);
-      }
-    }
+  fclose(fp);
+}
 
+void ftrace(Decode *s){
+
+  FILE *fp = fopen(elf_file, "r");
+  Assert(fp != NULL, "Failed to read elf_file");
+  
   vaddr_t pc = s->pc;
   static Elf32_Word sym_value_prev = 0;
   static Elf32_Word sym_value = 0;

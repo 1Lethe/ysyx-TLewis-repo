@@ -169,9 +169,14 @@ void init_monitor(int argc, char *argv[]) {
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
 
+  /* Parse elf file */
   parse_elf(&shdr_strtab, &shdr_symtab);
 
+  /* Init iring used to itrace */
   IFDEF(CONFIG_ITRACE, iring_init());
+
+  /* Init ftrace Init ELF symbol table */
+  IFDEF(CONFIG_FTRACE, ftrace_init());
 
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);
