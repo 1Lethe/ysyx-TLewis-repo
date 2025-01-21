@@ -137,6 +137,8 @@ void ftrace(Decode *s){
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else if(funcall_time == 1){
           /* call _trm_init */
+          for(int i = 0;i < funcall_time - 1; i++) printf(" ");
+          printf("call");
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
