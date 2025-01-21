@@ -125,6 +125,7 @@ void ftrace(Decode *s){
       if(sym_name != sym_name_prev){
         printf("0x%x: ", pc);
 
+        // BUG: Not implement Tail-call oper!
         /* maintain a stack which contain the value of fun in symbol table */
         if(funcall_time == 0){
           /* call _start */
@@ -154,7 +155,8 @@ void ftrace(Decode *s){
               printf("ret");
               funcall_time--;
               printf("[%s]\n", read_sym_str(sym_off_prev));
-            }else{
+            }
+            if(funcall_name_stack[funcall_time - 2] != sym_name){
               /* Call */
               funcall_name_stack[funcall_time] = sym_name;
               funcall_time++;
