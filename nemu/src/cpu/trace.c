@@ -140,6 +140,12 @@ void ftrace(Decode *s){
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else{ 
+          if(funcall_time > MAX_FUN_CALL_TRACE){
+            panic("fun call time > MAX");
+          }else if(funcall_time < 0){
+            panic("fun call time < 0");
+          }
+
           if(funcall_value_stack[funcall_time - 1] == sym_value_prev){
             if(funcall_value_stack[funcall_time - 2] == sym_value){
               /* Ret */

@@ -9,7 +9,7 @@
 /* Size of inst ring buffer */
 #define IRING_BUF_SIZE 16
 /* Size of fun call stack */
-#define MAX_FUN_CALL_TRACE 5000
+#define MAX_FUN_CALL_TRACE 500
 
 void iring_display(void);
 void iring_init(void);
