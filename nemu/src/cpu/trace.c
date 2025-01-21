@@ -155,7 +155,8 @@ void ftrace(Decode *s){
               printf("ret");
               funcall_time--;
               printf("[%s]\n", read_sym_str(sym_off_prev));
-            }else if(funcall_name_stack[funcall_time - 2] != sym_name){
+            }
+            if(funcall_name_stack[funcall_time - 2] != sym_name){
               /* Call */
               funcall_name_stack[funcall_time] = sym_name;
               funcall_time++;
