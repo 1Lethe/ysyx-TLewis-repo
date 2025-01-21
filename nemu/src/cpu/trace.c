@@ -155,8 +155,7 @@ void ftrace(Decode *s){
                 /* If find the sym_name in stack, must be ret */
                 funcall_time = funcall_time - search_time + 1;
                 PRINTF_SPACE(funcall_time + 1);
-                printf("ret[%s] to [%s],%d\n",read_sym_str(sym_off_prev), \
-                  read_sym_str(sym_off),funcall_time);
+                printf("ret[%s],%d\n",read_sym_str(sym_off_prev), funcall_time);
                 return ;
               }
             }
