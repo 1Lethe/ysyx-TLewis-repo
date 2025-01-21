@@ -150,6 +150,16 @@ void ftrace(Decode *s){
           int search_time = 0;
           /* The top of stack is the fun called previously */
           if(funcall_name_stack[funcall_time - 1] == sym_name_prev){
+            if(funcall_name_stack[funcall_time - 2] != sym_name){
+              /* else => fun Call */
+              funcall_name_stack[funcall_time] = sym_name; // push
+              funcall_time++;
+              for(int i = 0;i < funcall_time; i++) printf(" ");
+              printf("call");
+              printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
+              break;
+            }
+
             for(int i = funcall_time - 1; i > 0; i--){
               search_time++;
               if(funcall_name_stack[i] == sym_name){
@@ -163,15 +173,6 @@ void ftrace(Decode *s){
               printf("ret");
               funcall_time--;
               printf("[%s]\n", read_sym_str(sym_off_prev));
-              break;
-            }
-            if(funcall_name_stack[funcall_time - 2] != sym_name){
-              /* else => fun Call */
-              funcall_name_stack[funcall_time] = sym_name; // push
-              funcall_time++;
-              for(int i = 0;i < funcall_time; i++) printf(" ");
-              printf("call");
-              printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
               break;
             }
           }
