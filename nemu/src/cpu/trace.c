@@ -136,7 +136,7 @@ void ftrace(Decode *s){
         }else{
 
             if(funcall_value_stack[funcall_time - 1] == sym_value_prev){
-              assert(funcall_time >= 2);
+              Assert(funcall_time >= 2,"%d", funcall_time);
               if(funcall_value_stack[funcall_time - 2] == sym_value){
                 funcall_value_stack[funcall_time - 1] = 0;
                 for(int i = 0;i < funcall_time - 1; i++) printf(" ");
