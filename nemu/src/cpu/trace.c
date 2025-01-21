@@ -107,7 +107,7 @@ void ftrace(Decode *s){
   static Elf32_Word sym_name = 0;
   static Elf32_Word sym_name_prev = 0;
   static int sym_off = 0;
-  //static int sym_off_prev = 0;
+  static int sym_off_prev = 0;
 
   vaddr_t pc = s->pc;
 
@@ -118,7 +118,7 @@ void ftrace(Decode *s){
       /* Find the function that is executing */
       sym_name_prev = sym_name;
       sym_name = elf_sym[i].st_name;
-      //sym_off_prev = sym_off;
+      sym_off_prev = sym_off;
       sym_off = i;
 
       /* call function or return from function */
@@ -155,7 +155,7 @@ void ftrace(Decode *s){
                 /* If find the sym_name in stack, must be ret */
                 funcall_time = funcall_time - search_time + 1;
                 PRINTF_SPACE(funcall_time + 1);
-                printf("ret[%s],%d\n",read_sym_str(sym_off), funcall_time);
+                printf("ret[%s],%d\n",read_sym_str(sym_off_prev), funcall_time);
                 return ;
               }
             }
