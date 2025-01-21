@@ -155,7 +155,7 @@ void ftrace(Decode *s){
               if(funcall_name_stack[j] == sym_name){
                 /* If find the sym_name in stack, must be ret */
                 funcall_time = funcall_time - search_time + 1;
-                PRINTF_TAB(funcall_time);
+                PRINTF_SPACE(funcall_time);
                 printf("ret[%s],%d\n",read_sym_str(sym_off_prev), funcall_time);
                 return ;
               }
@@ -164,14 +164,12 @@ void ftrace(Decode *s){
             /* If not find, must be call */
             funcall_name_stack[funcall_time] = sym_name;
             funcall_time++;
-            PRINTF_TAB(funcall_time);
+            PRINTF_SPACE(funcall_time);
             printf("call[%s@0x%x],%d\n", read_sym_str(sym_off), elf_sym[i].st_value, funcall_time);
             return ;
           }
         }
       }
-      /* find the function then break */
-      break;
     }
     /* not find FUNC type in symbol tab. Must be wrong. */
     if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
