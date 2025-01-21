@@ -11,7 +11,7 @@
 /* Size of fun call stack */
 #define MAX_FUN_CALL_TRACE 500
 
-#define PRINTF_SPACE(n) for(int __i = 0; __i < n; __i++) printf(" ");
+#define PRINTF_SPACE(n) for(int __i = 0; __i < n; __i++) printf(">");
 
 void iring_display(void);
 void iring_init(void);
