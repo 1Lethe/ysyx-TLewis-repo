@@ -6,7 +6,7 @@ int iring_index = 0;
 Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
 uint32_t elf_sym_num = 0;
 
-uint32_t funcall_value_stack[MAX_FUN_CALL_TRACE] = {0};
+uint32_t funcall_name_stack[MAX_FUN_CALL_TRACE] = {0};
 int funcall_time = 0;
 
 extern char *elf_file;
@@ -129,14 +129,14 @@ void ftrace(Decode *s){
         if(funcall_time == 0){
           /* call _start */
           printf("call");
-          funcall_value_stack[funcall_time] = sym_name;
+          funcall_name_stack[funcall_time] = sym_name;
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else if(funcall_time == 1){
           /* call _trm_init */
           for(int i = 0;i < funcall_time; i++) printf(" ");
           printf("call");
-          funcall_value_stack[funcall_time] = sym_name;
+          funcall_name_stack[funcall_time] = sym_name;
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else{ 
@@ -146,17 +146,17 @@ void ftrace(Decode *s){
             panic("fun call time < 0");
           }
 
-          if(funcall_value_stack[funcall_time - 1] == sym_name_prev){
-            if(funcall_value_stack[funcall_time - 2] == sym_name){
+          if(funcall_name_stack[funcall_time - 1] == sym_name_prev){
+            if(funcall_name_stack[funcall_time - 2] == sym_name){
               /* Ret */
-              funcall_value_stack[funcall_time - 1] = 0;
+              funcall_name_stack[funcall_time - 1] = 0;
               for(int i = 0;i < funcall_time; i++) printf(" ");
               printf("ret");
               funcall_time--;
               printf("[%s]\n", read_sym_str(sym_off_prev));
             }else{
               /* Call */
-              funcall_value_stack[funcall_time] = sym_name;
+              funcall_name_stack[funcall_time] = sym_name;
               funcall_time++;
               for(int i = 0;i < funcall_time; i++) printf(" ");
               printf("call");
