@@ -136,6 +136,7 @@ void ftrace(Decode *s){
         }else{
 
             if(funcall_value_stack[funcall_time - 1] == sym_value_prev){
+              assert(funcall_time >= 2);
               if(funcall_value_stack[funcall_time - 2] == sym_value){
                 funcall_value_stack[funcall_time - 1] = 0;
                 for(int i = 0;i < funcall_time - 1; i++) printf(" ");
@@ -155,7 +156,7 @@ void ftrace(Decode *s){
       }
         /* find the function then break */
         break;
-        
+
     }
   }
 }
