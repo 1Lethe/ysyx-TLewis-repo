@@ -81,6 +81,7 @@ void ftrace_init(void){
   }
 
   fclose(fp);
+  funcall_time = 1;
 }
 
 char *read_sym_str(Elf32_Word off){
