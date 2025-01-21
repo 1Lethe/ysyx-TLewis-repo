@@ -142,8 +142,7 @@ void ftrace(Decode *s){
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
           printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
-        }else{
-          
+        }else{ 
           if(funcall_value_stack[funcall_time - 1] == sym_value_prev){
             if(funcall_value_stack[funcall_time - 2] == sym_value){
               /* Ret */
