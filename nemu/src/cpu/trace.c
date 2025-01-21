@@ -83,47 +83,60 @@ void ftrace_init(void){
   fclose(fp);
 }
 
-void ftrace(Decode *s){
+char *read_sym_str(Elf32_Word off){
+  char str_buf;
+  char str[20];
+  char *str_ptr = str;
 
   FILE *fp = fopen(elf_file, "r");
   Assert(fp != NULL, "Failed to read elf_file");
-  
-  vaddr_t pc = s->pc;
-  static Elf32_Word sym_value_prev = 0;
+
+  Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[off].st_name, SEEK_SET) != -1, \
+        "Failed to read '%s' strtab", elf_file);
+  memset(str, '\0', 20);
+  while((str_buf = fgetc(fp)) != EOF){
+    *str_ptr++ = str_buf;
+    if(str_buf == '\0') break;
+  }
+
+  fclose(fp);
+
+  return str_ptr;
+}
+
+void ftrace(Decode *s){
   static Elf32_Word sym_value = 0;
-  static int sym_off_prev = 0;
+  static Elf32_Word sym_value_prev = 0;
   static int sym_off = 0;
+  static int sym_off_prev = 0;
+
+  vaddr_t pc = s->pc;
+
   for(int i = 0; i < elf_sym_num; i++){
+    /* not find FUNC type in symbol tab. Must be wrong. */
+    if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
+
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
       /* Find the function that is executing */
+      #if 0
       Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
-
-      char str_buf;
-      char str[20];
-      char *str_ptr = str;
-
+#endif
       sym_value_prev = sym_value;
-      sym_off_prev = sym_off;
       sym_value = elf_sym[i].st_value;
+      sym_off_prev = sym_off;
       sym_off = i;
+
+      /* call function or return from function */
       if(sym_value != sym_value_prev){
-        /* call function or return from function */
         printf("0x%x: ", pc);
         /* maintain a stack which contain the value of fun in symbol table */
         if(sym_value == 0x80000000){
           printf("call");
           funcall_value_stack[funcall_time] = sym_value;
           funcall_time++;
-          Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off].st_name, SEEK_SET) != -1, \
-            "Failed to read '%s' strtab", elf_file);
-          memset(str, '\0', 20);
-          while((str_buf = fgetc(fp)) != EOF){
-            *str_ptr++ = str_buf;
-            if(str_buf == '\0') break;
-          }
-          printf("[%s@0x%x]\n", str, elf_sym[i].st_value);
+          printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
         }else{
           if(funcall_value_stack[funcall_time - 1] == sym_value_prev && \
               funcall_value_stack[funcall_time - 2] == sym_value){
@@ -131,39 +144,18 @@ void ftrace(Decode *s){
             for(int i = 0;i < funcall_time - 1; i++) printf(" ");
             printf("ret");
             funcall_time--;
-
-            Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off_prev].st_name, SEEK_SET) != -1, \
-              "Failed to read '%s' strtab", elf_file);
-            memset(str, '\0', 20);
-            while((str_buf = fgetc(fp)) != EOF){
-              *str_ptr++ = str_buf;
-              if(str_buf == '\0') break;
-            }
-            printf("[%s]\n", str);
+            printf("[%s]\n", read_sym_str(sym_off_prev));
           }else{
             funcall_value_stack[funcall_time] = sym_value;
             funcall_time++;
             for(int i = 0;i < funcall_time - 1; i++) printf(" ");
             printf("call");
-
-            Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off].st_name, SEEK_SET) != -1, \
-              "Failed to read '%s' strtab", elf_file);
-            memset(str, '\0', 20);
-            while((str_buf = fgetc(fp)) != EOF){
-              *str_ptr++ = str_buf;
-              if(str_buf == '\0') break;
-            }
-            printf("[%s@0x%x]\n", str, elf_sym[i].st_value);
+            printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
           }
         }
-
       }
-
+      /* find the function then break */
       break;
     }
-    /* not find FUNC type in symbol tab. Must be wrong. */
-    if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
   }
-
-  fclose(fp);
 }
