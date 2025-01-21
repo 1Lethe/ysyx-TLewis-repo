@@ -3,8 +3,8 @@
 char *iringbuf[IRING_BUF_SIZE];
 int iring_index = 0;
 
-static Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
-static uint32_t elf_sym_num = 0;
+Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
+uint32_t elf_sym_num = 0;
 
 uint32_t funcall_value_stack[MAX_FUN_CALL_TRACE] = {0};
 int funcall_time = 0;
