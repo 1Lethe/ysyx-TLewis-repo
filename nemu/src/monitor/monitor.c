@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <elf.h>
+#include <cpu/trace.h>
 #include <memory/paddr.h>
 
 void init_rand();
@@ -169,6 +170,8 @@ void init_monitor(int argc, char *argv[]) {
   long img_size = load_img();
 
   parse_elf(&shdr_strtab, &shdr_symtab);
+
+  IFDEF(CONFIG_ITRACE, iring_init());
 
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);
