@@ -14,6 +14,7 @@
 ***************************************************************************************/
 
 #include <cpu/cpu.h>
+#include <cpu/trace.h>
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <memory/paddr.h>
@@ -22,10 +23,6 @@
 
 bool trace_wp();
 bool trace_bp(Decode *s);
-
-/* Size of inst ring buffer */
-#define IRING_BUF_SIZE 16
-#define MAX_FUN_CALL_TRACE 1000
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -38,19 +35,8 @@ CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
-char *iringbuf[IRING_BUF_SIZE];
-int iring_index = 0;
-
-extern char *elf_file;
-
-extern Elf32_Shdr shdr_strtab;
-extern Elf32_Shdr shdr_symtab;
-
-uint32_t funcall_value_stack[MAX_FUN_CALL_TRACE] = {0};
-int funcall_time = 0;
 
 void device_update();
-static void ftrace(Decode *s);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
@@ -100,32 +86,9 @@ static void exec_once(Decode *s, vaddr_t pc) {
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
 
-  /* iringbuf implementation */
-  static bool iring_cycle_flag = false;
-  static bool iring_buf_init_flag = false;
-  if(!iring_buf_init_flag){
-    iring_buf_init_flag = true;
-    for(int i = 0; i < IRING_BUF_SIZE; i++){
-      iringbuf[i] = NULL;
-    }
-  }
-  if(iring_index == IRING_BUF_SIZE - 1){
-    iring_cycle_flag = true;
-    iring_index = 0;
-  }
-  if(iring_cycle_flag){
-    Assert(iringbuf[i] == NULL, "iringbuf[i] == NULL");
-    free(iringbuf[i]);
-  }
-  char *instbuf = (char *)malloc(128*sizeof(char));
-  Assert(instbuf != NULL, "failed to malloc instbuf");
-  memset(instbuf, '\0', 128*sizeof(char));
-  memcpy(instbuf, s->logbuf, 128*sizeof(char));
-  iringbuf[iring_index++] = instbuf;
+  iring(s);
+  //ftrace(s);
 #endif
-
-  ftrace(s);
-
 }
 
 static void execute(uint64_t n) {
@@ -148,137 +111,11 @@ static void statistic() {
   else Log("Finish running in less than 1 us and can not calculate the simulation frequency");
 }
 
-static void iringbuf_display(void){
-  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
-    if(iringbuf[i] == NULL) break;
-    printf("%s", iringbuf[i]);
-    if(i != iring_index){
-      printf("\n");
-    }else{
-      printf("<----- Program crash.\n");
-    }
-  }
-}
-
-static void ftrace(Decode *s){
-  static bool symtab_init_flag = false;
-  static Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
-  static uint32_t elf_sym_num = 0;
-
-  FILE *fp = fopen(elf_file, "r");
-  Assert(fp != NULL, "Failed to read elf_file");
-
-  if(!symtab_init_flag){
-    symtab_init_flag = true;
-
-    /* Init ELF symbol table */
-    Assert(fseek(fp, shdr_symtab.sh_offset, SEEK_SET) != -1, \
-      "Failed to read '%s' symtab", elf_file);
-    elf_sym_num = shdr_symtab.sh_size / shdr_symtab.sh_entsize;
-    for(int i = 0; i < elf_sym_num; i++){
-      Assert(fseek(fp, shdr_symtab.sh_offset + i * shdr_symtab.sh_entsize, SEEK_SET) != -1, \
-        "Failed to read '%s' symtab[%d]", elf_file, i);
-      Assert(fread(&elf_sym[i], 1, shdr_symtab.sh_entsize, fp) == shdr_symtab.sh_entsize, \
-        "Failed to read '%s' symtab[%d]", elf_file, i);
-      }
-    }
-
-  vaddr_t pc = s->pc;
-  static Elf32_Word sym_value_prev = 0;
-  static Elf32_Word sym_value = 0;
-  static int sym_off_prev = 0;
-  static int sym_off = 0;
-  for(int i = 0; i < elf_sym_num; i++){
-    if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
-      pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
-      /* Find the function that is executing */
-      Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[i].st_name, SEEK_SET) != -1, \
-        "Failed to read '%s' strtab", elf_file);
-
-      char str_buf;
-      char str[20];
-      char *str_ptr = str;
-
-      sym_value_prev = sym_value;
-      sym_off_prev = sym_off;
-      sym_value = elf_sym[i].st_value;
-      sym_off = i;
-      if(sym_value != sym_value_prev){
-        /* call function or return from function */
-        printf("0x%x: ", pc);
-        /* maintain a stack which contain the value of fun in symbol table */
-        if(sym_value == 0x80000000){
-          printf("call");
-          funcall_value_stack[funcall_time] = sym_value;
-          funcall_time++;
-          Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off].st_name, SEEK_SET) != -1, \
-            "Failed to read '%s' strtab", elf_file);
-          memset(str, '\0', 20);
-          while((str_buf = fgetc(fp)) != EOF){
-            *str_ptr++ = str_buf;
-            if(str_buf == '\0') break;
-          }
-          printf("[%s@0x%x]\n", str, elf_sym[i].st_value);
-        }else{
-          if(funcall_value_stack[funcall_time - 1] == sym_value_prev && \
-              funcall_value_stack[funcall_time - 2] == sym_value){
-            funcall_value_stack[funcall_time - 1] = 0;
-            for(int i = 0;i < funcall_time - 1; i++) printf(" ");
-            printf("ret");
-            funcall_time--;
-
-            Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off_prev].st_name, SEEK_SET) != -1, \
-              "Failed to read '%s' strtab", elf_file);
-            memset(str, '\0', 20);
-            while((str_buf = fgetc(fp)) != EOF){
-              *str_ptr++ = str_buf;
-              if(str_buf == '\0') break;
-            }
-            printf("[%s]\n", str);
-          }else{
-            funcall_value_stack[funcall_time] = sym_value;
-            funcall_time++;
-            for(int i = 0;i < funcall_time - 1; i++) printf(" ");
-            printf("call");
-
-
-            Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[sym_off].st_name, SEEK_SET) != -1, \
-              "Failed to read '%s' strtab", elf_file);
-            memset(str, '\0', 20);
-            while((str_buf = fgetc(fp)) != EOF){
-              *str_ptr++ = str_buf;
-              if(str_buf == '\0') break;
-            }
-            printf("[%s@0x%x]\n", str, elf_sym[i].st_value);
-          }
-        }
-
-      }
-
-      break;
-    }
-    /* not find FUNC type in symbol tab. Must be wrong. */
-    if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
-  }
-
-  fclose(fp);
-}
-
-static void iringbuf_free(void){
-  /* Free iringbuf */
-  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
-    if(iringbuf[i] == NULL){
-      continue;
-    }
-    free(iringbuf[i]);
-  }
-}
-
 void assert_fail_msg() {
   isa_reg_display();
 #ifdef CONFIG_ITRACE
-  iringbuf_display();
-  iringbuf_free();
+  iring_display();
+  iring_free();
 #endif
   statistic();
 }
@@ -310,6 +147,6 @@ void cpu_exec(uint64_t n) {
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
       // fall through
-    case NEMU_QUIT: iringbuf_free();statistic();
+    case NEMU_QUIT: iring_free();statistic();
   }
 }
