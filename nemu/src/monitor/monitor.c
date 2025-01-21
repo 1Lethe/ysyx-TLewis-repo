@@ -79,7 +79,7 @@ static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
   }
 
   FILE *fp = fopen(elf_file, "r");
-  Assert(fp, "Can out open '%s'",elf_file);
+  Assert(fp, "Can not open '%s'",elf_file);
 
   /* Read ELF header */
   Elf32_Ehdr elf_ehdr;
