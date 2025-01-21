@@ -15,12 +15,12 @@ extern Elf32_Shdr shdr_symtab;
 
 void iring_display(void){
   for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
-    //if(iringbuf[i] == NULL) continue;
+    if(iringbuf[i] == NULL) continue;
     printf("%s", iringbuf[i]);
     if(i != iring_index - 1){
       printf("  %d  %d  \n", i, iring_index);
     }else{
-      printf("<----- Program crash.\n");
+      printf("<----- Program crash. %d %d\n", i, iring_index);
     }
   }
 }
