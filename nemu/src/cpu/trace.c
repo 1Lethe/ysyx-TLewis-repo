@@ -40,7 +40,7 @@ void iring(Decode *s){
 
   /* If cycle at least once, free */
   if(iring_cycle_flag){
-    //Assert(iringbuf[iring_index] == NULL, "iringbuf[%d] == NULL", iring_index);
+    Assert(iringbuf[iring_index] != NULL, "iringbuf[%d] == NULL", iring_index);
     free(iringbuf[iring_index]);
   }
 
