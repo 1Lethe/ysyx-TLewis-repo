@@ -1,7 +1,7 @@
 #include <klib.h>
 #include <klib-macros.h>
 #include <stdint.h>
-
+#include <stdio.h>
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 size_t strlen(const char *s) {
@@ -11,13 +11,11 @@ size_t strlen(const char *s) {
     panic("s is NULL.");
   }
 
-  for(int i = 0; ; i++){
-    if(*s != '\0'){
-      len++;
-      s++;
-    }
-    else break;
+  while(*s != '\0'){
+    len++;
+    s++;
   }
+
   return len;
 }
 
@@ -27,12 +25,12 @@ char *strcpy(char *dst, const char *src) {
   }
 
   size_t srclen = strlen(src);
-  if((dst > src && dst < src + srclen + 1) || (dst < src && src < dst + srclen + 1)){
+  if((dst > src && dst < src + srclen) || (dst < src && src < dst + srclen)){
     panic("dst and src overlap.");
   }
 
   char *original_dst = dst;
-  for(int i = 0; i <= srclen; i++){
+  for(int i = 0; i < srclen; i++){
     *dst++ = *src++;
   }
 
@@ -42,10 +40,6 @@ char *strcpy(char *dst, const char *src) {
 char *strncpy(char *dst, const char *src, size_t n) {
   if(dst == NULL || src == NULL){
     panic("dst or src is NULL.");
-  }
-
-  if((dst > src && dst < src + n) || (dst < src && src < dst + n)){
-    panic("dst and src that need to copy overlap.");
   }
 
   char *original_dst = dst;
@@ -67,7 +61,7 @@ char *strcat(char *dst, const char *src) {
 
   size_t srclen = strlen(src);
   size_t dstlen = strlen(dst);
-  if((dst > src && dst < src + srclen + 1) || (src > dst && src < dst + dstlen + 1)){
+  if((dst > src && dst < src + srclen) || (src > dst && src < dst + dstlen)){
     panic("dst and src overlap.");
   }
 
