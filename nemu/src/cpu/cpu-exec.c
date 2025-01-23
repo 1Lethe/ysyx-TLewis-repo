@@ -31,7 +31,7 @@ bool trace_bp(Decode *s);
  */
 #define MAX_INST_TO_PRINT 10
 
-#define MAX_LOOP_TIME 1000
+#define MAX_LOOP_TIME 10000
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
