@@ -31,6 +31,8 @@ bool trace_bp(Decode *s);
  */
 #define MAX_INST_TO_PRINT 10
 
+#define MAX_LOOP_TIME 10000
+
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
@@ -94,12 +96,31 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #endif
 }
 
+static void loop_find(vaddr_t pc){
+  static vaddr_t pc_prev = 0;
+  static vaddr_t pc_now = 0;
+  static uint64_t loop_time = 0;
+
+  pc_prev = pc_now;
+  pc_now = pc;
+  if(pc_prev == pc_now){
+    loop_time++;
+    if(loop_time == MAX_LOOP_TIME){
+      nemu_state.state = NEMU_STOP;
+      Log("PC stop at 0x%x for %d time.Might be a dead loop.", pc_now, MAX_LOOP_TIME);
+    }
+  }else{
+    loop_time = 0;
+  }
+}
+
 static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
+    loop_find(cpu.pc); /* Find dead loop */
     if (nemu_state.state != NEMU_RUNNING) break;// Run program till quit or end
     IFDEF(CONFIG_DEVICE, device_update());
   }
