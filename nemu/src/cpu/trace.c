@@ -82,7 +82,7 @@ void ftrace_init(void){
   fclose(fp);
 }
 
-char *read_sym_str(Elf32_Word off){
+char *read_sym_str(int off_from_symtable){
   char str_buf;
   static char sym_str[50];
   char *str_ptr = sym_str;
@@ -90,7 +90,7 @@ char *read_sym_str(Elf32_Word off){
   FILE *fp = fopen(elf_file, "r");
   Assert(fp != NULL, "Failed to read elf_file");
 
-  Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[off].st_name, SEEK_SET) != -1, \
+  Assert(fseek(fp, shdr_strtab.sh_offset + elf_sym[off_from_symtable].st_name, SEEK_SET) != -1, \
         "Failed to read '%s' strtab", elf_file);
   memset(sym_str, '\0', 50);
   while((str_buf = fgetc(fp)) != EOF){
@@ -125,48 +125,53 @@ void ftrace(Decode *s){
       if(sym_name != sym_name_prev){
         printf("0x%x: ", pc);
 
+        /* NOTE: tail-call oper need to test */
         /* maintain a stack which contain the value of fun in symbol table */
         if(funcall_time == 0){
           /* call _start */
           printf("call");
           funcall_name_stack[funcall_time] = sym_name;
           funcall_time++;
-          printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
+          printf("[%s@0x%x],%d\n", read_sym_str(sym_off), elf_sym[i].st_value, funcall_time);
         }else if(funcall_time == 1){
           /* call _trm_init */
-          for(int i = 0;i < funcall_time; i++) printf(" ");
-          printf("call");
+          PRINTF_SPACE(funcall_time);
           funcall_name_stack[funcall_time] = sym_name;
           funcall_time++;
-          printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
-        }else{ 
+          printf("call[%s@0x%x],%d\n", read_sym_str(sym_off), elf_sym[i].st_value,funcall_time);
+        }else{
           if(funcall_time > MAX_FUN_CALL_TRACE){
             panic("fun call time > MAX");
           }else if(funcall_time < 0){
             panic("fun call time < 0");
           }
 
+          int search_time = 0;
+          /* The top of stack is the function called previously */
           if(funcall_name_stack[funcall_time - 1] == sym_name_prev){
-            if(funcall_name_stack[funcall_time - 2] == sym_name){
-              /* Ret */
-              funcall_name_stack[funcall_time - 1] = 0;
-              for(int i = 0;i < funcall_time; i++) printf(" ");
-              printf("ret");
-              funcall_time--;
-              printf("[%s]\n", read_sym_str(sym_off_prev));
-            }else{
-              /* Call */
-              funcall_name_stack[funcall_time] = sym_name;
-              funcall_time++;
-              for(int i = 0;i < funcall_time; i++) printf(" ");
-              printf("call");
-              printf("[%s@0x%x]\n", read_sym_str(sym_off), elf_sym[i].st_value);
+            for(int j = funcall_time - 1; j > 0; j--){
+              search_time++;
+              if(funcall_name_stack[j] == sym_name){
+                /* If find the sym_name in stack, must be ret */
+                /* To implement tail-call oper */
+                funcall_time = funcall_time - search_time + 1;
+                PRINTF_SPACE(funcall_time + 1);
+                printf("ret[%s],%d\n",read_sym_str(sym_off_prev), funcall_time);
+                return ;
+              }
             }
+
+            /* If not find, must be call */
+            funcall_name_stack[funcall_time] = sym_name;
+            funcall_time++;
+            PRINTF_SPACE(funcall_time);
+            printf("call[%s@0x%x],%d\n", read_sym_str(sym_off), elf_sym[i].st_value, funcall_time);
+            return ;
           }
         }
       }
       /* find the function then break */
-      break;
+      return ;
     }
     /* not find FUNC type in symbol tab. Must be wrong. */
     if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
