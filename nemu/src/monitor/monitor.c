@@ -203,6 +203,7 @@ void am_init_monitor() {
   init_mem();
   init_isa();
   load_img();
+  printf("here\n");
   IFDEF(CONFIG_DEVICE, init_device());
   welcome();
 }
