@@ -91,6 +91,7 @@ int main(int argc, char** argv) {
     sim_init(argc, argv);
 
     parse_args(argc, argv);
+    printf("%s", log_file);
 
     reset(SIM_MODULE_NAME, 1);
 
