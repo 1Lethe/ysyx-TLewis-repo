@@ -92,6 +92,10 @@ int main(int argc, char** argv) {
 
     parse_args(argc, argv);
     printf("%s", log_file);
+    FILE *fp = fopen(log_file, "w");
+    char test[] = "test";
+    fwrite(test, sizeof(char), 10, fp);
+    fclose(fp);
 
     reset(SIM_MODULE_NAME, 1);
 
