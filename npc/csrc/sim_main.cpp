@@ -88,9 +88,9 @@ static int parse_args(int argc, char *argv[]) {
 
 int main(int argc, char** argv) {                                      
 
-    sim_init(argc, argv);
-
     parse_args(argc, argv);
+    
+    sim_init(argc, argv);
 
     reset(SIM_MODULE_NAME, 1);
 
