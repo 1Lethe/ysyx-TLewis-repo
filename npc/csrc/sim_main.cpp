@@ -87,15 +87,10 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 int main(int argc, char** argv) {                                      
-    
+
     sim_init(argc, argv);
 
     parse_args(argc, argv);
-    printf("%s", log_file);
-    FILE *fp = fopen(log_file, "w");
-    char test[] = "test";
-    fwrite(test, sizeof(char), 5, fp);
-    fclose(fp);
 
     reset(SIM_MODULE_NAME, 1);
 
