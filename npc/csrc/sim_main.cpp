@@ -91,9 +91,10 @@ int main(int argc, char** argv) {
     sim_init(argc, argv);
 
     parse_args(argc, argv);
-    printf("%s", img_file);
 
     reset(SIM_MODULE_NAME, 1);
+
+    load_img();
 
 #ifdef USE_TESTBENCH
     while(!contextp->gotFinish()){   
