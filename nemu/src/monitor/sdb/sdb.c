@@ -107,23 +107,10 @@ static int cmd_x(char *args){
       printf("physical memory area [" FMT_PADDR ", " FMT_PADDR "]\n", PMEM_LEFT, PMEM_RIGHT);
       return 0;
     }
-
-    int base_add = mem_start_place;
     for(int i = 0;i < scan_num;i++){
-      int offset = i % 4;
-      if(offset == 0){
-        if(i == 0){
-          printf("0x%08x : ", mem_start_place);
-        }else{
-          printf("\n");
-          printf("0x%08x : ", mem_start_place + i);
-          base_add += 0x4;
-        }
-      }
-      pmem_scan = guest_to_host(base_add + 3 - offset);
-      printf("%02x", *pmem_scan);
+      pmem_scan = guest_to_host(mem_start_place + i);
+      printf("0x%08x = 0x%02x\n", mem_start_place+i, *pmem_scan);
     }
-    printf("\n");
   }else{
     printf("Invalid x command input.\n");
   }
@@ -236,7 +223,7 @@ static struct {
   {"info", "Display the value of regs or watch.usage: info <r/w/b>", cmd_info},
   {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
   {"p", "Solve the expression.usage: p <expression>", cmd_p},
-  {"echo", "echo something.usage: echo <str>", cmd_echo},
+  {"echo", "echo something.wsage: echo <str>", cmd_echo},
   {"w", "Add watchpoint.usage: w <expression>", cmd_w},
   {"dw", "Delete watchpoint.usage: d <wp_th>", cmd_dw},
   {"b", "Add breakpoint.usage: b <pc_step>", cmd_b},
