@@ -11,7 +11,10 @@
 #include <stdlib.h>
 #include <assert.h>
 
+char *log_file = NULL;
+char *diff_so_file = NULL;
 char *img_file = NULL;
+int difftest_port = 1234;
 
 int sim_time = SIM_TIME_MAX;
 
