@@ -36,8 +36,7 @@ void sim_init(int argc, char** argv){
     tfp = new VerilatedFstC;
     contextp->traceEverOn(true);
     SIM_MODULE_NAME->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
-    tfp->open("wave/wave.fst");
-    printf("here");
+    tfp->open("/home/tonglewis/ysyx-workbench/npc/wave/wave.fst");
 }
 
 void dump_wave(SIM_MODULE* top){
