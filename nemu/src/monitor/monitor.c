@@ -195,6 +195,7 @@ static long load_img() {
   size_t size = &bin_end - &bin_start;
   Log("img size = %ld", size);
   memcpy(guest_to_host(RESET_VECTOR), &bin_start, size);
+  printf("hrer\n");
   return size;
 }
 
@@ -203,7 +204,6 @@ void am_init_monitor() {
   init_mem();
   init_isa();
   load_img();
-  printf("here\n");
   IFDEF(CONFIG_DEVICE, init_device());
   welcome();
 }
