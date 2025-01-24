@@ -52,7 +52,7 @@ sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	$(call git_commit, "sim RTL")
 	verilator -cc --exe --trace-fst --build --timing --top-module $(SIM_TOPNAME) $^ \
 	--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
-	./build/$(SIM_TOPNAME) --log=/home/tonglewis/ysyx-workbench/npc/npc.log
+	./build/$(SIM_TOPNAME)
 	@echo "Sim Complete."
 
 
