@@ -37,6 +37,7 @@ void sim_init(int argc, char** argv){
     contextp->traceEverOn(true);
     SIM_MODULE_NAME->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
     tfp->open("wave/wave.fst");
+    printf("here");
 }
 
 void dump_wave(SIM_MODULE* top){
