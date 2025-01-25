@@ -12,7 +12,6 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output reg [DATA_WIDTH-1:0] IDU_src1,
         output reg [DATA_WIDTH-1:0] IDU_src2,
         output wire [ADDR_WIDTH-1:0] IDU_des,
-        output reg [31:0] IDU_imm,
         output reg [COMMAND_WIDTH-1:0] IDU_command
     );
 
