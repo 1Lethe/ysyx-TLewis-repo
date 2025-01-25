@@ -1,6 +1,5 @@
 `define ysyx_24120013_ADD 5'b00001
 `define ysyx_24120013_SUB 5'b00010
-`define ysyx_24120013_EQU 5'b01101 //
 
 `define ysyx_24120013_LLSHIFT 5'b00011
 `define ysyx_24120013_LRSHIFT 5'b00100
@@ -14,5 +13,7 @@
 
 `define ysyx_24120013_LESS 5'b01011
 `define ysyx_24120013_GREAT_EQUAL 5'b01100
+
+`define ysyx_24120013_EQU 5'b01101
 
 `define ysyx_24120013_HALT 5'b11111
