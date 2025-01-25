@@ -10,7 +10,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output wire [DATA_WIDTH-1:0] IDU_src1,
         output wire [DATA_WIDTH-1:0] IDU_src2,
         output wire [ADDR_WIDTH-1:0] IDU_des,
-        output reg [31:0] IDU_imm,
+        output wire [31:0] IDU_imm,
         output reg [1:0] IDU_command
     );
 
@@ -27,9 +27,10 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     always @(*) begin
         case({funct3,opcode})
-            10'b0000010011 : //addi
+            10'b0000010011 : begin //addi
                 IDU_imm = {{20{inst[31]}},inst[31:20]};
                 IDU_command = 2'b01;
+            end
             7'b1110011 :
                 IDU_command = 2'b11;
             default :
