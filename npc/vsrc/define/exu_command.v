@@ -13,3 +13,5 @@
 
 `define ysyx_23120013_LESS 5'b01010
 `define ysyx_23120013_GREAT_EQUAL 5'b01011
+
+`define ysyx_23120013_HALT 5'b11111

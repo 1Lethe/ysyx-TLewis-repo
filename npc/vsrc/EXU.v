@@ -36,7 +36,7 @@ module ysyx_24120013_EXU #(COMMAND_WIDTH = 5, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     end
 
     always @(*) begin
-        if(command == 2'b11)
+        if(command == `ysyx_23120013_HALT)
             halt();
     end
 
