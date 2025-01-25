@@ -1,0 +1,4 @@
+`define ysyx_23120013_ADD_COMM 4'b0000
+`define ysyx_23120013_SUB_COMM 4'b0001
+`define ysyx_23120013_LLSHIFT_COMM 4'b0011
+`define ysyx_23120013_RLSHIFT_COMM 4'b0010

@@ -5,7 +5,7 @@ module ysyx_24120013_top (
     output reg [31:0] pc
 );
 
-parameter COMMAND_WIDTH = 2;
+parameter COMMAND_WIDTH = 4;
 parameter ADDR_WIDTH = 5;
 parameter DATA_WIDTH = 32;
 
@@ -37,7 +37,7 @@ reg [31:0] IDU_imm;
 reg [1:0] IDU_command;
 
 ysyx_24120013_IDU #(
-    .COMMAND_WIDTH (2),
+    .COMMAND_WIDTH (COMMAND_WIDTH),
     .ADDR_WIDTH (5),
     .DATA_WIDTH (32)
 )u_ysyx_24120013_IDU(
