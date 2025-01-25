@@ -5,7 +5,7 @@ module ysyx_24120013_top (
     output reg [31:0] pc
 );
 
-parameter COMMAND_WIDTH = 4;
+parameter COMMAND_WIDTH = 5;
 parameter ADDR_WIDTH = 5;
 parameter DATA_WIDTH = 32;
 

@@ -1,3 +1,5 @@
+`include "define/exu_command.v"
+
 module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
         input rst,
@@ -29,10 +31,10 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         case({funct3,opcode})
             10'b0000010011 : begin // addi
                 IDU_imm = {{20{inst[31]}},inst[31:20]};
-                IDU_command = 2'b01;
+                IDU_command = `ysyx_23120013_ADD;
             end
             10'b0001110011 : begin // ebreak
-                IDU_command = 2'b11;
+                IDU_command = `ysyx_23120013_HALT;
             end
             default :
                 IDU_command = 2'b00;
