@@ -1,4 +1,15 @@
-`define ysyx_23120013_ADD_COMM 4'b0000
-`define ysyx_23120013_SUB_COMM 4'b0001
-`define ysyx_23120013_LLSHIFT_COMM 4'b0011
-`define ysyx_23120013_RLSHIFT_COMM 4'b0010
+`define ysyx_23120013_ADD 5'b00000
+`define ysyx_23120013_SUB 5'b00001
+
+`define ysyx_23120013_LLSHIFT 5'b00010
+`define ysyx_23120013_LRSHIFT 5'b00011
+`define ysyx_23120013_ALSHIFT 5'b00100
+`define ysyx_23120013_ARSHIFT 5'b00101
+
+`define ysyx_23120013_AND 5'b00110
+`define ysyx_23120013_OR 5'b00111
+`define ysyx_23120013_NOT 5'b01000
+`define ysyx_23120013_XOR 5'b01001
+
+`define ysyx_23120013_LESS 5'b01010
+`define ysyx_23120013_GREAT_EQUAL 5'b01011
