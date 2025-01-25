@@ -66,7 +66,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 IDU_src2 = 0;
                 reg1_ren = 0;
                 reg2_ren = 0;
-                wren_ren = 0;
+                wreg_ren = 0;
             end
             default : begin
                 imm_type = 0;
@@ -75,7 +75,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 IDU_src2 = 0;
                 reg1_ren = 0;
                 reg2_ren = 0;
-                wren_ren = 0;
+                wreg_ren = 0;
             end
         endcase
     end
