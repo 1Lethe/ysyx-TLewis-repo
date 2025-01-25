@@ -41,11 +41,11 @@ end
 
     wire [DATA_WIDTH-1:0] alu_src1;
     wire [DATA_WIDTH-1:0] alu_src2;
-    reg [COMMAND_WIDTH-1:0] alu_command;
-    reg [DATA_WIDTH-1:0] alu_result;
+    wire [DATA_WIDTH-1:0] alu_result;
 
     assign alu_src1 = src1;
     assign alu_src2 = src2;
+    assign alu_result = EXU_wdata;
 
 ysyx_24120013_alu #(
     .COMMAND_WIDTH(COMMAND_WIDTH),
