@@ -55,7 +55,7 @@ ysyx_24120013_alu #(
 )u_ysyx_24120013_alu(
     .src1       	(alu_src1        ),
     .src2       	(alu_src2        ),
-    .command    	(command         ),
+    .command    	(alu_command     ),
     .alu_result 	(alu_result      )
 );
 
