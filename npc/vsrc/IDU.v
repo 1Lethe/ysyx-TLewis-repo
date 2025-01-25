@@ -26,7 +26,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     wire [2:0] funct3;
     wire [6:0] opcode;
-    wire imm_type;
+    wire [5:0] imm_type;
 
     reg src1_en;
     reg src2_en;
