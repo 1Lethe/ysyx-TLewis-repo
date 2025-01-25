@@ -32,7 +32,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     reg src2_en;
     reg write_en;
     reg imm_en;
-    reg imm;
+    reg [DATA_WIDTH-1:0] imm;
 
     assign opcode = inst[6:0];
     assign funct3 = inst[14:12]; 
