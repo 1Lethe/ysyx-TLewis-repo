@@ -1,14 +1,14 @@
 import "DPI-C" function void halt ();
 `include "define/exu_command.v"
 
-module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
+module ysyx_24120013_EXU #(COMMAND_WIDTH = 5, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
         input rst,
         input [31:0] imm,
         input [DATA_WIDTH-1:0] src1,
         input [DATA_WIDTH-1:0] src2,
         input [ADDR_WIDTH-1:0] des_addr,
-        input [1:0] command,
+        input [COMMAND_WIDTH-1:0] command,
 
         output reg EXU_wen,
         output reg [ADDR_WIDTH-1:0] EXU_waddr,

@@ -80,6 +80,7 @@ reg [ADDR_WIDTH-1:0] EXU_waddr;
 reg [DATA_WIDTH-1:0] EXU_wdata;
 
 ysyx_24120013_EXU #(
+    .COMMAND_WIDTH(COMMAND_WIDTH),
     .ADDR_WIDTH (5),
     .DATA_WIDTH (32)
 )u_ysyx_24120013_EXU(
