@@ -70,7 +70,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 //IDU_src2 = ;
                 //reg1_ren = 1'b0;
                 //reg2_ren = 1'b0;
-                //wren_en = 1'b1;
+                wren_en = 1'b1;
             end
             7'b00101_11 : begin // auipc
                 imm_type = IMM_U;
