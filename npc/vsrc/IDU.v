@@ -35,13 +35,13 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign opcode = inst[6:0];
     assign funct3 = inst[14:12]; 
 
-    assign IDU_raddr1 = (src1_en == 1'b1) ? inst[19:15] : 5'b0;
-    assign IDU_src1 = (src1_en == 1'b1) ? rdata1 : 5'b0;
+    assign IDU_raddr1 = (src1_en == 1'b1) ? inst[19:15] : {ADDR_WIDTH{1'b0}};
+    assign IDU_src1 = (src1_en == 1'b1) ? rdata1 : {DATA_WIDTH{1'b0}};
 
-    assign IDU_raddr2 = (src2_en == 1'b1) ? inst[24:20] : 5'b0;
-    assign IDU_src2 = (src2_en == 1'b1) ? rdata2 : 5'b0;
+    assign IDU_raddr2 = (src2_en == 1'b1) ? inst[24:20] : {ADDR_WIDTH{1'b0}};
+    assign IDU_src2 = (src2_en == 1'b1) ? rdata2 : {DATA_WIDTH{1'b0}};
 
-    assign IDU_des = (write_en == 1'b1) ? inst[11:7] : 5'b0;
+    assign IDU_des = (write_en == 1'b1) ? inst[11:7] : {ADDR_WIDTH{1'b0}};
 
     always @(*) begin
         case(imm_type)
