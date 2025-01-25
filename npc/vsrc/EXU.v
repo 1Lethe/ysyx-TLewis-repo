@@ -9,11 +9,14 @@ module ysyx_24120013_EXU #(COMMAND_WIDTH = 5, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input [DATA_WIDTH-1:0] src2,
         input [ADDR_WIDTH-1:0] des_addr,
         input [COMMAND_WIDTH-1:0] command,
+        input [31:0] pc,
 
         output reg EXU_wen,
         output reg [ADDR_WIDTH-1:0] EXU_waddr,
         output reg [DATA_WIDTH-1:0] EXU_wdata
     );
+
+    wire [DATA_WIDTH-1:0] alu_src1
 
     always @(*) begin
         if(des_addr == 0) begin
@@ -27,17 +30,19 @@ module ysyx_24120013_EXU #(COMMAND_WIDTH = 5, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     end
 
     always @(*) begin
-        case (command)
-            `ysyx_23120013_ADD :
-                EXU_wdata = src1 + imm;
-            default :
-                EXU_wdata = {DATA_WIDTH{1'b0}};
-        endcase
-    end
-
-    always @(*) begin
-        if(command == `ysyx_23120013_HALT)
+        if(command == `ysyx_24120013_HALT)
             halt();
     end
+
+// output declaration of module ysyx_24120013_alu
+reg [DATA_WIDTH-1:0] alu_result;
+
+ysyx_24120013_alu u_ysyx_24120013_alu(
+    .src1       	(alu_src1        ),
+    .src2       	(alu_src2        ),
+    .command    	(alu_command     ),
+    .alu_result 	(alu_result      )
+);
+
 
 endmodule
