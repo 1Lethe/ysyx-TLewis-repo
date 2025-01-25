@@ -51,7 +51,7 @@ assign alu_src2 = src2;
 ysyx_24120013_alu u_ysyx_24120013_alu(
     .src1       	(alu_src1        ),
     .src2       	(alu_src2        ),
-    .command    	(alu_command     ),
+    .command    	(command         ),
     .alu_result 	(alu_result      )
 );
 
