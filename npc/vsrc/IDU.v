@@ -26,36 +26,18 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire [2:0] funct3;
     wire [6:0] opcode;
 
+    reg reg1_ren;
+    reg reg2_ren;
     reg [5:0] imm_type;
-    reg src1_en;
-    reg src2_en;
-    reg write_en;
-    reg imm_en;
     reg [DATA_WIDTH-1:0] imm;
 
     assign opcode = inst[6:0];
     assign funct3 = inst[14:12]; 
 
-    assign IDU_raddr1 = (src1_en == 1'b1) ? inst[19:15] : {ADDR_WIDTH{1'b0}};
-    assign IDU_raddr2 = (src2_en == 1'b1) ? inst[24:20] : {ADDR_WIDTH{1'b0}};
+    assign IDU_raddr1 = (reg1_ren == 1'b1) ? inst[19:15] : {ADDR_WIDTH{1'b0}};
+    assign IDU_raddr2 = (reg2_ren == 1'b1) ? inst[24:20] : {ADDR_WIDTH{1'b0}};
 
-    assign IDU_des = (write_en == 1'b1) ? inst[11:7] : {ADDR_WIDTH{1'b0}};
-
-    always @(*) begin
-        if(imm_en == 1'b1)
-            IDU_src1 = imm;
-        else if(src1_en == 1'b1)
-            IDU_src1 = rdata1;
-        else
-            IDU_src1 = {DATA_WIDTH{1'b0}};
-    end
-
-    always @(*) begin
-        if(src2_en == 1'b1)
-            IDU_src2 = rdata2;
-        else
-            IDU_src2 = {DATA_WIDTH{1'b0}};
-    end
+    assign IDU_des = inst[11:7] : {ADDR_WIDTH{1'b0}};
 
     always @(*) begin
         case(imm_type)
@@ -70,18 +52,18 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
             10'b0000010011 : begin // addi
                 imm_type = IMM_I;
                 IDU_command = `ysyx_24120013_ADD;
-                imm_en = 1'b1;
-                src1_en = 1'b1;
-                src2_en = 1'b0;
-                write_en = 1'b1;
+                IDU_src1 = imm;
+                IDU_src2 = rdata1;
+                reg1_ren = 1'b1;
+                reg2_ren = 1'b0;
             end
             10'b0001110011 : begin // ebreak
                 imm_type = IMM_N;
                 IDU_command = `ysyx_24120013_HALT;
-                imm_en = 1'b0;
-                src1_en = 1'b0;
-                src2_en = 1'b0;
-                write_en = 1'b0;
+                IDU_src1 = 0;
+                IDU_src2 = 0;
+                reg1_ren = 0;
+                reg2_ren = 0;
             end
             default :
                 IDU_command = {COMMAND_WIDTH{1'b0}};
