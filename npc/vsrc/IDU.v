@@ -27,12 +27,13 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     always @(*) begin
         case({funct3,opcode})
-            10'b0000010011 : begin //addi
+            10'b0000010011 : begin // addi
                 IDU_imm = {{20{inst[31]}},inst[31:20]};
                 IDU_command = 2'b01;
             end
-            7'b1110011 :
+            10'b0001110011 : begin // ebreak
                 IDU_command = 2'b11;
+            end
             default :
                 IDU_command = 2'b00;
         endcase
