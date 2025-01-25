@@ -31,6 +31,8 @@ always @(*) begin
     case (command)
         `ysyx_24120013_ADD : 
             alu_command = `ysyx_24120013_ADD;
+        `ysyx_24120013_EQU : 
+            alu_command = `ysyx_24120013_EQU
         default : 
             alu_command = {COMMAND_WIDTH{1'b0}};
     endcase
