@@ -62,19 +62,12 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                     reg2_ren = 1'b0;
                     wren_en = 1'b1;
                 end
-                else begin
-                    IDU_src1 = 0;
-                    IDU_src2 = 0;
-                    reg1_ren = 0;
-                    reg2_ren = 0;
-                    wren_en = 0;
-                end
             end
             7'b01101_11 : begin // lui
                 imm_type = IMM_U;
                 IDU_command = `ysyx_24120013_EQU;
                 IDU_src1 = imm;
-                IDU_src2 = 0;
+                IDU_src2 = {DATA_WIDTH{1'b0}};
                 reg1_ren = 1'b0;
                 reg2_ren = 1'b0;
                 wren_en = 1'b1;
