@@ -29,7 +29,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     reg reg1_ren;
     reg reg2_ren;
-    reg wreg_ren;
+    reg wren_en;
     reg [5:0] imm_type;
     reg [DATA_WIDTH-1:0] imm;
 
@@ -39,7 +39,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign IDU_raddr1 = (reg1_ren == 1'b1) ? inst[19:15] : {ADDR_WIDTH{1'b0}};
     assign IDU_raddr2 = (reg2_ren == 1'b1) ? inst[24:20] : {ADDR_WIDTH{1'b0}};
 
-    assign IDU_des = (wreg_ren == 1'b1) ? inst[11:7] : {ADDR_WIDTH{1'b0}};
+    assign IDU_des = (wren_en == 1'b1) ? inst[11:7] : {ADDR_WIDTH{1'b0}};
 
     always @(*) begin
         case(imm_type)
@@ -60,8 +60,17 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                     IDU_src2 = rdata1;
                     reg1_ren = 1'b1;
                     reg2_ren = 1'b0;
-                    wreg_ren = 1'b1;
+                    wren_en = 1'b1;
                 end
+            end
+            7'b01101_11 : begin // lui
+                imm_type = IMM_U;
+                IDU_command = `ysyx_24120013_EQU;
+                IDU_src1 = imm;
+                IDU_src2 = 0;
+                reg1_ren = 1'b0;
+                reg2_ren = 1'b0;
+                wren_en = 1'b1;
             end
             7'b00101_11 : begin // auipc
                 imm_type = IMM_U;
@@ -70,7 +79,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 IDU_src2 = imm;
                 reg1_ren = 1'b0;
                 reg2_ren = 1'b0;
-                wreg_ren = 1'b1;
+                wren_en = 1'b1;
             end
             7'b11100_11 : begin // ebreak
                 imm_type = IMM_N;
@@ -79,7 +88,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 IDU_src2 = 0;
                 reg1_ren = 0;
                 reg2_ren = 0;
-                wreg_ren = 0;
+                wren_en = 0;
             end
             default : begin
                 imm_type = 0;
@@ -88,7 +97,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 IDU_src2 = 0;
                 reg1_ren = 0;
                 reg2_ren = 0;
-                wreg_ren = 0;
+                wren_en = 0;
             end
         endcase
     end
