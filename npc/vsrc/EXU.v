@@ -43,6 +43,7 @@ end
 
     wire [DATA_WIDTH-1:0] alu_src1;
     wire [DATA_WIDTH-1:0] alu_src2;
+    reg [COMMAND_WIDTH-1:0] alu_command;
     reg [DATA_WIDTH-1:0] alu_result;
 
     assign alu_src1 = src1;
