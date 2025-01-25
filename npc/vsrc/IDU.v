@@ -66,7 +66,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
             
             7'b01101_11 : begin // lui
                 imm_type = IMM_U;
-                IDU_command = `ysyx_24120013_EQU;
+                IDU_command = `ysyx_24120013_ADD;
                 IDU_src1 = imm;
                 IDU_src2 = 32'b0;
                 reg1_ren = 1'b0;
