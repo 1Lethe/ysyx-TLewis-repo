@@ -63,8 +63,11 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                     wren_en = 1'b1;
                 end
                 else begin
-                    
-                end
+                IDU_src1 = 0;
+                IDU_src2 = 0;
+                reg1_ren = 0;
+                reg2_ren = 0;
+                wren_en = 0;
             end
             7'b01101_11 : begin // lui
                 imm_type = IMM_U;
