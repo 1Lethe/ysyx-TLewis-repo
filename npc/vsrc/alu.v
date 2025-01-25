@@ -11,7 +11,7 @@ module ysyx_24120013_alu #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 always @(*) begin
     case(command)
         `ysyx_24120013_ADD : alu_result = src1 + src2;
-        default : alu_result = {COMMAND_WIDTH{1'b0}};
+        default : alu_result = {DATA_WIDTH{1'b0}};
     endcase
 end
 
