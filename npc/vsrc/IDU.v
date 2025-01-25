@@ -71,7 +71,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 wreg_ren = 1'b1;
             end
 
-            10'b000_11100_v11 : begin // ebreak
+            10'b000_11100_11 : begin // ebreak
                 imm_type = IMM_N;
                 IDU_command = `ysyx_24120013_HALT;
                 IDU_src1 = 0;
