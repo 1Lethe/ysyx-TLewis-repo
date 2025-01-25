@@ -13,7 +13,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output wire [DATA_WIDTH-1:0] IDU_src2,
         output wire [ADDR_WIDTH-1:0] IDU_des,
         output reg [31:0] IDU_imm,
-        output reg [1:0] IDU_command
+        output reg [COMMAND_WIDTH-1:0] IDU_command
     );
 
     wire [2:0] funct3;
@@ -37,7 +37,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 IDU_command = `ysyx_23120013_HALT;
             end
             default :
-                IDU_command = 2'b00;
+                IDU_command = 5'b00000;
         endcase
     end
 
