@@ -39,7 +39,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign IDU_src1 = (src1_en == 1'b1) ? rdata1 : 5'b0;
 
     assign IDU_raddr2 = (src2_en == 1'b1) ? inst[24:20] : 5'b0;
-    assign IDU_src2 = (sr2_en == 1'b1) ? rdata2 : 5'b0;
+    assign IDU_src2 = (src2_en == 1'b1) ? rdata2 : 5'b0;
 
     assign IDU_des = (write_en == 1'b1) ? inst[11:7] : 5'b0;
 
@@ -62,7 +62,6 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
             10'b0001110011 : begin // ebreak
                 imm_type = IMM_N;
                 IDU_command = `ysyx_24120013_HALT;
-
             end
             default :
                 IDU_command = {COMMAND_WIDTH{1'b0}};
