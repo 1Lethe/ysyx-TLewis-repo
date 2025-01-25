@@ -64,7 +64,11 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
             10'bxxx0010111 : begin // auipc
                 imm_type = IMM_U;
                 IDU_command = `ysyx_24120013_EQU;
-                IDU_src1 = 
+                IDU_src1 = pc,
+                IDU_src2 = imm;
+                reg1_ren = 1'b0;
+                reg2_ren = 1'b0;
+                wreg_ren = 1'b1;
             end
             10'b0001110011 : begin // ebreak
                 imm_type = IMM_N;
