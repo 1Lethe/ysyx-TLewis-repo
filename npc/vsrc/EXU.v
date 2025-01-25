@@ -18,10 +18,12 @@ module ysyx_24120013_EXU #(COMMAND_WIDTH = 5, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         if(des_addr == 0) begin
             EXU_wen = 0;
             EXU_waddr = 0;
+            EXU_wdata = 0;
         end
         else begin
             EXU_wen = 1;
             EXU_waddr = des_addr;
+            EXU_wdata = alu_result;
         end
     end
 
@@ -41,11 +43,10 @@ end
 
     wire [DATA_WIDTH-1:0] alu_src1;
     wire [DATA_WIDTH-1:0] alu_src2;
-    wire [DATA_WIDTH-1:0] alu_result;
+    reg [DATA_WIDTH-1:0] alu_result;
 
     assign alu_src1 = src1;
     assign alu_src2 = src2;
-    assign alu_result = EXU_wdata;
 
 ysyx_24120013_alu #(
     .COMMAND_WIDTH(COMMAND_WIDTH),
