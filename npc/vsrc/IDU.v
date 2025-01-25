@@ -3,7 +3,8 @@
 module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
         input rst,
-        input [31:0] inst,
+        input [DATA_WIDTH-1:0] inst,
+        input [DATA_WIDTH-1:0] pc,
         input [DATA_WIDTH-1:0] rdata1,
         input [DATA_WIDTH-1:0] rdata2,
         output wire [ADDR_WIDTH-1:0] IDU_raddr1,
@@ -43,13 +44,14 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     always @(*) begin
         case(imm_type)
             IMM_I : imm = {{20{inst[31]}}, inst[31:20]};
+            IMM_U : imm = {{8{inst[31]}},inst[31:20]} << 12;
             IMM_N : imm = {DATA_WIDTH{1'b0}};
             default : imm = {DATA_WIDTH{1'b0}};
         endcase
     end
 
     always @(*) begin
-        case({funct3,opcode})
+        casex({funct3,opcode})
             10'b0000010011 : begin // addi
                 imm_type = IMM_I;
                 IDU_command = `ysyx_24120013_ADD;
@@ -58,6 +60,11 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 reg1_ren = 1'b1;
                 reg2_ren = 1'b0;
                 wreg_ren = 1'b1;
+            end
+            10'bxxx0010111 : begin // auipc
+                imm_type = IMM_U;
+                IDU_command = `ysyx_24120013_EQU;
+                IDU_src1 = 
             end
             10'b0001110011 : begin // ebreak
                 imm_type = IMM_N;
