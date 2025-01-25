@@ -4,7 +4,6 @@ import "DPI-C" function void halt ();
 module ysyx_24120013_EXU #(COMMAND_WIDTH = 5, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
         input rst,
-        input [31:0] imm,
         input [DATA_WIDTH-1:0] src1,
         input [DATA_WIDTH-1:0] src2,
         input [ADDR_WIDTH-1:0] des_addr,
@@ -40,13 +39,13 @@ end
             halt();
     end
 
-wire [DATA_WIDTH-1:0] alu_src1;
-wire [DATA_WIDTH-1:0] alu_src2;
-reg [COMMAND_WIDTH-1:0] alu_command;
-reg [DATA_WIDTH-1:0] alu_result;
+    wire [DATA_WIDTH-1:0] alu_src1;
+    wire [DATA_WIDTH-1:0] alu_src2;
+    reg [COMMAND_WIDTH-1:0] alu_command;
+    reg [DATA_WIDTH-1:0] alu_result;
 
-assign alu_src1 = src1;
-assign alu_src2 = src2;
+    assign alu_src1 = src1;
+    assign alu_src2 = src2;
 
 ysyx_24120013_alu #(
     .COMMAND_WIDTH(COMMAND_WIDTH),

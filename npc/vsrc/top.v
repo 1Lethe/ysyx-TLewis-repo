@@ -33,7 +33,6 @@ wire [ADDR_WIDTH-1:0] IDU_raddr2;
 wire [DATA_WIDTH-1:0] IDU_src1;
 wire [DATA_WIDTH-1:0] IDU_src2;
 wire [ADDR_WIDTH-1:0] IDU_des;
-reg [31:0] IDU_imm;
 reg [COMMAND_WIDTH-1:0] IDU_command;
 
 ysyx_24120013_IDU #(
@@ -51,7 +50,6 @@ ysyx_24120013_IDU #(
     .IDU_src1    	(IDU_src1     ),
     .IDU_src2    	(IDU_src2     ),
     .IDU_des     	(IDU_des      ),
-    .IDU_imm     	(IDU_imm      ),
     .IDU_command 	(IDU_command  )
 );
 
@@ -86,7 +84,6 @@ ysyx_24120013_EXU #(
 )u_ysyx_24120013_EXU(
     .clk       	(clk        ),
     .rst       	(rst        ),
-    .imm       	(IDU_imm    ),
     .src1      	(IDU_src1   ),
     .src2      	(IDU_src2   ),
     .des_addr   (IDU_des    ),
