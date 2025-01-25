@@ -48,7 +48,11 @@ reg [DATA_WIDTH-1:0] alu_result;
 assign alu_src1 = src1;
 assign alu_src2 = src2;
 
-ysyx_24120013_alu u_ysyx_24120013_alu(
+ysyx_24120013_alu #(
+    .COMMAND_WIDTH(COMMAND_WIDTH),
+    .ADDR_WIDTH(ADDR_WIDTH),
+    .DATA1(DATA_WIDTH)
+)u_ysyx_24120013_alu(
     .src1       	(alu_src1        ),
     .src2       	(alu_src2        ),
     .command    	(command         ),
