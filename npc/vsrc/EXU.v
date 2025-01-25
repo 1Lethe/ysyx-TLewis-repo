@@ -28,7 +28,7 @@ module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     always @(*) begin
         case (command)
-            2'b01 :
+            `ysyx_23120013_ADD :
                 EXU_wdata = src1 + imm;
             default :
                 EXU_wdata = {DATA_WIDTH{1'b0}};
