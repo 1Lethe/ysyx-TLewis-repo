@@ -43,7 +43,7 @@ ysyx_24120013_IDU #(
     .clk         	(clk          ),
     .rst         	(rst          ),
     .inst        	(IFU_inst     ),
-    .pc             (pc),
+    .pc             (pc           ),
     .rdata1      	(rdata1       ),
     .rdata2      	(rdata2       ),
     .IDU_raddr1  	(IDU_raddr1   ),

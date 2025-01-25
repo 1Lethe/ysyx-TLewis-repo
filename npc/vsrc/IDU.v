@@ -52,7 +52,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     always @(*) begin
         casez({funct3,opcode})
-            10'b0000010011 : begin // addi
+            10'b000 00100 11 : begin // addi
                 imm_type = IMM_I;
                 IDU_command = `ysyx_24120013_ADD;
                 IDU_src1 = imm;
@@ -61,16 +61,17 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 reg2_ren = 1'b0;
                 wreg_ren = 1'b1;
             end
-            10'b???0010111 : begin // auipc
+            10'b???00101 11 : begin // auipc
                 imm_type = IMM_U;
-                IDU_command = `ysyx_24120013_EQU;
+                IDU_command = `ysyx_24120013_ADD;
                 IDU_src1 = pc;
                 IDU_src2 = imm;
                 reg1_ren = 1'b0;
                 reg2_ren = 1'b0;
                 wreg_ren = 1'b1;
             end
-            10'b0001110011 : begin // ebreak
+
+            10'b000 11100 11 : begin // ebreak
                 imm_type = IMM_N;
                 IDU_command = `ysyx_24120013_HALT;
                 IDU_src1 = 0;
