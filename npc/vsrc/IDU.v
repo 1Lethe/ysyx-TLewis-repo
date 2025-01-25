@@ -44,7 +44,7 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     always @(*) begin
         case(imm_type)
             IMM_I : imm = {{20{inst[31]}}, inst[31:20]};
-            IMM_U : imm = {{8{inst[31]}},inst[31:20],{12{1'b0}}};
+            IMM_U : imm = {inst[31:12],{12{1'b0}}};
             IMM_N : imm = {DATA_WIDTH{1'b0}};
             default : imm = {DATA_WIDTH{1'b0}};
         endcase
