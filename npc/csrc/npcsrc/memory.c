@@ -4,21 +4,12 @@
 #include <assert.h>
 #include "memory.h"
 
+extern char *img_file;
+
 uint32_t pmem[MAX_MEMORY] = {
     0x01008113, // addi x2,x1,16 (0,16)
-    0x01008113, // addi x2,x1,16 (0,16)
-    0x01010093, // addi x1,x2,16 (32,16)
-    0x01008113, // addi x2,x1,16 (32,48)
-    0x01010113, // addi x2,x2,16 (32,64)
-    0xff010113, // addi x2,x2,-16 (32,48)
-    0xfc010113, // addi x2,x2,-64 (32,-16)
-    0x00810093, // addi x1,x2,8 (-8,-16)
-    0x00810013, // addi x0,x2,8
-    0x04000093, // addi x1,x0,64
-    0xfc000113, // addi x2,x0,-64
-    0x04000013, // addi x0,x0,64
-    0x04008013, // addi x0,x1,64
-    0x04010013, // addi x0,x2,64
+    0x00010097, // auipc x1, 16 (0x80040002, 16)
+    0x000400b7, // lui x1, 64 (0x40000, 16)
     0x00100073, // ebreak
 };
 
@@ -34,4 +25,27 @@ void mem_out_of_bound(uint32_t addr){
         printf("pc = 0x%x\n", addr);
         assert(0);
     }
+}
+
+long load_img() {
+    if(img_file == NULL){
+        printf("No image is given.Use the default build-in image.\n");
+        return 4096;
+    }
+
+    FILE *fp = fopen(img_file, "rb");
+    assert(fp != NULL);
+
+    fseek(fp, 0, SEEK_END);
+    long size = ftell(fp);
+
+    printf("The image is %s, size = %ld.\n", img_file, size);
+
+    fseek(fp, 0, SEEK_SET);
+    int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+    assert(ret == 1);
+
+    fclose(fp);
+
+    return size;
 }
