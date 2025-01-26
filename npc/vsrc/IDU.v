@@ -27,8 +27,6 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire [2:0] funct3;
     wire [6:0] opcode;
 
-    reg reg1_ren;
-    reg reg2_ren;
     reg wren_en;
     reg [5:0] imm_type;
     reg [DATA_WIDTH-1:0] imm;
@@ -81,9 +79,6 @@ module ysyx_24120013_IDU #(COMMAND_WIDTH = 4, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                 IDU_src1 = pc;
                 IDU_src2 = imm;
                 wren_en = 1'b1;
-            end
-            7'b11011_11 : begin // jal
-
             end
             7'b11100_11 : begin // ebreak
                 imm_type = IMM_N;
