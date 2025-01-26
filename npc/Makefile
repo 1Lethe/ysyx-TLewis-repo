@@ -45,14 +45,13 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 SIM_TOPNAME = ysyx_24120013_top
 VER_SIM_V_PATH = $(VSRCS)
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
-VER_SIM_CFLAGS = -cc --exe -trace-fst --build
+VER_SIM_CFLAGS = -cc --exe -trace-fst --build --timing -I./vsrc
 sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
 	mkdir ./wave
 	$(call git_commit, "sim RTL")
-	verilator -cc --exe --trace-fst --build --timing --top-module $(SIM_TOPNAME) $^ \
+	verilator $(VER_SIM_CFLAGS) --top-module $(SIM_TOPNAME) $^ \
 	--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
-	./build/$(SIM_TOPNAME)
 	@echo "Sim Complete."
 
 

@@ -5,7 +5,7 @@ module ysyx_24120013_top (
     output reg [31:0] pc
 );
 
-parameter COMMAND_WIDTH = 2;
+parameter COMMAND_WIDTH = 5;
 parameter ADDR_WIDTH = 5;
 parameter DATA_WIDTH = 32;
 
@@ -33,17 +33,17 @@ wire [ADDR_WIDTH-1:0] IDU_raddr2;
 wire [DATA_WIDTH-1:0] IDU_src1;
 wire [DATA_WIDTH-1:0] IDU_src2;
 wire [ADDR_WIDTH-1:0] IDU_des;
-reg [31:0] IDU_imm;
-reg [1:0] IDU_command;
+reg [COMMAND_WIDTH-1:0] IDU_command;
 
 ysyx_24120013_IDU #(
-    .COMMAND_WIDTH (2),
+    .COMMAND_WIDTH (COMMAND_WIDTH),
     .ADDR_WIDTH (5),
     .DATA_WIDTH (32)
 )u_ysyx_24120013_IDU(
     .clk         	(clk          ),
     .rst         	(rst          ),
     .inst        	(IFU_inst     ),
+    .pc             (pc           ),
     .rdata1      	(rdata1       ),
     .rdata2      	(rdata2       ),
     .IDU_raddr1  	(IDU_raddr1   ),
@@ -51,7 +51,6 @@ ysyx_24120013_IDU #(
     .IDU_src1    	(IDU_src1     ),
     .IDU_src2    	(IDU_src2     ),
     .IDU_des     	(IDU_des      ),
-    .IDU_imm     	(IDU_imm      ),
     .IDU_command 	(IDU_command  )
 );
 
@@ -80,12 +79,12 @@ reg [ADDR_WIDTH-1:0] EXU_waddr;
 reg [DATA_WIDTH-1:0] EXU_wdata;
 
 ysyx_24120013_EXU #(
+    .COMMAND_WIDTH(COMMAND_WIDTH),
     .ADDR_WIDTH (5),
     .DATA_WIDTH (32)
 )u_ysyx_24120013_EXU(
     .clk       	(clk        ),
     .rst       	(rst        ),
-    .imm       	(IDU_imm    ),
     .src1      	(IDU_src1   ),
     .src2      	(IDU_src2   ),
     .des_addr   (IDU_des    ),
