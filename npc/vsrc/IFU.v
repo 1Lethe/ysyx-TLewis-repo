@@ -9,7 +9,7 @@ always @(posedge clk) begin
     if(rst)
         IFU_inst <= 32'b0;
     else
-        IFU_inst <= inst;
+        IFU_inst <= pmem;
 end
 
 endmodule
