@@ -8,16 +8,14 @@ module ysyx_24120013_EXU #(COMMAND_WIDTH = 5, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input [DATA_WIDTH-1:0] src2,
         input [ADDR_WIDTH-1:0] des_addr,
         input [COMMAND_WIDTH-1:0] command,
-        
-        //input pc_jump_flag,
+        input pc_jump_flag,
 
         output reg EXU_wen,
         output reg [ADDR_WIDTH-1:0] EXU_waddr,
-        output reg [DATA_WIDTH-1:0] EXU_wdata
-        /*
+        output reg [DATA_WIDTH-1:0] EXU_wdata,
         output reg EXU_pc_jump_val,
         output reg EXU_pc_jump_en
-        */
+        
     );
 
     always @(*) begin
