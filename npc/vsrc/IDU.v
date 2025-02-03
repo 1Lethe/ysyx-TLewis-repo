@@ -71,7 +71,8 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign is_auipc = (opcode == OPC_AUIPC);
     assign is_ebreak = (opcode == OPC_BREAK);
 
-    assign alu_op[0] = is_addi;
+    assign alu_op[0] = is_addi |
+                       is_auipc;
     assign alu_op[10] = is_lui;
 
     assign break_ctrl = (is_ebreak == 1'b1) ? 1'b1 : 1'b0;
@@ -99,6 +100,8 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                       (opcode == OPC_BRANCH);
 
     assign src2_imm = (opcode == OPC_IMM_C)  ||
+           (opcode == OPC_LUI)    ||
+           (opcode == OPC_AUIPC)  ||
            (opcode == OPC_JAL)    ||
            (opcode == OPC_JALR)   ||
            (opcode == OPC_BRANCH) ||
