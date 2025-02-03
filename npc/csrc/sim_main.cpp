@@ -88,7 +88,7 @@ static int parse_args(int argc, char *argv[]) {
 int main(int argc, char** argv) {                                      
 
     parse_args(argc, argv);
-    
+
     sim_init(argc, argv);
 
     reset(SIM_MODULE_NAME, 1);
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     load_img();
 
 #ifdef USE_TESTBENCH
-    while(!contextp->gotFinish()){   
+    while(!contextp->gotFinish() && sim_time >= 0){   
         dump_wave(SIM_MODULE_NAME);
     }
 #endif

@@ -1,9 +1,9 @@
-module ysyx_24120013_PC (
+module ysyx_24120013_PC #(DATA_WIDTH = 32)(
     input clk,
     input rst,
     input pc_jmp_en,
-    input [31:0] pc_jmp_val,
-    output reg[31:0] pc
+    input [DATA_WIDTH-1:0] pc_jmp_val,
+    output reg[DATA_WIDTH-1:0] pc
 );
 
 always @(posedge clk) begin
