@@ -7,9 +7,9 @@
 extern char *img_file;
 
 uint32_t pmem[MAX_MEMORY] = {
-    0x01008113, // addi x2,x1,16 (0,16)
-    0x00010097, // auipc x1, 16 (0x80040002, 16)
-    0x000400b7, // lui x1, 64 (0x40000, 16)
+    0x000400b7, // lui x1,64 (64,0)
+    0x01008113, // addi x2,x1,16 (64,80)
+    0x000ff197, // auipc x3,255
     0x00100073, // ebreak
 };
 
@@ -17,7 +17,7 @@ uint32_t* guest_to_host(uint32_t paddr) { return pmem + paddr - RESET_VECTOR; }
 uint32_t host_to_guest(uint32_t *haddr) { return haddr - pmem + RESET_VECTOR; }
 
 uint32_t pmem_read(uint32_t addr){
-    return *(guest_to_host(addr));
+    return *(guest_to_host(addr + 1));
 }
 
 void mem_out_of_bound(uint32_t addr){
