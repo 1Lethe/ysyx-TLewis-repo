@@ -88,12 +88,11 @@ static int parse_args(int argc, char *argv[]) {
 int main(int argc, char** argv) {                                      
 
     parse_args(argc, argv);
+    load_img();
 
     sim_init(argc, argv);
 
     reset(SIM_MODULE_NAME, 1);
-
-    load_img();
 
 #ifdef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){   
@@ -102,9 +101,9 @@ int main(int argc, char** argv) {
 #endif
 #ifndef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){
+        single_cycle(SIM_MODULE_NAME);
         mem_out_of_bound(top->pc);
         top->pmem = pmem_read(top->pc);
-        single_cycle(SIM_MODULE_NAME);
     }
 #endif
 
