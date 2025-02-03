@@ -29,7 +29,7 @@ wire [31:0]inst;
 ysyx_24120023_IFU u_ysyx_24120023_IFU(
     .clk      	(clk       ),
     .rst      	(rst       ),
-    .inst     	(pmem      ),
+    .pmem     	(pmem      ),
     .IFU_inst 	(inst  )
 );
 
