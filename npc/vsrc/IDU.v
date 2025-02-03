@@ -36,6 +36,10 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire [6:0] funct7;
 
     wire is_addi;
+
+    wire is_lui;
+    wire is_auipc;
+
     wire is_ebreak;
 
     wire [DATA_WIDTH-1:0] imm_i;
@@ -63,9 +67,12 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign funct7 = inst[31:25];
 
     assign is_addi = (opcode == OPC_IMM_C) && (funct3 == 3'b000);
+    assign is_lui = (opcode == OPC_LUI);
+    assign is_auipc = (opcode == OPC_AUIPC);
     assign is_ebreak = (opcode == OPC_BREAK);
 
     assign alu_op[0] = is_addi;
+    assign alu_op[10] = is_lui;
 
     assign break_ctrl = (is_ebreak == 1'b1) ? 1'b1 : 1'b0;
 
