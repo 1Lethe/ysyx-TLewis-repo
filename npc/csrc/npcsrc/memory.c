@@ -7,7 +7,9 @@
 extern char *img_file;
 
 uint32_t pmem[MAX_MEMORY] = {
-    0x01008113, // addi x2,x1,16 (0,16)
+    0x000400b7, // lui x1,64 (64,0)
+    0x01008113, // addi x2,x1,16 (64,80)
+    0x000ff197, // auipc x3,255
     0x00100073, // ebreak
 };
 
