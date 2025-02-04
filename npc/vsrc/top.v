@@ -11,15 +11,14 @@ parameter ADDR_WIDTH = 5;
 parameter DATA_WIDTH = 32;
 
 wire pc_jmp_en;
-wire [DATA_WIDTH-1:0] pc_jmp_val;
+wire [DATA_WIDTH-1:0] branch_jmp_pc;
 
 ysyx_24120013_PC #(
     .DATA_WIDTH(DATA_WIDTH)
 )u_ysyx_24120013_PC(
     .clk        	(clk         ),
     .rst        	(rst         ),
-    .pc_jmp_en  	(pc_jmp_en),
-    .pc_jmp_val 	(pc_jmp_val),
+    .pc_jmp_val 	(branch_jmp_pc),
     .pc         	(pc          )
 );
 
@@ -40,6 +39,9 @@ wire [DATA_WIDTH-1:0] alu_src1;
 wire [DATA_WIDTH-1:0] alu_src2;
 wire [ADDR_WIDTH-1:0] alu_des;
 wire [`ysyx_24120013_ALUOP_WIDTH-1:0] alu_op;
+wire [DATA_WIDTH-1:0] branch_imm;
+wire [DATA_WIDTH-1:0] branch_rs1;
+wire [`ysyx_24120013_BRANCH_WIDTH-1:0] branch_op;
 wire break_ctrl;
 
 ysyx_24120013_IDU #(
@@ -57,7 +59,10 @@ ysyx_24120013_IDU #(
     .alu_src1    	(alu_src1     ),
     .alu_src2    	(alu_src2     ),
     .alu_des     	(alu_des      ),
-    .alu_op 	(alu_op  ),
+    .alu_op     (alu_op  ),
+    .branch_op  (branch_op),
+    .branch_imm (branch_imm),
+    .branch_rs1 (branch_rs1),
     .break_ctrl (break_ctrl)
 );
 
@@ -91,16 +96,19 @@ ysyx_24120013_EXU #(
 )u_ysyx_24120013_EXU(
     .clk       	(clk        ),
     .rst       	(rst        ),
-    .src1      	(alu_src1   ),
-    .src2      	(alu_src2   ),
-    .des_addr   (alu_des    ),
-    .break_ctrl (break_ctrl),
+    .alu_src1      	(alu_src1   ),
+    .alu_src2      	(alu_src2   ),
+    .alu_des_addr   (alu_des    ),
     .alu_op     (alu_op),
+    .branch_imm(branch_imm),
+    .branch_rs1(branch_rs1),
+    .branch_pc(branch_pc),
+    .branch_op(branch_op),
+    .break_ctrl (break_ctrl),
     .reg_wen   	(reg_wen    ),
     .reg_waddr 	(reg_waddr  ),
     .reg_wdata 	(reg_wdata  ),
-    .pc_jump_en (pc_jmp_en),
-    .pc_jump_val (pc_jmp_val)
+    .branch_jmp_pc (branch_jmp_pc)
 );
 
 endmodule
