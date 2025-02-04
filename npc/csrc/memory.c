@@ -3,15 +3,15 @@
 #include <stdint.h>
 #include <assert.h>
 #include <string.h>
-#include "memory.h"
+#include "include/memory.h"
 
 extern char *img_file;
 
-uint8_t pmem[MAX_MEMORY] __attribute((aligned(4096))) = {};
+static uint8_t pmem[MAX_MEMORY] __attribute((aligned(4096))) = {};
 
 static const uint32_t buildin_img[] = {
-    0x000400b7, // lui x1,64 (64,0)
-    0x01008113, // addi x2,x1,16 (64,80)
+    0x00008097, // auipc x1,8
+    0x00008167,
     0x000ff197, // auipc x3,255
     0x00100073, // ebreak
 };
@@ -29,6 +29,7 @@ uint32_t host_read(void *addr, int len){
 }
 
 uint32_t pmem_read(uint32_t addr,uint32_t len){
+    mem_out_of_bound(addr);
     uint32_t ret = host_read(guest_to_host(addr), len);
     return ret;
 }
@@ -60,6 +61,5 @@ long load_img() {
     assert(ret == 1);
 
     fclose(fp);
-
     return size;
 }
