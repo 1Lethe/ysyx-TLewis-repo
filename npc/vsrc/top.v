@@ -72,7 +72,6 @@ ysyx_24120013_IDU #(
 // output declaration of module ysyx_24120013_RegisterFile
 wire [DATA_WIDTH-1:0] reg_rdata1;
 wire [DATA_WIDTH-1:0] reg_rdata2;
-wire [DATA_WIDTH-1:0] trap_flag;
 
 ysyx_24120013_RegisterFile #(
     .ADDR_WIDTH (ADDR_WIDTH),
