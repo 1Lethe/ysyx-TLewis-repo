@@ -24,7 +24,7 @@
 
 enum {
   // TODO: Add more expression.
-  // Pay attention to put different rules to correct places.
+  // MARK: Pay attention to put different rules to correct places.
 
   /* non-operator put here. */
   TK_NOTYPE = 256, TK_LINEBREAK,
