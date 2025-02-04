@@ -9,11 +9,21 @@ extern char *img_file;
 
 static uint8_t pmem[MAX_MEMORY] __attribute((aligned(4096))) = {};
 
+#define demo_img
+
 static const uint32_t buildin_img[] = {
+#ifdef demo_img
+    0x00000297,  // auipc t0,0
+    0x00028823,  // sb  zero,16(t0)
+    0x0102c503,  // lbu a0,16(t0)
+    0x00100073,  // ebreak (used as nemu_trap)
+    0xdeadbeef,  // some data
+#else
     0x00008097, // auipc x1,8
     0x00008167,
     0x000ff197, // auipc x3,255
     0x00100073, // ebreak
+#endif
 };
 
 // TODO: expand word_t paddr_t ...
