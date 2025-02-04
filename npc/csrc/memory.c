@@ -10,8 +10,8 @@ extern char *img_file;
 static uint8_t pmem[MAX_MEMORY] __attribute((aligned(4096))) = {};
 
 static const uint32_t buildin_img[] = {
-    0x000400b7, // lui x1,64 (64,0)
-    0x0080026f, // jal x4,8
+    0x00008097, // auipc x1,8
+    0x00008167, // jalr x2,0(x1)
     0x000ff197, // auipc x3,255
     0x00100073, // ebreak
 };
