@@ -7,7 +7,8 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         input [ADDR_WIDTH-1:0] raddr1,
         input [ADDR_WIDTH-1:0] raddr2,
         output wire [DATA_WIDTH-1:0] rdata1,
-        output wire [DATA_WIDTH-1:0] rdata2
+        output wire [DATA_WIDTH-1:0] rdata2,
+        output wire [DATA_WIDTH-1:0] trap_flag
     );
 
     reg [DATA_WIDTH-1:0] rf [2**ADDR_WIDTH-1:0];
@@ -21,5 +22,7 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
 
     assign rdata1 = rf[raddr1];
     assign rdata2 = rf[raddr2];
+
+    assign trap_flag = rf[10];
 
 endmodule
