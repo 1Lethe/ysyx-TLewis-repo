@@ -41,6 +41,7 @@ wire [ADDR_WIDTH-1:0] alu_des;
 wire [`ysyx_24120013_ALUOP_WIDTH-1:0] alu_op;
 wire [DATA_WIDTH-1:0] branch_imm;
 wire [DATA_WIDTH-1:0] branch_rs1;
+wire [DATA_WIDTH-1:0] branch_pc;
 wire [`ysyx_24120013_BRANCH_WIDTH-1:0] branch_op;
 wire break_ctrl;
 
