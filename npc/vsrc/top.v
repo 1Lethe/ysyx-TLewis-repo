@@ -64,6 +64,7 @@ ysyx_24120013_IDU #(
     .branch_op  (branch_op),
     .branch_imm (branch_imm),
     .branch_rs1 (branch_rs1),
+    .branch_pc  (branch_pc),
     .break_ctrl (break_ctrl)
 );
 
