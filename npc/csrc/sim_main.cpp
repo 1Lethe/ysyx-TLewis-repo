@@ -57,9 +57,9 @@ void single_cycle(SIM_MODULE* top){
 }
 
 void reset(SIM_MODULE* top, int n){
-    top->rst = 1;
+    top->rst = 1; top->eval();
     while(n-- > 0) single_cycle(top);
-    top->rst = 0;
+    top->rst = 0; top->eval();
 }
 #endif
 
