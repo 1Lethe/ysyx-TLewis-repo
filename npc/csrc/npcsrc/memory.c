@@ -16,11 +16,21 @@ static const uint32_t buildin_img[] = {
     0x00100073, // ebreak
 };
 
+// TODO: expand word_t paddr_t ...
+
 uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - RESET_VECTOR; }
 uint32_t host_to_guest(uint8_t *haddr) { return haddr - pmem + RESET_VECTOR; }
 
-uint32_t pmem_read(uint32_t addr){
-    return *(guest_to_host(addr + 1));
+uint32_t host_read(void *addr, int len){
+    switch(len){
+        case 4: return *(uint32_t *)addr;
+        default : assert(0);
+    }
+}
+
+uint32_t pmem_read(uint32_t addr,uint32_t len){
+    uint32_t ret = host_read(guest_to_host(addr), len);
+    return ret;
 }
 
 void mem_out_of_bound(uint32_t addr){
