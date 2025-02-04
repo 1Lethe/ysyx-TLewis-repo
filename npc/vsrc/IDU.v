@@ -124,7 +124,6 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     assign alu_src1_pc  = (opcode == OPC_AUIPC)  ||
                       (opcode == OPC_JAL)    ||
-                      (opcode == OPC_JALR)   ||
                       (opcode == OPC_BRANCH);
 
     assign alu_src2_imm = (opcode == OPC_IMM_C)  ||
