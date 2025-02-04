@@ -14,8 +14,6 @@
 ***************************************************************************************/
 
 #include <isa.h>
-#include <elf.h>
-#include <cpu/trace.h>
 #include <memory/paddr.h>
 
 void init_rand();
@@ -32,7 +30,7 @@ static void welcome() {
         "to record the trace. This may lead to a large log file. "
         "If it is not necessary, you can disable it in menuconfig"));
   Log("Build time: %s, %s", __TIME__, __DATE__);
-  printf("Welcome to %s-NEMU-TLewis!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED));
+  printf("Welcome to %s-NEMU!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");
 }
 
@@ -44,11 +42,7 @@ void sdb_set_batch_mode();
 static char *log_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
-char *elf_file = NULL;
 static int difftest_port = 1234;
-
-Elf32_Shdr shdr_strtab;
-Elf32_Shdr shdr_symtab;
 
 static long load_img() {
   if (img_file == NULL) {
@@ -72,46 +66,6 @@ static long load_img() {
   return size;
 }
 
-static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
-  if(elf_file == NULL){
-    Log("No elf file is given.");
-    return ;
-  }
-
-  FILE *fp = fopen(elf_file, "r");
-  Assert(fp, "Can not open '%s'",elf_file);
-
-  /* Read ELF header */
-  Elf32_Ehdr elf_ehdr;
-  Assert(fread(&elf_ehdr, 1, sizeof(Elf32_Ehdr), fp) == sizeof(Elf32_Ehdr), \
-    "Failed to read '%s' elf_ehd", elf_file);
-  Assert(elf_ehdr.e_ident[0] == 0x7f || elf_ehdr.e_ident[1] == 'E' || \
-    elf_ehdr.e_ident[2] != 'L' || elf_ehdr.e_ident[3] == 'F', "Wrong Elf file.");
-
-  Assert(fseek(fp, elf_ehdr.e_shoff, SEEK_SET) != -1, \
-    "Faided to read '%s'", elf_file);
-
-  /* Read ELF Section header and extract symtab and strtab */
-  Elf32_Shdr elf_shdr;
-  Elf32_Shdr elf_shdr_symtab;
-  Elf32_Shdr elf_shdr_strtab;
-  for(int i = 0; i < elf_ehdr.e_shnum; i++){
-    memset(&elf_shdr, 0, sizeof(Elf32_Shdr));
-    Assert(fread(&elf_shdr, 1, elf_ehdr.e_shentsize, fp) != -1, \
-      "Failed to read '%s' shdr[%d]", elf_file, i);
-    if(elf_shdr.sh_type == SHT_SYMTAB){
-      memcpy(&elf_shdr_symtab, &elf_shdr, elf_ehdr.e_shentsize);
-    }else if(elf_shdr.sh_type == SHT_STRTAB && i != elf_ehdr.e_shstrndx){
-      memcpy(&elf_shdr_strtab, &elf_shdr, elf_ehdr.e_shentsize);
-    }
-  }
-
-  fclose(fp);
-  *shdr_strtab_ret = elf_shdr_strtab;
-  *shdr_symtab_ret = elf_shdr_symtab;
-  return ;
-}
-
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"batch"    , no_argument      , NULL, 'b'},
@@ -119,17 +73,15 @@ static int parse_args(int argc, char *argv[]) {
     {"diff"     , required_argument, NULL, 'd'},
     {"port"     , required_argument, NULL, 'p'},
     {"help"     , no_argument      , NULL, 'h'},
-    {"elf"      , required_argument, NULL, 'e'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-bhe:l:d:p:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-bhl:d:p:", table, NULL)) != -1) {
     switch (o) {
       case 'b': sdb_set_batch_mode(); break;
       case 'p': sscanf(optarg, "%d", &difftest_port); break;
       case 'l': log_file = optarg; break;
       case 'd': diff_so_file = optarg; break;
-      case 'e': elf_file = optarg;break;
       case 1: img_file = optarg; return 0;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
@@ -137,7 +89,6 @@ static int parse_args(int argc, char *argv[]) {
         printf("\t-l,--log=FILE           output log to FILE\n");
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
         printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
-        printf("\t-e,--elf=FILE           input elf file\n");
         printf("\n");
         exit(0);
     }
@@ -168,15 +119,6 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
-
-  /* Parse elf file */
-  parse_elf(&shdr_strtab, &shdr_symtab);
-
-  /* Init iring used to itrace */
-  IFDEF(CONFIG_ITRACE, iring_init());
-
-  /* Init ftrace Init ELF symbol table */
-  IFDEF(CONFIG_FTRACE, ftrace_init());
 
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);

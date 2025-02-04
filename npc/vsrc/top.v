@@ -1,74 +1,106 @@
-module top(
+`include "define/exu_command.v"
+
+module ysyx_24120013_top (
     input clk,
     input rst,
-    input ps2_clk,
-    input ps2_data,
-    output wire [7:0] o_seg0,
-    output wire [7:0] o_seg1,
-    output wire [7:0] o_seg2,
-    output wire [7:0] o_seg3,
-    output wire [7:0] o_seg4,
-    output wire [7:0] o_seg5,
-    output wire shift,
-    output wire ctrl
+    input [31:0] pmem,
+    output reg [31:0] pc
 );
 
-wire overflow;
-wire ps2_ready;
-wire [7:0] data;
-wire nextdata_n;
-wire [7:0]dataget;
-wire datarec;
-wire segs_enable;
-wire [7:0]seg0_1;
-wire [7:0]seg2_3;
-wire [7:0]seg4_5;
+parameter ADDR_WIDTH = 5;
+parameter DATA_WIDTH = 32;
 
-segs segs(
-    .segs_input0_1(seg0_1),
-    .segs_input2_3(seg2_3),
-    .segs_input4_5(seg4_5),
-    .segs_enable(segs_enable),
-    .seg0_output(o_seg0),
-    .seg1_output(o_seg1),
-    .seg2_output(o_seg2),
-    .seg3_output(o_seg3),
-    .seg4_output(o_seg4),
-    .seg5_output(o_seg5)
+wire pc_jmp_en;
+wire [DATA_WIDTH-1:0] pc_jmp_val;
+
+ysyx_24120013_PC #(
+    .DATA_WIDTH(DATA_WIDTH)
+)u_ysyx_24120013_PC(
+    .clk        	(clk         ),
+    .rst        	(rst         ),
+    .pc_jmp_en  	(pc_jmp_en),
+    .pc_jmp_val 	(pc_jmp_val),
+    .pc         	(pc          )
 );
 
-keyboard_display keyboard_display(
-    .clk(clk),
-    .rst(rst),
-    .ps2dis_data(dataget),
-    .ps2dis_recFlag(datarec),
-    .segs_enable(segs_enable),
-    .ps2dis_seg0_1(seg0_1),
-    .ps2dis_seg2_3(seg2_3),
-    .keytime_cnt(seg4_5),
-    .shift_flag(shift),
-    .ctrl_flag(ctrl)
+// output declaration of module ysyx_24120023_IFU
+wire [31:0]inst;
+
+ysyx_24120023_IFU u_ysyx_24120023_IFU(
+    .clk      	(clk       ),
+    .rst      	(rst       ),
+    .pmem     	(pmem      ),
+    .IFU_inst 	(inst  )
 );
 
-keyboard_read keyboard_read(
-    .clk(clk),
-    .rst(rst),
-    .ps2read_data(data),
-    .ps2read_ready(ps2_ready),
-    .ps2read_nextdata(nextdata_n),
-    .ps2read_dataget(dataget),
-    .ps2read_datarec(datarec)
+// output declaration of module ysyx_24120013_IDU
+wire [ADDR_WIDTH-1:0] reg_raddr1;
+wire [ADDR_WIDTH-1:0] reg_raddr2;
+wire [DATA_WIDTH-1:0] alu_src1;
+wire [DATA_WIDTH-1:0] alu_src2;
+wire [ADDR_WIDTH-1:0] alu_des;
+wire [`ysyx_24120013_ALUOP_WIDTH-1:0] alu_op;
+wire break_ctrl;
+
+ysyx_24120013_IDU #(
+    .ADDR_WIDTH (ADDR_WIDTH),
+    .DATA_WIDTH (DATA_WIDTH)
+)u_ysyx_24120013_IDU(
+    .clk         	(clk          ),
+    .rst         	(rst          ),
+    .inst        	(inst     ),
+    .pc             (pc           ),
+    .reg_rdata1      	(reg_rdata1       ),
+    .reg_rdata2      	(reg_rdata2       ),
+    .reg_raddr1  	(reg_raddr1   ),
+    .reg_raddr2  	(reg_raddr2   ),
+    .alu_src1    	(alu_src1     ),
+    .alu_src2    	(alu_src2     ),
+    .alu_des     	(alu_des      ),
+    .alu_op 	(alu_op  ),
+    .break_ctrl (break_ctrl)
 );
 
-ps2_keyboard ps2_keyboard(
-    .clk(clk),
-    .clrn(~rst),
-    .ps2_clk(ps2_clk),
-    .ps2_data(ps2_data),
-    .data(data),
-    .ready(ps2_ready),
-    .nextdata_n(nextdata_n),
-    .overflow(overflow)
+// output declaration of module ysyx_24120013_RegisterFile
+wire [DATA_WIDTH-1:0] reg_rdata1;
+wire [DATA_WIDTH-1:0] reg_rdata2;
+
+ysyx_24120013_RegisterFile #(
+    .ADDR_WIDTH (ADDR_WIDTH),
+    .DATA_WIDTH (DATA_WIDTH)
+)u_ysyx_24120013_RegisterFile(
+    .clk    	(clk     ),
+    .rst    	(rst     ),
+    .wdata  	(reg_wdata   ),
+    .waddr  	(reg_waddr   ),
+    .wen    	(reg_wen     ),
+    .raddr1 	(reg_raddr1  ),
+    .raddr2 	(reg_raddr2  ),
+    .rdata1 	(reg_rdata1  ),
+    .rdata2 	(reg_rdata2  )
+);
+
+// output declaration of module ysyx_24120013_EXU
+wire reg_wen;
+wire [ADDR_WIDTH-1:0] reg_waddr;
+wire [DATA_WIDTH-1:0] reg_wdata;
+
+ysyx_24120013_EXU #(
+    .ADDR_WIDTH (ADDR_WIDTH),
+    .DATA_WIDTH (DATA_WIDTH)
+)u_ysyx_24120013_EXU(
+    .clk       	(clk        ),
+    .rst       	(rst        ),
+    .src1      	(alu_src1   ),
+    .src2      	(alu_src2   ),
+    .des_addr   (alu_des    ),
+    .break_ctrl (break_ctrl),
+    .alu_op     (alu_op),
+    .reg_wen   	(reg_wen    ),
+    .reg_waddr 	(reg_waddr  ),
+    .reg_wdata 	(reg_wdata  ),
+    .pc_jump_en (pc_jmp_en),
+    .pc_jump_val (pc_jmp_val)
 );
 
 endmodule
