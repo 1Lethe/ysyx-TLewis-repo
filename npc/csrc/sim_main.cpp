@@ -101,7 +101,7 @@ int main(int argc, char** argv) {
 #endif
 #ifndef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){
-        top->pmem = pmem_read(top->pc);
+        top->pmem = pmem_read(top->pc, 4);
         single_cycle(SIM_MODULE_NAME);
         //mem_out_of_bound(top->pc);
     }
