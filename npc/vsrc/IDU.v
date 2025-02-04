@@ -14,9 +14,11 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output wire [DATA_WIDTH-1:0] alu_src2,
         output wire [ADDR_WIDTH-1:0] alu_des,
         output wire [`ysyx_24120013_ALUOP_WIDTH-1:0] alu_op,
-        output wire break_ctrl
+        output wire break_ctrl,
+        output wire branch
     );
 
+    /* Decoder opcode parameter */
     parameter OPC_IMM_C  = 7'b0010011; // immediate calc
     parameter OPC_CALC   = 7'b0110011;
     parameter OPC_LUI    = 7'b0110111;
@@ -28,6 +30,7 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     parameter OPC_SAVE   = 7'b0100011;
     parameter OPC_BREAK  = 7'b1110011; //ebreak
 
+    /* extract parts of the inst signal */
     wire [6:0] opcode;
     wire [4:0] rs1;
     wire [4:0] rs2;
@@ -35,6 +38,7 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire [2:0] funct3;
     wire [6:0] funct7;
 
+    /* inst decoder signal */
     wire is_addi;
 
     wire is_lui;
@@ -42,6 +46,7 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     wire is_ebreak;
 
+    /* immediate number calc signal */
     wire [DATA_WIDTH-1:0] imm_i;
     wire [DATA_WIDTH-1:0] imm_s;
     wire [DATA_WIDTH-1:0] imm_b;
@@ -54,6 +59,7 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire is_imm_j;
     wire [DATA_WIDTH-1:0]imm;
 
+    /* alu src control signal */
     wire src1_pc;
     wire src2_imm;
     wire src2_pc;
