@@ -50,7 +50,7 @@ void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
     top->clk = 1;top->eval();
     if(top->rst != 1){
-        printf("1\n");
+        printf("A 0x%x\n", top->pc);
         top->pmem = pmem_read(top->pc, 4);top->eval();
     }
     dump_wave(top);
