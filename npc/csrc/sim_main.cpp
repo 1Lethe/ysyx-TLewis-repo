@@ -25,7 +25,8 @@ SIM_MODULE* SIM_MODULE_NAME;
 
 void halt(void){
     printf("\nProgram Finished at clock time %d.\n", SIM_TIME_MAX - sim_time);
-    sim_time = 1;
+    dump_wave(SIM_MODULE_NAME);
+    sim_time = 0;
 }
 
 void sim_init(int argc, char** argv){
@@ -47,7 +48,9 @@ void dump_wave(SIM_MODULE* top){
 #ifndef USE_TESTBENCH
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
-    top->clk = 1;top->eval();dump_wave(top);
+    top->clk = 1;top->eval();
+    top->pmem = pmem_read(top->pc, 4);top->eval();
+    dump_wave(top);
     sim_time--;
 }
 
@@ -101,9 +104,7 @@ int main(int argc, char** argv) {
 #endif
 #ifndef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){
-        top->pmem = pmem_read(top->pc);
         single_cycle(SIM_MODULE_NAME);
-        //mem_out_of_bound(top->pc);
     }
 #endif
 
