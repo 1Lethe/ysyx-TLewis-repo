@@ -16,9 +16,9 @@ void putch(char ch) {
 }
 
 void halt(int code) {
-  npc_trap(code);
-  
-  while(1);
+  //npc_trap(code);
+
+  while(1); // should not reach here.
 }
 
 void _trm_init() {
