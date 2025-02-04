@@ -3,7 +3,7 @@
 module ysyx_24120013_top (
     input clk,
     input rst,
-    input [31:0] pmem,
+    input [DATA_WIDTH-1:0] pmem,
     output reg [DATA_WIDTH-1:0] pc,
     output wire [DATA_WIDTH-1:0] trap_flag
 );
