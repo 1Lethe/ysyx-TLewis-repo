@@ -29,6 +29,7 @@ uint32_t host_read(void *addr, int len){
 }
 
 uint32_t pmem_read(uint32_t addr,uint32_t len){
+    mem_out_of_bound(addr);
     uint32_t ret = host_read(guest_to_host(addr), len);
     return ret;
 }
@@ -60,7 +61,5 @@ long load_img() {
     assert(ret == 1);
 
     fclose(fp);
-    printf("A:");
-    printf("0x%x %x\n", pmem[0], pmem[1]);
     return size;
 }
