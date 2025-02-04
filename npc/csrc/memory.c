@@ -1,12 +1,9 @@
-#include "verilated.h"
-#include "include/sim_main.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <assert.h>
 #include <string.h>
-#include "memory.h"
+#include "include/memory.h"
 
 extern char *img_file;
 
