@@ -7,7 +7,7 @@
 
 extern char *img_file;
 
-uint8_t pmem[MAX_MEMORY] __attribute((aligned(4096))) = {};
+static uint8_t pmem[MAX_MEMORY] __attribute((aligned(4096))) = {};
 
 static const uint32_t buildin_img[] = {
     0x000400b7, // lui x1,64 (64,0)
@@ -60,6 +60,6 @@ long load_img() {
     assert(ret == 1);
 
     fclose(fp);
-    printf("%x", pmem[0]);
+    printf("%x", pmem);
     return size;
 }
