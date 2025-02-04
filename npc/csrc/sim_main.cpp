@@ -29,7 +29,7 @@ void halt(void){
     if(SIM_MODULE_NAME->trap_flag == 0){
         printf("HIT GOOD TRAP.\n");
     }else{
-        printf("HIT BAD TRAP.\n")
+        printf("HIT BAD TRAP.\n");
     }
     sim_time = 0;
 }
