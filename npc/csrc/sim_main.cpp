@@ -42,7 +42,6 @@ void sim_init(int argc, char** argv){
 void dump_wave(SIM_MODULE* top){
     tfp->dump(contextp->time());
     contextp->timeInc(1);
-    sim_time--;
 }
 
 #ifndef USE_TESTBENCH
@@ -51,6 +50,7 @@ void single_cycle(SIM_MODULE* top){
     top->clk = 1;top->eval();
     top->pmem = pmem_read(top->pc, 4);top->eval();
     dump_wave(top);
+    sim_time--;
 }
 
 void reset(SIM_MODULE* top, int n){
