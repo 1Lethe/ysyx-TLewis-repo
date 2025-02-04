@@ -74,6 +74,7 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire alu_nwr_reg;
 
     /* branch src control signal */
+    wire branch_src1_reg;
 
     assign opcode = inst[6:0];
     assign rs1 = inst[19:15];
@@ -126,6 +127,8 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                       (opcode == OPC_JAL)    ||
                       (opcode == OPC_BRANCH);
 
+    assign branch_src1_reg = (opcode == OPC_JALR);
+
     assign alu_src2_imm = (opcode == OPC_IMM_C)  ||
            (opcode == OPC_LUI)    ||
            (opcode == OPC_AUIPC)  ||
@@ -140,7 +143,7 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                          (opcode == OPC_SAVE)   ||
                          (opcode == OPC_BREAK);
     
-    assign reg_raddr1 = (alu_src1_pc == 1'b1) ? {ADDR_WIDTH{1'b0}} : rs1;
+    assign reg_raddr1 = (alu_src1_pc | ~branch_src1_reg == 1'b1) ? {ADDR_WIDTH{1'b0}} : rs1;
     assign reg_raddr2 = (alu_src2_imm == 1'b1) ? {ADDR_WIDTH{1'b0}} : rs2;
     assign alu_src1 = (alu_src1_pc == 1'b1) ? pc : reg_rdata1;
     assign alu_src2 = (alu_src2_imm == 1'b1) ? imm : 
