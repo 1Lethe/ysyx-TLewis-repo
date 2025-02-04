@@ -14,7 +14,7 @@ static const uint32_t buildin_img[] = {
     0x01008113, // addi x2,x1,16 (64,80)
     0x000ff197, // auipc x3,255
     0x00100073, // ebreak
-}
+};
 
 uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - RESET_VECTOR; }
 uint32_t host_to_guest(uint8_t *haddr) { return haddr - pmem + RESET_VECTOR; }
