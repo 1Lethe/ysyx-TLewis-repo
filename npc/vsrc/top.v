@@ -4,8 +4,8 @@ module ysyx_24120013_top (
     input clk,
     input rst,
     input [31:0] pmem,
-    output reg [31:0] pc,
-    output wire [31:0] trap_flag
+    output reg [DATA_WIDTH-1:0] pc,
+    output wire [DATA_WIDTH-1:0] trap_flag
 );
 
 parameter ADDR_WIDTH = 5;
