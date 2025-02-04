@@ -4,7 +4,8 @@ module ysyx_24120013_top (
     input clk,
     input rst,
     input [31:0] pmem,
-    output reg [31:0] pc
+    output reg [31:0] pc,
+    output wire [31:0] trap_flag
 );
 
 parameter ADDR_WIDTH = 5;
@@ -71,6 +72,7 @@ ysyx_24120013_IDU #(
 // output declaration of module ysyx_24120013_RegisterFile
 wire [DATA_WIDTH-1:0] reg_rdata1;
 wire [DATA_WIDTH-1:0] reg_rdata2;
+wire [DATA_WIDTH-1:0] trap_flag;
 
 ysyx_24120013_RegisterFile #(
     .ADDR_WIDTH (ADDR_WIDTH),
@@ -84,7 +86,8 @@ ysyx_24120013_RegisterFile #(
     .raddr1 	(reg_raddr1  ),
     .raddr2 	(reg_raddr2  ),
     .rdata1 	(reg_rdata1  ),
-    .rdata2 	(reg_rdata2  )
+    .rdata2 	(reg_rdata2  ),
+    .trap_flag  (trap_flag   )
 );
 
 // output declaration of module ysyx_24120013_EXU
