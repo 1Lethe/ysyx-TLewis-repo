@@ -54,6 +54,7 @@ void single_cycle(SIM_MODULE* top){
     top->pmem = pmem_read(top->pc, 4);top->eval();
     printf("3\n");
     dump_wave(top);
+    printf("%d\n", sim_time);
     sim_time--;
 }
 
