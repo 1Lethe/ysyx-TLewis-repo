@@ -25,7 +25,8 @@ SIM_MODULE* SIM_MODULE_NAME;
 
 void halt(void){
     printf("\nProgram Finished at clock time %d.\n", SIM_TIME_MAX - sim_time);
-    sim_time = 1;
+    SIM_MODULE_NAME->clk = 0;SIM_MODULE_NAME->eval();dump_wave(top);
+    SIM_MODULE_NAME->clk = 1;SIM_MODULE_NAME->eval();dump_wave(top);
 }
 
 void sim_init(int argc, char** argv){
@@ -46,15 +47,10 @@ void dump_wave(SIM_MODULE* top){
 
 #ifndef USE_TESTBENCH
 void single_cycle(SIM_MODULE* top){
-    printf("0\n");
     top->clk = 0;top->eval();dump_wave(top);
-    printf("1\n");
     top->clk = 1;top->eval();
-    printf("2\n");
     top->pmem = pmem_read(top->pc, 4);top->eval();
-    printf("3\n");
     dump_wave(top);
-    printf("A%d\n", sim_time);
     sim_time--;
 }
 
