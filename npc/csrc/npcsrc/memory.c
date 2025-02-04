@@ -60,6 +60,6 @@ long load_img() {
     assert(ret == 1);
 
     fclose(fp);
-    printf("%x", pmem);
+    printf("%x", pmem[0]);
     return size;
 }
