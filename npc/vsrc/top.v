@@ -53,7 +53,7 @@ ysyx_24120013_IDU #(
     .rst         	(rst          ),
     .inst        	(inst     ),
     .pc             (pc           ),
-    .reg_rdata1      	(reg_rdata1       ),
+    .reg_rdata1         (reg_rdata1       ),
     .reg_rdata2      	(reg_rdata2       ),
     .reg_raddr1  	(reg_raddr1   ),
     .reg_raddr2  	(reg_raddr2   ),
