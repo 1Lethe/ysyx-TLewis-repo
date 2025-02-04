@@ -15,7 +15,7 @@ void putch(char ch) {
 }
 
 void halt(int code) {
-  printf("abc");
+  while(1);
 }
 
 void _trm_init() {
