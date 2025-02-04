@@ -124,17 +124,17 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                  ({DATA_WIDTH{is_imm_j}} & imm_j);
 
     assign alu_src1_pc  = (opcode == OPC_AUIPC)  ||
-                      (opcode == OPC_JAL)    ||
-                      (opcode == OPC_BRANCH);
+                          (opcode == OPC_JAL)    ||
+                          (opcode == OPC_BRANCH);
 
     assign branch_src1_reg = (opcode == OPC_JALR);
 
     assign alu_src2_imm = (opcode == OPC_IMM_C)  ||
-           (opcode == OPC_LUI)    ||
-           (opcode == OPC_AUIPC)  ||
-           (opcode == OPC_BRANCH) ||
-           (opcode == OPC_LOAD)   ||
-           (opcode == OPC_SAVE);
+                          (opcode == OPC_LUI)    ||
+                          (opcode == OPC_AUIPC)  ||
+                          (opcode == OPC_BRANCH) ||
+                          (opcode == OPC_LOAD)   ||
+                          (opcode == OPC_SAVE);
 
     assign alu_src2_plus4 = (opcode == OPC_JAL) ||
                             (opcode == OPC_JALR);

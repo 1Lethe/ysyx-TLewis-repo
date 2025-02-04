@@ -16,10 +16,10 @@ wire [DATA_WIDTH-1:0] branch_jmp_pc;
 ysyx_24120013_PC #(
     .DATA_WIDTH(DATA_WIDTH)
 )u_ysyx_24120013_PC(
-    .clk        	(clk         ),
-    .rst        	(rst         ),
+    .clk        	(clk          ),
+    .rst        	(rst          ),
     .pc_jmp_val 	(branch_jmp_pc),
-    .pc         	(pc          )
+    .pc         	(pc           )
 );
 
 // output declaration of module ysyx_24120023_IFU
@@ -29,7 +29,7 @@ ysyx_24120023_IFU u_ysyx_24120023_IFU(
     .clk      	(clk       ),
     .rst      	(rst       ),
     .pmem     	(pmem      ),
-    .IFU_inst 	(inst  )
+    .IFU_inst 	(inst      )
 );
 
 // output declaration of module ysyx_24120013_IDU
@@ -51,21 +51,21 @@ ysyx_24120013_IDU #(
 )u_ysyx_24120013_IDU(
     .clk         	(clk          ),
     .rst         	(rst          ),
-    .inst        	(inst     ),
+    .inst        	(inst         ),
     .pc             (pc           ),
-    .reg_rdata1         (reg_rdata1       ),
-    .reg_rdata2      	(reg_rdata2       ),
+    .reg_rdata1     (reg_rdata1   ),
+    .reg_rdata2     (reg_rdata2   ),
     .reg_raddr1  	(reg_raddr1   ),
     .reg_raddr2  	(reg_raddr2   ),
     .alu_src1    	(alu_src1     ),
     .alu_src2    	(alu_src2     ),
     .alu_des     	(alu_des      ),
-    .alu_op     (alu_op  ),
-    .branch_op  (branch_op),
-    .branch_imm (branch_imm),
-    .branch_rs1 (branch_rs1),
-    .branch_pc  (branch_pc),
-    .break_ctrl (break_ctrl)
+    .alu_op         (alu_op       ),
+    .branch_op      (branch_op    ),
+    .branch_imm     (branch_imm   ),
+    .branch_rs1     (branch_rs1   ),
+    .branch_pc      (branch_pc    ),
+    .break_ctrl     (break_ctrl   )
 );
 
 // output declaration of module ysyx_24120013_RegisterFile
@@ -76,8 +76,8 @@ ysyx_24120013_RegisterFile #(
     .ADDR_WIDTH (ADDR_WIDTH),
     .DATA_WIDTH (DATA_WIDTH)
 )u_ysyx_24120013_RegisterFile(
-    .clk    	(clk     ),
-    .rst    	(rst     ),
+    .clk    	(clk         ),
+    .rst    	(rst         ),
     .wdata  	(reg_wdata   ),
     .waddr  	(reg_waddr   ),
     .wen    	(reg_wen     ),
@@ -96,21 +96,21 @@ ysyx_24120013_EXU #(
     .ADDR_WIDTH (ADDR_WIDTH),
     .DATA_WIDTH (DATA_WIDTH)
 )u_ysyx_24120013_EXU(
-    .clk       	(clk        ),
-    .rst       	(rst        ),
-    .alu_src1      	(alu_src1   ),
-    .alu_src2      	(alu_src2   ),
-    .alu_des_addr   (alu_des    ),
-    .alu_op     (alu_op),
-    .branch_imm(branch_imm),
-    .branch_rs1(branch_rs1),
-    .branch_pc(branch_pc),
-    .branch_op(branch_op),
-    .break_ctrl (break_ctrl),
-    .reg_wen   	(reg_wen    ),
-    .reg_waddr 	(reg_waddr  ),
-    .reg_wdata 	(reg_wdata  ),
-    .branch_jmp_pc (branch_jmp_pc)
+    .clk       	    (clk          ),
+    .rst       	    (rst          ),
+    .alu_src1      	(alu_src1     ),
+    .alu_src2      	(alu_src2     ),
+    .alu_des_addr   (alu_des      ),
+    .alu_op         (alu_op       ),
+    .branch_imm     (branch_imm   ),
+    .branch_rs1     (branch_rs1   ),
+    .branch_pc      (branch_pc    ),
+    .branch_op      (branch_op    ),
+    .break_ctrl     (break_ctrl   ),
+    .reg_wen   	    (reg_wen      ),
+    .reg_waddr 	    (reg_waddr    ),
+    .reg_wdata 	    (reg_wdata    ),
+    .branch_jmp_pc  (branch_jmp_pc)
 );
 
 endmodule
