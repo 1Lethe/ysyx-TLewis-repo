@@ -46,9 +46,13 @@ void dump_wave(SIM_MODULE* top){
 
 #ifndef USE_TESTBENCH
 void single_cycle(SIM_MODULE* top){
+    printf("0\n");
     top->clk = 0;top->eval();dump_wave(top);
+    printf("1\n");
     top->clk = 1;top->eval();
+    printf("2\n");
     top->pmem = pmem_read(top->pc, 4);top->eval();
+    printf("3\n");
     dump_wave(top);
     sim_time--;
 }
@@ -104,7 +108,6 @@ int main(int argc, char** argv) {
 #ifndef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){
         single_cycle(SIM_MODULE_NAME);
-        //mem_out_of_bound(top->pc);
     }
 #endif
 
