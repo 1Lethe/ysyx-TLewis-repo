@@ -4,8 +4,8 @@
 #include "verilated_fst_c.h"
 #include "Vysyx_24120013_top__Dpi.h"
 
-#include "npcsrc/memory.h"
-#include "sim_main.h"
+#include "include/memory.h"
+#include "include/sim_main.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,15 +49,17 @@ void dump_wave(SIM_MODULE* top){
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
     top->clk = 1;top->eval();
-    top->pmem = pmem_read(top->pc, 4);top->eval();
+    if(top->rst != 1){
+        top->pmem = pmem_read(top->pc, 4);top->eval();
+    }
     dump_wave(top);
     sim_time--;
 }
 
 void reset(SIM_MODULE* top, int n){
-    top->rst = 1;
+    top->rst = 1; top->eval();
     while(n-- > 0) single_cycle(top);
-    top->rst = 0;
+    top->rst = 0; top->eval();
 }
 #endif
 
