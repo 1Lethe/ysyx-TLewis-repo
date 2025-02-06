@@ -26,6 +26,7 @@ static int cmd_c(char *args) {
 }
 
 static int cmd_si(char *args) {
+  printf("%08x", SIM_MODULE_NAME->pc());
   cycle(SIM_MODULE_NAME, 1);
   return 0;
 }
