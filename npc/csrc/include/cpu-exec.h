@@ -4,10 +4,14 @@
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 
+#include <stdint.h>
+
 #include "sim_main.h"
+#include "sim.h"
 #include "memory.h"
 
 void single_cycle(SIM_MODULE* top);
+void cycle(SIM_MODULE* top, uint64_t n);
 void reset(SIM_MODULE* top, int n);
 
 #endif
