@@ -34,7 +34,7 @@ void dump_wave(SIM_MODULE* top){
 }
 
 bool is_sim_continue(void){
-    bool ret = (!contextp->gotFinished() && sim_time >= 0);
+    bool ret = (!contextp->gotFinish() && sim_time >= 0);
     return ret;
 }
 
