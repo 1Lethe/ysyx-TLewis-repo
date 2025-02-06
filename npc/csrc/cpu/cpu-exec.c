@@ -1,6 +1,6 @@
-#include "sim_main.h"
-#include "cpu-exec.h"
-#include "memory.h"
+#include "../include/sim_main.h"
+#include "../include/cpu-exec.h"
+#include "../include/memory.h"
 
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
