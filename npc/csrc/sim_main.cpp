@@ -5,6 +5,7 @@
 #include "include/sim_main.h"
 #include "include/monitor.h"
 #include "include/sim.h"
+#include "include/sdb.h"
 
 #include <stdio.h>
 
@@ -24,7 +25,7 @@ int main(int argc, char** argv) {
     }
 #else
     while(is_sim_continue()){
-        single_cycle(SIM_MODULE_NAME);
+        sdb_mainloop();
     }
 #endif
 

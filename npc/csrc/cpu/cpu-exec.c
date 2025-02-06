@@ -13,6 +13,12 @@ void single_cycle(SIM_MODULE* top){
     sim_time--;
 }
 
+void cycle(SIM_MODULE* top, uint64_t n){
+    for(int i = 0; (i < n) && (is_sim_continue()); i++){
+        single_cycle(top);
+    }
+}
+
 void reset(SIM_MODULE* top, int n){
     top->rst = 1; top->eval();
     while(n-- > 0) single_cycle(top);
