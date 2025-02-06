@@ -20,12 +20,12 @@ static char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-  cycle(-1);
+  cycle(SIM_MODULE_NAME, -1);
   return 0;
 }
 
 static int cmd_si(char *args) {
-  cycle(1);
+  cycle(SIM_MODULE_NAME, 1);
   return 0;
 }
 
