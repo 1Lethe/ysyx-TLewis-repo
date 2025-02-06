@@ -6,6 +6,7 @@
 #include "../include/memory.h"
 
 extern SIM_MODULE* SIM_MODULE_NAME;
+extern int sim_time;
 
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
