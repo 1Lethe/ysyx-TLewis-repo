@@ -32,3 +32,12 @@ void dump_wave(SIM_MODULE* top){
     tfp->dump(contextp->time());
     contextp->timeInc(1);
 }
+
+bool is_sim_continue(void){
+    bool ret = (!contextp->gotFinished() && sim_time >= 0);
+    return ret;
+}
+
+void tfp_close(void){
+    tfp->close();
+}
