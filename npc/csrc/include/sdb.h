@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "macro.h"
+#include "sim_main.h"
 #include "cpu-exec.h"
 
 void sdb_mainloop(void);
