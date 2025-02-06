@@ -11,7 +11,6 @@
 //Usually use DPI-C to end sim, we need to put ebreak in pmem .
 #define SIM_TIME_MAX 200
 
-void halt(void);
 void sim_init(int argc, char** argv[]);
 void dump_wave(SIM_MODULE* top);
 

@@ -1,6 +1,6 @@
 
-#ifndef __SIM
-#define __SIM
+#ifndef __SIM_H
+#define __SIM_H
 
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
