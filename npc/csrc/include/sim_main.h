@@ -1,6 +1,9 @@
 #ifndef __SIM_MAIN_H
 #define __SIM_MAIN_H
 
+#include "Vysyx_24120013_top.h"
+#include "verilated.h"
+
 //If you want to use testbench just keep this #define otherwise delete it
 //#define USE_TESTBENCH
 
