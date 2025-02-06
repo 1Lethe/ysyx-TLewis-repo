@@ -1,4 +1,4 @@
-#include "../include/sdb.h"
+#include "../../include/sdb.h"
 
 extern bool is_batch_mode;
 
