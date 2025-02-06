@@ -69,7 +69,7 @@ void sdb_mainloop() {
     int i;
     for(i = 0; i < NR_CMD; i++){
       if(strcmp(cmd, cmd_table[i].name) == 0){
-        printf("%d", cmd_table[i].handler(args));
+        printf("%d\n", cmd_table[i].handler(args));
         if(cmd_table[i].handler(args) < 0) { return ; }
         break;
       }
