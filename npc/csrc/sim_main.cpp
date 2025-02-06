@@ -4,6 +4,7 @@
 #include "verilated_fst_c.h"
 #include "Vysyx_24120013_top__Dpi.h"
 
+#include "include/cpu-exec.h"
 #include "include/memory.h"
 #include "include/sim_main.h"
 
