@@ -10,7 +10,7 @@ static char* rl_gets() {
     line_read = NULL;
   }
 
-  line_read = readline("(npc) ");
+  //line_read = readline("(npc) ");
 
   if(line_read && *line_read){
     add_history(line_read);
@@ -38,7 +38,7 @@ static int cmd_q(char *args) {
 static struct {
   const char *name;
   const char *description;
-  //int (*handler) (char *);
+  int (*handler) (char *);
 } cmd_table [] = {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NPC", cmd_q },
