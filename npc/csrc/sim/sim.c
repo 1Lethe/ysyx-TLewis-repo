@@ -6,16 +6,6 @@ VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
 
-void halt(void){
-    printf("\nProgram halt at clock time %d.\n", SIM_TIME_MAX - sim_time);
-    dump_wave(SIM_MODULE_NAME);
-    if(SIM_MODULE_NAME->trap_flag == 0){
-        printf("HIT GOOD TRAP.\n");
-    }else{
-        printf("HIT BAD TRAP.\n");
-    }
-    sim_time = 0;
-}
 
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;
