@@ -26,7 +26,6 @@ static int cmd_c(char *args) {
 }
 
 static int cmd_si(char *args) {
-  printf("%08x", SIM_MODULE_NAME->pc());
   cycle(SIM_MODULE_NAME, 1);
   return 0;
 }
@@ -70,6 +69,7 @@ void sdb_mainloop() {
     int i;
     for(i = 0; i < NR_CMD; i++){
       if(strcmp(cmd, cmd_table[i].name) == 0){
+        printf("%d", cmd_table[i].handler(args));
         if(cmd_table[i].handler(args) < 0) { return ; }
         break;
       }
