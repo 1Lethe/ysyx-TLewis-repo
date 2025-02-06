@@ -5,6 +5,7 @@
 #include "verilated.h"
 
 #include "sim_main.h"
+#include "memory.h"
 
 void single_cycle(SIM_MODULE* top);
 void reset(SIM_MODULE* top, int n);
