@@ -4,7 +4,7 @@ extern char *img_file;
 
 static uint8_t pmem[MAX_MEMORY] __attribute((aligned(4096))) = {};
 
-const uint32_t buildin_img[] = {
+static const uint32_t buildin_img[] = {
     0x00000297,  // auipc t0,0
     0x00028823,  // sb  zero,16(t0)
     0x0102c503,  // lbu a0,16(t0)
@@ -28,6 +28,10 @@ uint32_t pmem_read(uint32_t addr,uint32_t len){
     mem_out_of_bound(addr);
     uint32_t ret = host_read(guest_to_host(addr), len);
     return ret;
+}
+
+void cpy_buildin_img(void){
+    memcpy(guest_to_host(RESET_VECTOR), buildin_img, sizeof(buildin_img));
 }
 
 void mem_out_of_bound(uint32_t addr){

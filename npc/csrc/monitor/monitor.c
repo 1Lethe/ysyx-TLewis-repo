@@ -6,8 +6,6 @@ char *img_file = NULL;
 int difftest_port = 1234;
 bool is_batch_mode = false;
 
-extern const uint32_t buildin_img[];
-
 static void set_batch_mode(void){
     is_batch_mode = true;
 }
@@ -43,7 +41,7 @@ static int parse_args(int argc, char *argv[]) {
 long load_img() {
     if(img_file == NULL){
         printf("No image is given.Use the default build-in image.\n");
-        memcpy(guest_to_host(RESET_VECTOR), buildin_img, sizeof(buildin_img));
+        cpy_buildin_img();
         return 4096;
     }
 
