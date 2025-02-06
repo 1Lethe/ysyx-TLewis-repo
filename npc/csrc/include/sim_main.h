@@ -12,7 +12,5 @@
 void halt(void);
 void sim_init(int argc, char** argv[]);
 void dump_wave(SIM_MODULE* top);
-#ifndef USE_TESTBENCH
-#endif
 
 #endif
