@@ -47,7 +47,7 @@ void dump_wave(SIM_MODULE* top){
 
 int main(int argc, char** argv) {
 
-    monitor_init(argc, grgv);
+    monitor_init(argc, argv);
 
     sim_init(argc, argv);
 
