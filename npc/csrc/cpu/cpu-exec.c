@@ -1,6 +1,11 @@
+#include "Vysyx_24120013_top.h"
+#include "verilated.h"
+
 #include "../include/sim_main.h"
 #include "../include/cpu-exec.h"
 #include "../include/memory.h"
+
+extern SIM_MODULE* SIM_MODULE_NAME
 
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
