@@ -46,7 +46,7 @@ static struct {
   {"si", "Step to the pointed instruction.usage: si [stepNum]" , cmd_si},
   //{"info", "Display the value of regs or watch.usage: info <r/w/b>", cmd_info},
   //{"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
-}
+};
 
 void sdb_mainloop() {
   if(is_batch_mode){
