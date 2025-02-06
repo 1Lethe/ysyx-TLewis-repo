@@ -24,9 +24,7 @@ int main(int argc, char** argv) {
         dump_wave(SIM_MODULE_NAME);
     }
 #else
-    while(1){
-        sdb_mainloop();
-    }
+    sdb_mainloop();
 #endif
 
     tfp_close();
