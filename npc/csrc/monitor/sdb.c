@@ -1,5 +1,6 @@
 #include "../include/sdb.h"
 
+extern SIM_MODULE* SIM_MODULE_NAME;
 extern bool is_batch_mode;
 
 static char* rl_gets() {
