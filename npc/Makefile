@@ -61,7 +61,7 @@ sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 # For sta
 PROJ_PATH = $(NPC_HOME)
 
-DESIGN ?= top
+DESIGN ?= $(SIM_TOPNAME)
 SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
 RTL_FILES ?= $(VSRCS)
 export CLK_FREQ_MHZ ?= 100
