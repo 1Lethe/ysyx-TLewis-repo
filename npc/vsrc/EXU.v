@@ -26,11 +26,11 @@ module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign reg_wen = (alu_des_addr == 0) ? 1'b0 : 1'b1;
     assign reg_waddr = (alu_des_addr == 0) ? {ADDR_WIDTH{1'b0}} : alu_des_addr;
     assign reg_wdata = (alu_des_addr == 0) ? {DATA_WIDTH{1'b0}} : alu_result;
-`ifdef 0
+
     always @(*) begin
         if(break_ctrl) halt();
     end
-`endif
+
     reg [DATA_WIDTH-1:0] alu_result;
 
 ysyx_24120013_alu #(
