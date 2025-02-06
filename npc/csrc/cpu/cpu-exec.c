@@ -5,7 +5,7 @@
 #include "../include/cpu-exec.h"
 #include "../include/memory.h"
 
-extern SIM_MODULE* SIM_MODULE_NAME
+extern SIM_MODULE* SIM_MODULE_NAME;
 
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
