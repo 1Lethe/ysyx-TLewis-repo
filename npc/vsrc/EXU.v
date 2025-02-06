@@ -39,7 +39,7 @@ ysyx_24120013_alu #(
 )u_ysyx_24120013_alu(
     .src1       	(alu_src1        ),
     .src2       	(alu_src2        ),
-    .alu_op    	(alu_op         ),
+    .alu_op    	    (alu_op         ),
     .alu_result 	(alu_result      )
 );
 
@@ -49,8 +49,8 @@ ysyx_24120013_branch_ctrl #(
 )u_ysyx_24120013_branch_ctrl(
     .clk           	(clk            ),
     .rst           	(rst            ),
-    .branch_less(1'b0),
-    .branch_zero(1'b0),
+    .branch_less    (1'b0),
+    .branch_zero    (1'b0),
     .branch_op     	(branch_op      ),
     .branch_imm    	(branch_imm     ),
     .branch_rs1    	(branch_rs1     ),
