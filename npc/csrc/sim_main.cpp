@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 
     sim_init(argc, argv);
 
-    reset(SIM_MODULE_NAME, 1);
+    reset(SIM_MODULE, 1);
 
 #ifdef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){   
