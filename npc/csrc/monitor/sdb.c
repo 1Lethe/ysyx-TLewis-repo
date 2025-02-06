@@ -38,7 +38,7 @@ static int cmd_q(char *args) {
 static struct {
   const char *name;
   const char *description;
-  int (*handler) (char *);
+  //int (*handler) (char *);
 } cmd_table [] = {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NPC", cmd_q },

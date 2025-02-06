@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     }
 #else
     while(is_sim_continue()){
-        //sdb_mainloop();
+        sdb_mainloop();
     }
 #endif
 
