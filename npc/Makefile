@@ -3,6 +3,7 @@
 TOPNAME = ysyx_24120013_top
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
+LDFLAGS += -lreadline
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -45,13 +46,15 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 SIM_TOPNAME = ysyx_24120013_top
 VER_SIM_V_PATH = $(VSRCS)
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
-VER_SIM_CFLAGS = -cc --exe -trace-fst --build --timing -I./vsrc -I./csrc
+VER_SIM_CFLAGS = -cc --exe -trace-fst --build --timing -I./vsrc
 sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
 	mkdir ./wave
 	$(call git_commit, "sim RTL")
-	verilator $(VER_SIM_CFLAGS) --top-module $(SIM_TOPNAME) $^ \
-	--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+	$(VERILATOR) $(VER_SIM_CFLAGS) \
+		--top-module $(SIM_TOPNAME) $^ \
+		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 	@echo "Sim Complete."
 
 
