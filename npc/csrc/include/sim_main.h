@@ -1,6 +1,9 @@
 #ifndef __SIM_MAIN_H
 #define __SIM_MAIN_H
 
+#include "Vysyx_24120013_top.h"
+#include "verilated.h"
+
 //If you want to use testbench just keep this #define otherwise delete it
 //#define USE_TESTBENCH
 
@@ -9,12 +12,7 @@
 //Usually use DPI-C to end sim, we need to put ebreak in pmem .
 #define SIM_TIME_MAX 200
 
-void halt(void);
 void sim_init(int argc, char** argv[]);
 void dump_wave(SIM_MODULE* top);
-#ifndef USE_TESTBENCH
-void single_cycle(SIM_MODULE* top);
-void reset(SIM_MODULE* top, int n);
-#endif
 
 #endif
