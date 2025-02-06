@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <assert.h>
 #include <string.h>
-#include "include/memory.h"
+#include "../include/memory.h"
 
 extern char *img_file;
 
