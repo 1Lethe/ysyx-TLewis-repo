@@ -7,6 +7,8 @@
 #include "verilated_fst_c.h"
 #include "Vysyx_24120013_top__Dpi.h"
 
+#include <stdio.h>
+
 #include "sim_main.h"
 
 void sim_init(int argc, char **argv);
