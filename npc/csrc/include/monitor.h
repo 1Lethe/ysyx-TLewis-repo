@@ -5,6 +5,11 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <assert.h>
+#include <string.h>
 
 #include "memory.h"
 
