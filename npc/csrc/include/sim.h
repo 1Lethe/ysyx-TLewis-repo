@@ -13,5 +13,6 @@ void sim_init(int argc, char **argv);
 void dump_wave(SIM_MODULE* top);
 bool is_sim_continue(void);
 void tfp_close(void);
+void halt();
 
 #endif
