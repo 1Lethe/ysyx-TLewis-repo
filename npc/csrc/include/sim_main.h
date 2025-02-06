@@ -1,8 +1,6 @@
 #ifndef __SIM_MAIN_H
 #define __SIM_MAIN_H
 
-#include "sim.h"
-
 //If you want to use testbench just keep this #define otherwise delete it
 //#define USE_TESTBENCH
 
