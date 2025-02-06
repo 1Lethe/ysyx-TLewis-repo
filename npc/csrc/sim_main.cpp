@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
         dump_wave(SIM_MODULE_NAME);
     }
 #else
-    while(is_sim_continue()){
+    while(1){
         sdb_mainloop();
     }
 #endif
