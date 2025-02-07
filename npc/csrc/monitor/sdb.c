@@ -26,7 +26,14 @@ static int cmd_c(char *args) {
 }
 
 static int cmd_si(char *args) {
-  cycle(SIM_MODULE_NAME, 1);
+  int step_num = 1;
+
+  if(args == NULL){
+    cycle(SIM_MODULE_NAME, 1);
+  }else{
+    sscanf(args, "%d", &step_num);
+    cycle(SIM_MODULE_NAME, step_num);
+  }
   return 0;
 }
 
