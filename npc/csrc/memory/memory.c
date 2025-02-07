@@ -1,8 +1,8 @@
-#include "../include/memory.h"
+#include "memory.h"
 
 extern char *img_file;
 
-static uint8_t pmem[MAX_MEMORY] __attribute((aligned(4096))) = {};
+static uint8_t pmem[MEMORY_SIZE] __attribute((aligned(4096))) = {};
 
 static const uint32_t buildin_img[] = {
     0x00000297,  // auipc t0,0
@@ -25,18 +25,22 @@ uint32_t host_read(void *addr, int len){
 }
 
 uint32_t pmem_read(uint32_t addr,uint32_t len){
-    mem_out_of_bound(addr);
+    if(mem_out_of_bound(addr)){
+        printf("Invalid PC 0x%x.ABORT.\n", addr);
+        assert(0);
+    }
     uint32_t ret = host_read(guest_to_host(addr), len);
     return ret;
 }
 
 void cpy_buildin_img(void){
-    memcpy(guest_to_host(RESET_VECTOR), buildin_img, sizeof(buildin_img));
+    memcpy(guest_to_host(MEMORY_BASE), buildin_img, sizeof(buildin_img));
 }
 
-void mem_out_of_bound(uint32_t addr){
-    if(addr < RESET_VECTOR || addr > RESET_VECTOR + MAX_MEMORY){
-        printf("pc = 0x%x\n", addr);
-        assert(0);
+bool mem_out_of_bound(uint32_t addr){
+    if(addr < MEMORY_BASE || addr > MEMORY_BASE + MEMORY_SIZE){
+        return true;
+    }else{
+        return false;
     }
 }

@@ -1,4 +1,4 @@
-#include "../include/cpu-exec.h"
+#include "cpu-exec.h"
 
 extern SIM_MODULE* SIM_MODULE_NAME;
 extern int sim_time;
