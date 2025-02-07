@@ -2,7 +2,7 @@
 
 extern char *img_file;
 
-static uint8_t pmem[MAX_MEMORY] __attribute((aligned(4096))) = {};
+static uint8_t pmem[MEMORY_SIZE] __attribute((aligned(4096))) = {};
 
 static const uint32_t buildin_img[] = {
     0x00000297,  // auipc t0,0
