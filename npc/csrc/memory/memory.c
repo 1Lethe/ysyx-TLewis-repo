@@ -25,7 +25,10 @@ uint32_t host_read(void *addr, int len){
 }
 
 uint32_t pmem_read(uint32_t addr,uint32_t len){
-    mem_out_of_bound(addr);
+    if(mem_out_of_bound(addr)){
+        printf("Invalid PC 0x%x.ABORT.\n", addr);
+        assert(0);
+    }
     uint32_t ret = host_read(guest_to_host(addr), len);
     return ret;
 }
@@ -34,9 +37,10 @@ void cpy_buildin_img(void){
     memcpy(guest_to_host(MEMORY_BASE), buildin_img, sizeof(buildin_img));
 }
 
-void mem_out_of_bound(uint32_t addr){
+bool mem_out_of_bound(uint32_t addr){
     if(addr < MEMORY_BASE || addr > MEMORY_BASE + MEMORY_SIZE){
-        printf("pc = 0x%x\n", addr);
-        assert(0);
+        return true;
+    }else{
+        return false;
     }
 }
