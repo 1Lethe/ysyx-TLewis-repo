@@ -30,6 +30,8 @@ CSRCS += $(SRC_AUTO_BIND)
 # rules for NVBoard
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
+INC_PATH += csrc/include
+
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
