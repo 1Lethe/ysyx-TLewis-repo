@@ -7,7 +7,7 @@ module ysyx_24120013_top (
     output reg [DATA_WIDTH-1:0] pc,
 
     input wire reg_display,
-    output wire [DATA_WIDTH-1:0] trap_flag,
+    output wire [DATA_WIDTH-1:0] trap_flag
 );
 
 parameter ADDR_WIDTH = 5;
