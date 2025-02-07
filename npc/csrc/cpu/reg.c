@@ -9,6 +9,6 @@ const char *regs[] = {
 
 void reg_display(SIM_MODULE *top){
     for(int i = 0; i < 32; i++){
-        printf("%s = 0x%x", regs[i], top->rf_dis[i]);
+        printf("%s = 0x%x\n", regs[i], top->rf_dis[i]);
     }
 }
