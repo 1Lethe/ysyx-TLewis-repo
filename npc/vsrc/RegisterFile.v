@@ -1,3 +1,5 @@
+import "DPI-C" function char *reg_display (int reg_num) ;
+
 module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         input clk,
         input rst,
@@ -26,7 +28,9 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
     assign rdata2 = rf[raddr2];
 
     always @(*) begin
-        if(reg_display) $display("test\n");
+        if(reg_display) begin
+            
+        end
     end
     assign trap_flag = rf[10];
 
