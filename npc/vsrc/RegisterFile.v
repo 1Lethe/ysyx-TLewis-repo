@@ -1,4 +1,4 @@
-import "DPI-C" function char *reg_display (int reg_num) ;
+import "DPI-C" function char reg_display (int reg_num) ;
 
 module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         input clk,
