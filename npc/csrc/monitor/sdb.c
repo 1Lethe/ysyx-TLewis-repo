@@ -41,6 +41,21 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_info(char *args){
+  char *arg = strtok(NULL, " ");
+
+  if(arg == NULL){
+    printf("Command need args.r: regs\n");
+  }else{
+    if(*arg == 'r'){
+      reg_display();
+    }else{
+      printf("Invalid info command input.\n");
+    }
+  }
+  return 0;
+}
+
 #define NR_CMD ARRLEN(cmd_table)
 
 static struct {
@@ -52,7 +67,7 @@ static struct {
   { "q", "Exit NPC", cmd_q },
 
   {"si", "Step to the pointed instruction.usage: si [stepNum]" , cmd_si},
-  //{"info", "Display the value of regs or watch.usage: info <r/w/b>", cmd_info},
+  {"info", "Display the value of regs.usage: info <r>", cmd_info},
   //{"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
 };
 

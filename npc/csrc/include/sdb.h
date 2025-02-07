@@ -13,6 +13,7 @@
 #include "macro.h"
 #include "sim_main.h"
 #include "cpu-exec.h"
+#include "reg.h"
 
 void sdb_mainloop(void);
 
