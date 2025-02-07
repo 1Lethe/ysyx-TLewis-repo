@@ -5,7 +5,9 @@ module ysyx_24120013_top (
     input rst,
     input [DATA_WIDTH-1:0] pmem,
     output reg [DATA_WIDTH-1:0] pc,
-    output wire [DATA_WIDTH-1:0] trap_flag
+
+    input wire reg_display,
+    output wire [DATA_WIDTH-1:0] trap_flag,
 );
 
 parameter ADDR_WIDTH = 5;
@@ -86,6 +88,8 @@ ysyx_24120013_RegisterFile #(
     .raddr2 	(reg_raddr2  ),
     .rdata1 	(reg_rdata1  ),
     .rdata2 	(reg_rdata2  ),
+
+    .reg_display(reg_display ),
     .trap_flag  (trap_flag   )
 );
 

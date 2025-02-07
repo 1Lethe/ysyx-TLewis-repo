@@ -19,6 +19,8 @@ int main(int argc, char** argv) {
 
     reset(SIM_MODULE_NAME, 10);
 
+    SIM_MODULE_NAME->reg_display = 1;
+
 #ifdef USE_TESTBENCH
     while(!contextp->gotFinish() && sim_time >= 0){   
         dump_wave(SIM_MODULE_NAME);
