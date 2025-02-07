@@ -24,10 +24,6 @@ void halt(void){
     sim_time = 0;
 }
 
-char reg_display(int reg_num){
-    return regs[reg_num];
-}
-
 void sim_init(int argc, char** argv){
     contextp = new VerilatedContext;
     contextp->commandArgs(argc, argv);
