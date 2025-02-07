@@ -31,11 +31,11 @@ uint32_t pmem_read(uint32_t addr,uint32_t len){
 }
 
 void cpy_buildin_img(void){
-    memcpy(guest_to_host(RESET_VECTOR), buildin_img, sizeof(buildin_img));
+    memcpy(guest_to_host(MEMORY_BASE), buildin_img, sizeof(buildin_img));
 }
 
 void mem_out_of_bound(uint32_t addr){
-    if(addr < RESET_VECTOR || addr > RESET_VECTOR + MAX_MEMORY){
+    if(addr < MEMORY_BASE || addr > MEMORY_BASE + MEMORY_SIZE){
         printf("pc = 0x%x\n", addr);
         assert(0);
     }

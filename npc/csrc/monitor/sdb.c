@@ -56,6 +56,34 @@ static int cmd_info(char *args){
   return 0;
 }
 
+static int cmd_x(char *args){
+  uint8_t *pmem_scan = NULL;
+  uint32_t scan_num;
+  uint32_t mem_start_place;
+
+  if(args == NULL){
+    printf("Command x need args.\n");
+    return 0;
+  }
+  if(sscanf(args, "%d %x", &scan_num, &mem_start_place) == 2){
+    if(scan_num <= 0){
+      printf("Invalid scan_num input.This arg should > 0.\n");
+      return 0;
+    }
+    if(mem_out_of_bound(mem_start_place) || mem_out_of_bound(mem_start_place + scan_num)){
+      printf("input out of bound.\n");
+      return 0;
+    }
+    for(int i = 0;i < scan_num;i++){
+      pmem_scan = guest_to_host(mem_start_place + i);
+      printf("0x%08x = 0x%02x\n", mem_start_place+i, *pmem_scan);
+    }
+  }else{
+    printf("Invalid x command input.\n");
+  }
+  return 0;
+}
+
 #define NR_CMD ARRLEN(cmd_table)
 
 static struct {
@@ -68,7 +96,7 @@ static struct {
 
   {"si", "Step to the pointed instruction.usage: si [stepNum]" , cmd_si},
   {"info", "Display the value of regs.usage: info <r>", cmd_info},
-  //{"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
+  {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
 };
 
 void sdb_mainloop() {

@@ -7,7 +7,8 @@
 #include <assert.h>
 #include <string.h>
 
-#define MAX_MEMORY    0xFFFFFFF
+#define MEMORY_SIZE   0x8000000
+#define MEMORY_BASE  0x80000000
 #define RESET_VECTOR 0x80000000
 
 uint8_t* guest_to_host(uint32_t paddr);
