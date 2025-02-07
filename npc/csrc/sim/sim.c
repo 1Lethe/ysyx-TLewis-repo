@@ -24,7 +24,7 @@ void halt(void){
     sim_time = 0;
 }
 
-char *reg_display(int reg_num){
+char reg_display(int reg_num){
     return regs[reg_num];
 }
 
