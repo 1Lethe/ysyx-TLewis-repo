@@ -1,11 +1,11 @@
 //Still need to change this #include and SIM_NAME in makefile to change sim module.
 
-#include "include/cpu-exec.h"
-#include "include/memory.h"
-#include "include/sim_main.h"
-#include "include/monitor.h"
-#include "include/sim.h"
-#include "include/sdb.h"
+#include "cpu-exec.h"
+#include "memory.h"
+#include "sim_main.h"
+#include "monitor.h"
+#include "sim.h"
+#include "sdb.h"
 
 #include <stdio.h>
 

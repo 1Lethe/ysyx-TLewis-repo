@@ -1,4 +1,4 @@
-#include "../include/sdb.h"
+#include "sdb.h"
 
 extern SIM_MODULE* SIM_MODULE_NAME;
 extern bool is_batch_mode;

@@ -1,4 +1,4 @@
-#include "../include/memory.h"
+#include "memory.h"
 
 extern char *img_file;
 

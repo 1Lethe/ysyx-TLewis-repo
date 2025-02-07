@@ -1,4 +1,4 @@
-#include "../include/monitor.h"
+#include "monitor.h"
 
 char *log_file = NULL;
 char *diff_so_file = NULL;
