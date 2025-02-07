@@ -1,5 +1,3 @@
-import "DPI-C" function char reg_display (int reg_num) ;
-
 module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         input clk,
         input rst,
@@ -11,7 +9,7 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         output wire [DATA_WIDTH-1:0] rdata1,
         output wire [DATA_WIDTH-1:0] rdata2,
 
-        input wire reg_display,
+        output wire [DATA_WIDTH-1:0] rf_dis [2**ADDR_WIDTH-1:0],
         output wire [DATA_WIDTH-1:0] trap_flag
     );
 
@@ -27,11 +25,7 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
     assign rdata1 = rf[raddr1];
     assign rdata2 = rf[raddr2];
 
-    always @(*) begin
-        if(reg_display) begin
-            
-        end
-    end
+    assign rf_dis = rf;
     assign trap_flag = rf[10];
 
 endmodule
