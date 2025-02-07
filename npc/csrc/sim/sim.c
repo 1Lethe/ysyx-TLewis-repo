@@ -1,4 +1,4 @@
-#include "../include/sim.h"
+#include "include/sim.h"
 
 int sim_time = SIM_TIME_MAX;
 
