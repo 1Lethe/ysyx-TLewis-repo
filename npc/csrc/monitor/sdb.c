@@ -48,7 +48,7 @@ static int cmd_info(char *args){
     printf("Command need args.r: regs\n");
   }else{
     if(*arg == 'r'){
-      reg_display();
+      reg_display(SIM_MODULE_NAME);
     }else{
       printf("Invalid info command input.\n");
     }

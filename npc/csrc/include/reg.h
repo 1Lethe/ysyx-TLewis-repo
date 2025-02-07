@@ -9,6 +9,6 @@
 #include "sim.h"
 #include "sim_main.h"
 
-void reg_display(void);
+void reg_display(SIM_MODULE* top);
 
 #endif

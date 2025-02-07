@@ -7,8 +7,8 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
-void reg_display(void){
+void reg_display(SIM_MODULE *top){
     for(int i = 0; i < 32; i++){
-        printf("%s = 0x%x", regs[i], SIM_MODULE_NAME->rf_dis[i]);
+        printf("%s = 0x%x", regs[i], top->rf_dis[i]);
     }
 }
