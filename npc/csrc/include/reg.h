@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include "sim.h"
+#include "sim_main.h"
 
 void reg_display(void);
 
