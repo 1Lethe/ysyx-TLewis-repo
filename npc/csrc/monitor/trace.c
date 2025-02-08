@@ -113,6 +113,7 @@ void ftrace(uint32_t pc){
             /* If not find, must be call */
             funcall_name_stack[funcall_time] = sym_name;
             funcall_time++;
+            for(int i = 0; i < funcall_time; i++) printf("%x", read_sym_str(funcall_name_stack[i]));
             PRINTF_SPACE(funcall_time);
             printf("call[%s@0x%x],%d\n", read_sym_str(sym_off), elf_sym[i].st_value, funcall_time);
             return ;
@@ -122,7 +123,6 @@ void ftrace(uint32_t pc){
       /* find the function then break */
       return ;
     }
-    /* not find FUNC type in symbol tab. Must be wrong. */
     if(i == elf_sym_num - 1) printf("0x%x\n", pc) ;
   }
 }
