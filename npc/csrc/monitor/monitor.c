@@ -76,6 +76,8 @@ static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
     return ;
   }
 
+  printf("The elf file is %s.\n", elf_file);
+
   FILE *fp = fopen(elf_file, "r");
   Assert(fp, "Can not open '%s'",elf_file);
 
