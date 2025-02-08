@@ -1,4 +1,7 @@
-#include "trace.h"
+#include <cpu/trace.h>
+
+char *iringbuf[IRING_BUF_SIZE];
+int iring_index = 0;
 
 Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
 uint32_t elf_sym_num = 0;
@@ -6,14 +9,59 @@ uint32_t elf_sym_num = 0;
 uint32_t funcall_name_stack[MAX_FUN_CALL_TRACE] = {0};
 int funcall_time = 0;
 
-extern char* elf_file;
+extern char *elf_file;
 extern Elf32_Shdr shdr_strtab;
 extern Elf32_Shdr shdr_symtab;
 
-void assert_fail_msg(void){
-    printf("PC = 0x%x\n", SIM_MODULE_NAME->pc);
-    reg_display(SIM_MODULE_NAME);
-    return ;
+void iring_display(void){
+  for(int i = 0; i < IRING_BUF_SIZE; i++){
+    if(iringbuf[i] == NULL) continue;
+    printf("%s", iringbuf[i]);
+    if(i != iring_index - 1){
+      printf("\n");
+    }else{
+      printf("<----- Program crash\n");
+    }
+  }
+}
+
+/* Init iringbuf */
+void iring_init(void){
+  for(int i = 0; i < IRING_BUF_SIZE; i++){
+    iringbuf[i] = NULL;
+  }
+}
+
+/* iringbuf implementation */
+void iring(Decode *s){
+  static bool iring_cycle_flag = false;
+
+  if(iring_index == IRING_BUF_SIZE){
+    iring_cycle_flag = true;
+    iring_index = 0;
+  }
+
+  /* If cycle at least once, free */
+  if(iring_cycle_flag){
+    Assert(iringbuf[iring_index] != NULL, "iringbuf[%d] == NULL", iring_index);
+    free(iringbuf[iring_index]);
+  }
+
+  char *instbuf = (char *)malloc(128*sizeof(char));
+  Assert(instbuf != NULL, "failed to malloc instbuf");
+  memset(instbuf, '\0', 128*sizeof(char));
+  memcpy(instbuf, s->logbuf, 128*sizeof(char));
+  iringbuf[iring_index++] = instbuf;
+}
+
+/* Free iringbuf */
+void iring_free(void){
+  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
+    if(iringbuf[i] == NULL){
+      continue;
+    }
+    free(iringbuf[i]);
+  }
 }
 
 void ftrace_init(void){
@@ -34,7 +82,7 @@ void ftrace_init(void){
   fclose(fp);
 }
 
-static char *read_sym_str(int off_from_symtable){
+char *read_sym_str(int off_from_symtable){
   char str_buf;
   static char sym_str[50];
   char *str_ptr = sym_str;
@@ -55,13 +103,16 @@ static char *read_sym_str(int off_from_symtable){
   return sym_str;
 }
 
-void ftrace(uint32_t pc){
+void ftrace(Decode *s){
   static Elf32_Word sym_name = 0;
   static Elf32_Word sym_name_prev = 0;
   static int sym_off = 0;
   static int sym_off_prev = 0;
 
+  vaddr_t pc = s->pc;
+
   for(int i = 0; i < elf_sym_num; i++){
+
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
       /* Find the function that is executing */
@@ -69,6 +120,7 @@ void ftrace(uint32_t pc){
       sym_name = elf_sym[i].st_name;
       sym_off_prev = sym_off;
       sym_off = i;
+
       /* call function or return from function */
       if(sym_name != sym_name_prev){
         printf("0x%x: ", pc);
@@ -94,14 +146,11 @@ void ftrace(uint32_t pc){
             panic("fun call time < 0");
           }
 
-          for(int __i = 0; __i < funcall_time+1; __i++) printf("0x%x A\n", funcall_name_stack[__i]);
-
           int search_time = 0;
           /* The top of stack is the function called previously */
           if(funcall_name_stack[funcall_time - 1] == sym_name_prev){
             for(int j = funcall_time - 1; j > 0; j--){
               search_time++;
-              printf("0x%x %x B\n", funcall_name_stack[j], sym_name);
               if(funcall_name_stack[j] == sym_name){
                 /* If find the sym_name in stack, must be ret */
                 /* To implement tail-call oper */
@@ -124,6 +173,7 @@ void ftrace(uint32_t pc){
       /* find the function then break */
       return ;
     }
-    if(i == elf_sym_num - 1) printf("0x%x\n", pc) ;
+    /* not find FUNC type in symbol tab. Must be wrong. */
+    if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
   }
 }
