@@ -41,7 +41,7 @@ void iring_init(void){
 
 void itrace_record(uint32_t pc, uint32_t __inst){
   memset(instbuf, '\0', 128);
-  uint32_t *inst = &__inst;
+  uint32_t *inst_in = &__inst;
   char *p = instbuf;
   p += snprintf(p, sizeof(instbuf), "0x%08" "x" ":", pc);
   int ilen = 4;
