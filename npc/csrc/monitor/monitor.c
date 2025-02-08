@@ -43,6 +43,7 @@ long load_img() {
     if(img_file == NULL){
         printf("No image is given.Use the default build-in image.\n");
         cpy_buildin_img();
+    Assert(0==1,"test");
         return 4096;
     }
 
@@ -59,7 +60,6 @@ long load_img() {
     assert(ret == 1);
 
     fclose(fp);
-    Assert(0==1,"test");
 
     return size;
 }
