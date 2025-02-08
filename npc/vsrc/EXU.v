@@ -1,5 +1,5 @@
 import "DPI-C" function void halt ();
-`include "define/exu_command.v"
+`include "exu_command.v"
 
 module ysyx_24120013_EXU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
