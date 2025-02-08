@@ -14,7 +14,7 @@ void assert_fail_msg(void){
     return ;
 }
 
-void ftrace_init(FILE* elf_file){
+void ftrace_init(char* elf_file){
   FILE *fp = fopen(elf_file, "r");
   Assert(fp != NULL, "Failed to read elf_file.\nMaybe you use build-in image.In that case, please turn off ftrace.");
 
