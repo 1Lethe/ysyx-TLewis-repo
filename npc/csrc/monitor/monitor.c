@@ -112,9 +112,12 @@ static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
   return ;
 }
 
+
 void monitor_init(int argc, char *argv[]){
     parse_args(argc, argv);
     load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
     ftrace_init();
+    void init_disasm();
+    init_disasm();
 }
