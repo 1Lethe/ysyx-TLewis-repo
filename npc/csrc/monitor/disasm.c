@@ -39,9 +39,9 @@ void init_disasm() {
   cs_free_dl = (void (*)(cs_insn*, size_t)) dlsym(dl_handle, "cs_free");
   assert(cs_free_dl);
 
-  cs_arch arch = CS_ARCH_RISCV,
+  cs_arch arch = CS_ARCH_RISCV;
 
-  cs_arch mode = CS_MODE_RISCV32 | CS_MODE_RISCVC;
+  cs_mode mode = CS_MODE_RISCV32 | CS_MODE_RISCVC;
 
 	int ret = cs_open_dl(arch, mode, &handle);
   assert(ret == CS_ERR_OK);
