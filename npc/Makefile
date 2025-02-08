@@ -39,12 +39,12 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
-include csrc/monitor/filelist.mk
+# include csrc/monitor/filelist.mk
 
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
 INC_PATH += csrc/include
-//INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/capstone/repo/include
+INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/capstone/repo/include
 LDFLAGS += -lreadline
 
 # rules for verilator
