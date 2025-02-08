@@ -115,6 +115,6 @@ void ftrace(uint32_t pc){
       /* find the function then break */
       return ;
     }
-    if(i == elf_sym_num - 1) printf("0x%x\n", pc) ;
+    if(i == elf_sym_num - 1) return ;
   }
 }
