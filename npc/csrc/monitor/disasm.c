@@ -41,7 +41,7 @@ void init_disasm() {
 
   cs_arch arch = CS_ARCH_RISCV;
 
-  cs_mode mode = (cs_mode)(CS_MODE_RISCV32 | CS_MODE_RISCVC);
+  cs_mode mode = (CS_MODE_RISCV32 | CS_MODE_RISCVC);
 
 	int ret = cs_open_dl(arch, mode, &handle);
   assert(ret == CS_ERR_OK);
@@ -58,7 +58,6 @@ void init_disasm() {
 
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
 	cs_insn *insn;
-  printf("%s %d %lx %x %d\n", str, size, pc, *code, nbyte);
 	size_t count = cs_disasm_dl(handle, code, nbyte, pc, 0, &insn);
   assert(count == 1);
   int ret = snprintf(str, size, "%s", insn->mnemonic);
