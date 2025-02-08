@@ -7,7 +7,7 @@ LDFLAGS += -lreadline
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  -trace-fst \
-				-O3 --x-assign fast --x-initial fast --noassert --timing
+				-O3 --x-assign fast --x-initial fast --noassert --timing -I./vsrc
 
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
@@ -30,6 +30,7 @@ CSRCS += $(SRC_AUTO_BIND)
 # rules for NVBoard
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
+
 $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@rm -rf $(OBJ_DIR)
@@ -41,22 +42,17 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 #For sim
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
-INC_PATH += /home/tonglewis/ysyx-workbench/npc/vsrc/define
 INC_PATH += csrc/include
 INC_PATH += csrc/capstone/repo/include
 
 include csrc/monitor/filelist.mk
-
-# rules for verilator
-INCFLAGS = $(addprefix -I, $(INC_PATH))
-CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
 sim:$(VSRCS) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
 	mkdir ./wave
 	$(call git_commit, "sim RTL")
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
-		--top-module $(TOPNAME) $^ \
+		--top-module $(SIM_TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 	@echo "Sim Complete."
