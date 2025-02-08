@@ -6,6 +6,7 @@ uint32_t elf_sym_num = 0;
 uint32_t funcall_name_stack[MAX_FUN_CALL_TRACE] = {0};
 int funcall_time = 0;
 
+extern char* elf_file;
 extern Elf32_Shdr shdr_strtab;
 extern Elf32_Shdr shdr_symtab;
 
@@ -14,7 +15,7 @@ void assert_fail_msg(void){
     return ;
 }
 
-void ftrace_init(char* elf_file){
+void ftrace_init(void){
   FILE *fp = fopen(elf_file, "r");
   Assert(fp != NULL, "Failed to read elf_file.\nMaybe you use build-in image.In that case, please turn off ftrace.");
 
