@@ -4,8 +4,6 @@
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 
-extern SIM_MODULE* SIM_MODULE_NAME;
-
 //If you want to use testbench just keep this #define otherwise delete it
 //#define USE_TESTBENCH
 
@@ -13,6 +11,8 @@ extern SIM_MODULE* SIM_MODULE_NAME;
 #define SIM_MODULE_NAME top
 //Usually use DPI-C to end sim, we need to put ebreak in pmem .
 #define SIM_TIME_MAX 200
+
+extern SIM_MODULE* SIM_MODULE_NAME;
 
 void sim_init(int argc, char** argv[]);
 void dump_wave(SIM_MODULE* top);
