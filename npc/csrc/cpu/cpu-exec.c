@@ -9,7 +9,9 @@ void single_cycle(SIM_MODULE* top){
         top->pmem = pmem_read(top->pc, 4);top->eval();
     }
     dump_wave(top);
-    ftrace(top->pc);
+    if(top->rst != 1){
+        ftrace(top->pc);
+    }
     sim_time--;
 }
 
