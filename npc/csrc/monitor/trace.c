@@ -113,7 +113,7 @@ void ftrace(uint32_t pc){
             /* If not find, must be call */
             funcall_name_stack[funcall_time] = sym_name;
             funcall_time++;
-            for(int i = 0; i < funcall_time; i++) printf("%s ", read_sym_str(funcall_name_stack[i]));
+            for(int i = 0; i < funcall_time; i++) printf("%x ", funcall_name_stack[i]);
             printf("\n");
             PRINTF_SPACE(funcall_time);
             printf("call[%s@0x%x],%d\n", read_sym_str(sym_off), elf_sym[i].st_value, funcall_time);
