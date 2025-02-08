@@ -69,7 +69,7 @@ void ftrace(uint32_t pc){
       sym_name = elf_sym[i].st_name;
       sym_off_prev = sym_off;
       sym_off = i;
-
+      printf("0x%x A", pc);
       /* call function or return from function */
       if(sym_name != sym_name_prev){
         printf("0x%x: ", pc);
