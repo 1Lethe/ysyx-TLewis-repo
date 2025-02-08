@@ -114,5 +114,5 @@ void monitor_init(int argc, char *argv[]){
     parse_args(argc, argv);
     load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
-    ftrace_init(elf_file);
+    ftrace_init();
 }
