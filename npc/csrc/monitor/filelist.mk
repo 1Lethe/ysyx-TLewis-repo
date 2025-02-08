@@ -13,6 +13,8 @@
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
 
+$(MAKE) = gcc
+
 LIBCAPSTONE = csrc/capstone/repo/libcapstone.so.5
 CFLAGS += -I csrc/capstone/repo/include
 src/utils/disasm.c: $(LIBCAPSTONE)
