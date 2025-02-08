@@ -51,7 +51,7 @@ LDFLAGS += -lreadline
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
-sim:$(VSRCS) $(VER_SIM_C_PATH) $(LIBCAPSTONE)
+sim:$(VSRCS) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
 	mkdir ./wave
 	$(call git_commit, "sim RTL")
