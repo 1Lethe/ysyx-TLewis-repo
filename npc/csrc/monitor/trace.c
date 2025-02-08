@@ -93,7 +93,7 @@ void ftrace(uint32_t pc){
           int search_time = 0;
           /* The top of stack is the function called previously */
           if(funcall_name_stack[funcall_time - 1] == sym_name_prev){
-            for(int j = funcall_time; j > 0; j--){
+            for(int j = funcall_time - 1; j >= 0; j--){
               search_time++;
               printf("0x%x %x B\n", funcall_name_stack[j], sym_name);
               if(funcall_name_stack[j] == sym_name){
