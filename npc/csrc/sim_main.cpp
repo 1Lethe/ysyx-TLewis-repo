@@ -6,6 +6,7 @@
 #include "monitor.h"
 #include "sim.h"
 #include "sdb.h"
+#include "debug.h"
 
 #include <stdio.h>
 
@@ -25,6 +26,7 @@ int main(int argc, char** argv) {
     }
 #else
     sdb_mainloop();
+    Assert(0, "1");
 #endif
 
     tfp_close();
