@@ -123,6 +123,6 @@ void ftrace(uint32_t pc){
       return ;
     }
     /* not find FUNC type in symbol tab. Must be wrong. */
-    if(i == elf_sym_num - 1) return ;
+    if(i == elf_sym_num - 1) printf("0x%x\n", pc) ;
   }
 }
