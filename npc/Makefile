@@ -39,7 +39,6 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
-include csrc/monitor/filelist.mk
 
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
@@ -61,6 +60,7 @@ sim:$(VSRCS) $(VER_SIM_C_PATH)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 	@echo "Sim Complete."
 
+include csrc/monitor/filelist.mk
 
 # For sta
 PROJ_PATH = $(NPC_HOME)
