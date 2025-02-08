@@ -13,10 +13,10 @@
 extern SIM_MODULE* SIM_MODULE_NAME;
 
 int main(int argc, char** argv) {
+    
+    sim_init(argc, argv);
 
     monitor_init(argc, argv);
-
-    sim_init(argc, argv);
 
     reset(SIM_MODULE_NAME, 10);
 
@@ -26,7 +26,6 @@ int main(int argc, char** argv) {
     }
 #else
     sdb_mainloop();
-    Assert(0, "1");
 #endif
 
     tfp_close();

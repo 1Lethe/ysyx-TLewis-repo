@@ -40,6 +40,7 @@ static int parse_args(int argc, char *argv[]) {
 }
 
 long load_img() {
+    Assert(0, "1");
     if(img_file == NULL){
         printf("No image is given.Use the default build-in image.\n");
         cpy_buildin_img();
