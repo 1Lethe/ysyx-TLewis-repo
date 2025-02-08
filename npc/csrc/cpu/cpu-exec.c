@@ -6,12 +6,12 @@ void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
     top->clk = 1;top->eval();
     if(top->rst != 1){
+        ftrace(top->pc);
+    }
+    if(top->rst != 1){
         top->pmem = pmem_read(top->pc, 4);top->eval();
     }
     dump_wave(top);
-    if(top->pc == 0x80000004){
-        ftrace(top->pc);
-    }
     sim_time--;
 }
 
