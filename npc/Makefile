@@ -42,8 +42,6 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
 INC_PATH += csrc/include
-INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/capstone/repo/include
-INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/capstone/repo/include/capstone
 LDFLAGS += -lreadline
 
 # rules for verilator
