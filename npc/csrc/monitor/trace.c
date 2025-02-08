@@ -1,5 +1,9 @@
 #include "trace.h"
 
+char *iringbuf[IRING_BUF_SIZE];
+int iring_index = 0;
+char instbuf[128];
+
 Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
 uint32_t elf_sym_num = 0;
 
@@ -14,6 +18,79 @@ void assert_fail_msg(void){
     printf("PC = 0x%x\n", SIM_MODULE_NAME->pc);
     reg_display(SIM_MODULE_NAME);
     return ;
+}
+
+void iring_display(void){
+  for(int i = 0; i < IRING_BUF_SIZE; i++){
+    if(iringbuf[i] == NULL) continue;
+    printf("%s", iringbuf[i]);
+    if(i != iring_index - 1){
+      printf("\n");
+    }else{
+      printf("<----- Program crash\n");
+    }
+  }
+}
+
+/* Init iringbuf */
+void iring_init(void){
+  for(int i = 0; i < IRING_BUF_SIZE; i++){
+    iringbuf[i] = NULL;
+  }
+}
+
+void itrace_record(uint32_t pc, uint32_t inst_in){
+  memset(instbuf, '\0', 128);
+  char *p = instbuf;
+  p += snprintf(p, sizeof(instbuf), "0x%08" "x" ":", s->pc);
+  int ilen = 4;
+  int i;
+  uint8_t *inst = (uint8_t *)inst_in;
+  for (i = ilen - 1; i >= 0; i --) {
+    p += snprintf(p, 4, " %02x", inst[i]);
+  }
+  int ilen_max = 4;
+  int space_len = ilen_max - ilen;
+  if (space_len < 0) space_len = 0;
+  space_len = space_len * 3 + 1;
+  memset(p, ' ', space_len);
+  p += space_len;
+
+  void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+  disassemble(p, instbuf + sizeof(instbuf) - p, pc, (uint8_t *)inst_in, ilen);
+  printf("%s\n", instbuf);
+}
+
+/* iringbuf implementation */
+void iring(void){
+  static bool iring_cycle_flag = false;
+
+  if(iring_index == IRING_BUF_SIZE){
+    iring_cycle_flag = true;
+    iring_index = 0;
+  }
+
+  /* If cycle at least once, free */
+  if(iring_cycle_flag){
+    Assert(iringbuf[iring_index] != NULL, "iringbuf[%d] == NULL", iring_index);
+    free(iringbuf[iring_index]);
+  }
+
+  char *instbuf = (char *)malloc(128*sizeof(char));
+  Assert(instbuf != NULL, "failed to malloc instbuf");
+  memset(instbuf, '\0', 128*sizeof(char));
+  memcpy(instbuf, instbuf, 128*sizeof(char));
+  iringbuf[iring_index++] = instbuf;
+}
+
+/* Free iringbuf */
+void iring_free(void){
+  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
+    if(iringbuf[i] == NULL){
+      continue;
+    }
+    free(iringbuf[i]);
+  }
 }
 
 void ftrace_init(void){
