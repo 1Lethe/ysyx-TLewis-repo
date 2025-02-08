@@ -88,7 +88,7 @@ void ftrace(uint32_t pc){
             panic("fun call time < 0");
           }
 
-          for(int __i = 0; __i < funcall_time+1; __i++) printf("0x%x A\n", funcall_name_stack[__i]);
+          for(int __i = 0; __i < funcall_time+1; __i++) printf("0x%x %d A\n", funcall_name_stack[__i], funcall_time);
 
           int search_time = 0;
           /* The top of stack is the function called previously */
