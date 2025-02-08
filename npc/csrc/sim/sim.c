@@ -7,7 +7,7 @@ VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
 
 void halt(void){
-    printf("Program halt at clock time %d.\n", SIM_TIME_MAX - sim_time);
+    printf("Program halt at clock time %d.PC = 0x%x.\n", SIM_TIME_MAX - sim_time, SIM_MODULE_NAME->pc);
     dump_wave(SIM_MODULE_NAME);
     if(SIM_MODULE_NAME->trap_flag == 0){
         printf("HIT GOOD TRAP.\n");

@@ -9,6 +9,7 @@
 #include "sim_main.h"
 #include "sim.h"
 #include "memory.h"
+#include "trace.h"
 
 extern SIM_MODULE* SIM_MODULE_NAME;
 

@@ -1,5 +1,5 @@
 #include <nvboard.h>
-#include <Vtop.h>
+#include <Vysyx_24120013_top.h>
 
 static TOP_NAME dut;
 
