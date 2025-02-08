@@ -31,6 +31,7 @@ CSRCS += $(SRC_AUTO_BIND)
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/include
+INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/capstone/repo/include
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
@@ -49,6 +50,9 @@ SIM_TOPNAME = ysyx_24120013_top
 VER_SIM_V_PATH = $(VSRCS)
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 VER_SIM_CFLAGS = --cc --exe -trace-fst --build --timing -I./vsrc
+
+include csrc/monitor/filelist.mk
+
 sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
 	mkdir ./wave
