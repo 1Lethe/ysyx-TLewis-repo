@@ -101,7 +101,7 @@ void ftrace(uint32_t pc){
           if(funcall_name_stack[funcall_time - 1] == sym_name_prev){
             for(int j = funcall_time - 1; j > 0; j--){
               search_time++;
-              printf("0x%x B\n", funcall_name_stack[j]);
+              printf("0x%x %x B\n", funcall_name_stack[j], sym_name);
               if(funcall_name_stack[j] == sym_name){
                 /* If find the sym_name in stack, must be ret */
                 /* To implement tail-call oper */
