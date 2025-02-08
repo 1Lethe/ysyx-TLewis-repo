@@ -15,6 +15,6 @@
 
 LIBCAPSTONE = csrc/capstone/repo/libcapstone.so.5
 CFLAGS += -I csrc/capstone/repo/include
-src/utils/disasm.c: $(LIBCAPSTONE)
+csrc/monitor/disasm.c: $(LIBCAPSTONE)
 $(LIBCAPSTONE):
 	$(MAKE) -C csrc/capstone
