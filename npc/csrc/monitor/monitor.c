@@ -59,7 +59,7 @@ long load_img() {
     assert(ret == 1);
 
     fclose(fp);
-    Assert(0,"test");
+    Assert(0==1,"test");
 
     return size;
 }
