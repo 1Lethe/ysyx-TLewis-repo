@@ -13,7 +13,7 @@ BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
 BIN = $(BUILD_DIR)/$(TOPNAME)
 
-default: $(BIN)
+default: sim
 
 $(shell mkdir -p $(BUILD_DIR))
 
