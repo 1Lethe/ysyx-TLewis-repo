@@ -59,7 +59,7 @@ void itrace_record(uint32_t pc, uint32_t __inst){
 
   printf("123");
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-  disassemble(p, instbuf + sizeof(instbuf) - p, pc, (uint8_t *)inst_in, ilen);
+  //disassemble(p, instbuf + sizeof(instbuf) - p, pc, (uint8_t *)inst_in, ilen);
   printf("%s\n", instbuf);
 }
 
