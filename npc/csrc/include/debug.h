@@ -28,7 +28,6 @@
 #define Assert(cond, format, ...) \
   do { \
     if (!(cond)) { \
-      /*IFNDEF(CONFIG_TARGET_AM, extern FILE* log_fp; fflush(log_fp));*/
       extern void assert_fail_msg(); \
       assert_fail_msg(); \
       assert(cond); \
