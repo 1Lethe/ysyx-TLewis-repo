@@ -13,7 +13,7 @@
 #define MAX_FUN_CALL_TRACE 100
 
 void assert_fail_msg(void);
-void ftrace_init(void);
+void ftrace_init(char *elf_file);
 void ftrace(uint32_t pc);
 
 #endif
