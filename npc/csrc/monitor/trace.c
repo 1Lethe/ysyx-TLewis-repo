@@ -62,9 +62,9 @@ void ftrace(uint32_t pc){
   static int sym_off_prev = 0;
 
   for(int i = 0; i < elf_sym_num; i++){
-    printf("0x%x 0x%x 0x%x %s\n ",pc, elf_sym[i].st_value,  elf_sym[i].st_value + elf_sym[i].st_size, read_sym_str(i));
+    printf("0x%x 0x%x 0x%x %s\n ",pc, elf_sym[i].st_value,  elf_sym[i].st_size, read_sym_str(i));
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
-      pc >= elf_sym[i].st_value && pc <= elf_sym[i].st_value + elf_sym[i].st_size){
+      pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
       /* Find the function that is executing */
       sym_name_prev = sym_name;
       sym_name = elf_sym[i].st_name;
