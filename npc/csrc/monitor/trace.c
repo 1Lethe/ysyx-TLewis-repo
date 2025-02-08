@@ -88,14 +88,11 @@ void ftrace(uint32_t pc){
             panic("fun call time < 0");
           }
 
-          for(int __i = 0; __i < funcall_time+1; __i++) printf("0x%x %d A\n", funcall_name_stack[__i], funcall_time);
-
           int search_time = 0;
           /* The top of stack is the function called previously */
           if(funcall_name_stack[funcall_time - 1] == sym_name_prev){
             for(int j = funcall_time - 1; j >= 0; j--){
               search_time++;
-              printf("0x%x %x B\n", funcall_name_stack[j], sym_name);
               if(funcall_name_stack[j] == sym_name){
                 /* If find the sym_name in stack, must be ret */
                 /* To implement tail-call oper */
