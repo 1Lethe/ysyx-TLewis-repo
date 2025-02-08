@@ -29,7 +29,6 @@
 #define Assert(cond, format, ...) \
   do { \
     if (!(cond)) { \
-      printf("123\n"); \
       printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ## __VA_ARGS__); \
       assert_fail_msg(); \
       assert(cond); \
