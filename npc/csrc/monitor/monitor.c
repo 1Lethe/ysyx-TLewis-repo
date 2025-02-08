@@ -118,6 +118,5 @@ void monitor_init(int argc, char *argv[]){
     load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
     ftrace_init();
-    void init_disasm();
     init_disasm();
 }
