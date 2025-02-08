@@ -1,4 +1,5 @@
 #include "monitor.h"
+#include "debug.h"
 
 char *log_file = NULL;
 char *diff_so_file = NULL;
@@ -58,6 +59,8 @@ long load_img() {
     assert(ret == 1);
 
     fclose(fp);
+    Assert(0,"test");
+
     return size;
 }
 
