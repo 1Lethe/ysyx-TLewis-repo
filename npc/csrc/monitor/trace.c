@@ -39,7 +39,7 @@ void iring_init(void){
   }
 }
 
-void itrace_record(uint32_t pc, uint32_t inst_in){
+void itrace_record(uint32_t pc, uint32_t *inst_in){
   memset(instbuf, '\0', 128);
   char *p = instbuf;
   p += snprintf(p, sizeof(instbuf), "0x%08" "x" ":", s->pc);
