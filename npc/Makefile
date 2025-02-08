@@ -7,7 +7,7 @@ LDFLAGS += -lreadline
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  -trace-fst \
-				-O3 --x-assign fast --x-initial fast --noassert --timing
+				-O3 --x-assign fast --x-initial fast --noassert --timing -I./vsrc
 
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
@@ -41,7 +41,6 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 #For sim
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
-INC_PATH += ./vsrc
 INC_PATH += csrc/include
 INC_PATH += csrc/capstone/repo/include
 
