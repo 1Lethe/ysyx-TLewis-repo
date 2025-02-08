@@ -1,8 +1,7 @@
-#include "trace.h"
+#include <cpu/trace.h>
 
 char *iringbuf[IRING_BUF_SIZE];
 int iring_index = 0;
-char instbuf[128];
 
 Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
 uint32_t elf_sym_num = 0;
@@ -10,15 +9,9 @@ uint32_t elf_sym_num = 0;
 uint32_t funcall_name_stack[MAX_FUN_CALL_TRACE] = {0};
 int funcall_time = 0;
 
-extern char* elf_file;
+extern char *elf_file;
 extern Elf32_Shdr shdr_strtab;
 extern Elf32_Shdr shdr_symtab;
-
-void assert_fail_msg(void){
-    printf("PC = 0x%x\n", SIM_MODULE_NAME->pc);
-    reg_display(SIM_MODULE_NAME);
-    return ;
-}
 
 void iring_display(void){
   for(int i = 0; i < IRING_BUF_SIZE; i++){
@@ -39,31 +32,8 @@ void iring_init(void){
   }
 }
 
-void itrace_record(uint32_t pc, uint32_t __inst){
-  memset(instbuf, '\0', 128);
-  uint32_t *inst_in = &__inst;
-  char *p = instbuf;
-  p += snprintf(p, sizeof(instbuf), "0x%08" "x" ":", pc);
-  int ilen = 4;
-  int i;
-  uint8_t *inst = (uint8_t *)inst_in;
-  for (i = ilen - 1; i >= 0; i --) {
-    p += snprintf(p, 4, " %02x", inst[i]);
-  }
-  int ilen_max = 4;
-  int space_len = ilen_max - ilen;
-  if (space_len < 0) space_len = 0;
-  space_len = space_len * 3 + 1;
-  memset(p, ' ', space_len);
-  p += space_len;
-
-  void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-  disassemble(p, instbuf + sizeof(instbuf) - p, pc, (uint8_t *)inst_in, ilen);
-  printf("%s\n", instbuf);
-}
-
 /* iringbuf implementation */
-void iring(void){
+void iring(Decode *s){
   static bool iring_cycle_flag = false;
 
   if(iring_index == IRING_BUF_SIZE){
@@ -80,7 +50,7 @@ void iring(void){
   char *instbuf = (char *)malloc(128*sizeof(char));
   Assert(instbuf != NULL, "failed to malloc instbuf");
   memset(instbuf, '\0', 128*sizeof(char));
-  memcpy(instbuf, instbuf, 128*sizeof(char));
+  memcpy(instbuf, s->logbuf, 128*sizeof(char));
   iringbuf[iring_index++] = instbuf;
 }
 
@@ -112,7 +82,7 @@ void ftrace_init(void){
   fclose(fp);
 }
 
-static char *read_sym_str(int off_from_symtable){
+char *read_sym_str(int off_from_symtable){
   char str_buf;
   static char sym_str[50];
   char *str_ptr = sym_str;
@@ -133,13 +103,16 @@ static char *read_sym_str(int off_from_symtable){
   return sym_str;
 }
 
-void ftrace(uint32_t pc){
+void ftrace(Decode *s){
   static Elf32_Word sym_name = 0;
   static Elf32_Word sym_name_prev = 0;
   static int sym_off = 0;
   static int sym_off_prev = 0;
 
+  vaddr_t pc = s->pc;
+
   for(int i = 0; i < elf_sym_num; i++){
+
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
       /* Find the function that is executing */
@@ -147,6 +120,7 @@ void ftrace(uint32_t pc){
       sym_name = elf_sym[i].st_name;
       sym_off_prev = sym_off;
       sym_off = i;
+
       /* call function or return from function */
       if(sym_name != sym_name_prev){
         printf("0x%x: ", pc);
@@ -154,6 +128,12 @@ void ftrace(uint32_t pc){
         /* NOTE: tail-call oper need to test */
         /* maintain a stack which contain the value of fun in symbol table */
         if(funcall_time == 0){
+          /* call _start */
+          printf("call");
+          funcall_name_stack[funcall_time] = sym_name;
+          funcall_time++;
+          printf("[%s@0x%x],%d\n", read_sym_str(sym_off), elf_sym[i].st_value, funcall_time);
+        }else if(funcall_time == 1){
           /* call _trm_init */
           PRINTF_SPACE(funcall_time);
           funcall_name_stack[funcall_time] = sym_name;
@@ -169,7 +149,7 @@ void ftrace(uint32_t pc){
           int search_time = 0;
           /* The top of stack is the function called previously */
           if(funcall_name_stack[funcall_time - 1] == sym_name_prev){
-            for(int j = funcall_time - 1; j >= 0; j--){
+            for(int j = funcall_time - 1; j > 0; j--){
               search_time++;
               if(funcall_name_stack[j] == sym_name){
                 /* If find the sym_name in stack, must be ret */
@@ -193,6 +173,7 @@ void ftrace(uint32_t pc){
       /* find the function then break */
       return ;
     }
-    if(i == elf_sym_num - 1) return ;
+    /* not find FUNC type in symbol tab. Must be wrong. */
+    if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
   }
 }
