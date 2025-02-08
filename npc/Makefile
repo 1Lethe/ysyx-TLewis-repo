@@ -45,7 +45,7 @@ VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" 
 
 INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/include
 INC_PATH += /home/tonglewis/ysyx-workbench/npc/capstone/repo/include
-LDFLAGS += -lreadline
+LDFLAGS += -lreadline -ldl
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
