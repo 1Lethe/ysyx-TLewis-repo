@@ -55,7 +55,7 @@ sim:$(VSRCS) $(VER_SIM_C_PATH)
 	mkdir ./wave
 	$(call git_commit, "sim RTL")
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
-		--top-module $(SIM_TOPNAME) $^ \
+		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 	@echo "Sim Complete."
