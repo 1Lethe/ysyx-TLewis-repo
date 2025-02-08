@@ -69,7 +69,6 @@ void ftrace(uint32_t pc){
       sym_name = elf_sym[i].st_name;
       sym_off_prev = sym_off;
       sym_off = i;
-      printf("0x%x A\n", pc);
       /* call function or return from function */
       if(sym_name != sym_name_prev){
         printf("0x%x: ", pc);
@@ -101,6 +100,7 @@ void ftrace(uint32_t pc){
             for(int j = funcall_time - 1; j > 0; j--){
               search_time++;
               if(funcall_name_stack[j] == sym_name){
+                printf("123");
                 /* If find the sym_name in stack, must be ret */
                 /* To implement tail-call oper */
                 funcall_time = funcall_time - search_time + 1;
