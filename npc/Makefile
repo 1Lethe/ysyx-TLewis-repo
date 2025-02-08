@@ -7,7 +7,7 @@ LDFLAGS += -lreadline
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  -trace-fst \
-				-O3 --x-assign fast --x-initial fast --noassert --timing -I./vsrc
+				-O3 --x-assign fast --x-initial fast --timing -I./vsrc
 
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
