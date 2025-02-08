@@ -6,7 +6,7 @@ INC_PATH ?=
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  -trace-fst \
-				-O3 --x-assign fast --x-initial fast --noassert --timing -I./vsrc
+				-O3 --x-assign fast --x-initial fast --noassert --timing 
 
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
@@ -39,11 +39,12 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
-# include csrc/monitor/filelist.mk
+include csrc/monitor/filelist.mk
 
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
 INC_PATH += csrc/include
+INC_PATH += ./vsrc
 LFLAGS += -lreadline -ldl
 
 # rules for verilator
