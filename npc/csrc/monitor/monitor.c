@@ -112,6 +112,7 @@ static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
   return ;
 }
 
+void init_disasm();
 
 void monitor_init(int argc, char *argv[]){
     parse_args(argc, argv);
