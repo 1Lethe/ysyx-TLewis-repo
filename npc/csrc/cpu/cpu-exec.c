@@ -1,6 +1,5 @@
 #include "cpu-exec.h"
 
-extern SIM_MODULE* SIM_MODULE_NAME;
 extern int sim_time;
 
 void single_cycle(SIM_MODULE* top){

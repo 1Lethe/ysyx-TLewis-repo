@@ -10,6 +10,8 @@
 #include "sim.h"
 #include "memory.h"
 
+extern SIM_MODULE* SIM_MODULE_NAME;
+
 void single_cycle(SIM_MODULE* top);
 void cycle(SIM_MODULE* top, uint64_t n);
 void reset(SIM_MODULE* top, int n);
