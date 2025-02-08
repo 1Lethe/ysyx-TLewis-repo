@@ -30,7 +30,7 @@
   do { \
     if (!(cond)) { \
       printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ## __VA_ARGS__); \
-    printf("1\n"); \
+    printf("123"); \
       assert_fail_msg(); \
       assert(cond); \
     } \
