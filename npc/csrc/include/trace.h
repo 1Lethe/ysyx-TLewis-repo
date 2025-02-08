@@ -19,7 +19,7 @@
 void assert_fail_msg(void);
 void iring_display(void);
 void iring_init(void);
-void iring(void);
+void iring(uint32_t pc, uint32_t inst);
 void iring_free(void);
 void ftrace_init(void);
 void ftrace(uint32_t pc);
