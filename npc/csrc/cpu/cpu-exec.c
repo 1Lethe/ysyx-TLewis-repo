@@ -10,7 +10,7 @@ void single_cycle(SIM_MODULE* top){
     }
     dump_wave(top);
     sim_time--;
-    Assert(top->pc != 0x80000014, "test")
+    Assert(top->pc != 0x80000014, "test");
 }
 
 void cycle(SIM_MODULE* top, uint64_t n){
