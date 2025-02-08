@@ -28,8 +28,8 @@
 /* if cond == false, print error message and exit program */
 #define Assert(cond, format, ...) \
   do { \
-    printf("1\n"); \
     if (!(cond)) { \
+    printf("1\n"); \
       printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ## __VA_ARGS__); \
       assert_fail_msg(); \
       assert(cond); \
