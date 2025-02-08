@@ -58,7 +58,7 @@ void itrace_record(uint32_t pc, uint32_t __inst){
   p += space_len;
 
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-  printf("%x \n", inst_in);
+  printf("%x \n", *inst_in);
   disassemble(p, 128, pc, (uint8_t *)inst_in, ilen);
   printf("%s\n", instbuf);
 }
