@@ -44,6 +44,7 @@ include csrc/monitor/filelist.mk
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
 INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/include
+INC_PATH += /home/tonglewis/ysyx-workbench/npc/capstone/repo/include
 LFLAGS += -lreadline
 
 # rules for verilator
