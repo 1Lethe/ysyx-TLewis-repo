@@ -3,7 +3,6 @@
 TOPNAME = ysyx_24120013_top
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
-LDFLAGS += -lreadline
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  -trace-fst \
@@ -43,7 +42,8 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
 INC_PATH += csrc/include
-INC_PATH += csrc/capstone/repo/include
+LDFLAGS += -Icsrc/capstone/repo/include
+LDFLAGS += -lreadline
 
 include csrc/monitor/filelist.mk
 
