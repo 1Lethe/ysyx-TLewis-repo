@@ -2,7 +2,7 @@
 
 char *iringbuf[IRING_BUF_SIZE];
 int iring_index = 0;
-char instbuf[128];
+char log_buf[128];
 
 Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
 uint32_t elf_sym_num = 0;
@@ -42,10 +42,10 @@ void iring_init(void){
 }
 
 static void itrace_record(uint32_t pc, uint32_t __inst){
-  memset(instbuf, '\0', 128);
+  memset(log_buf, '\0', 128);
   uint32_t *inst_in = &__inst;
-  char *p = instbuf;
-  p += snprintf(p, sizeof(instbuf), "0x%08" "x" ":", pc);
+  char *p = log_buf;
+  p += snprintf(p, sizeof(log_buf), "0x%08" "x" ":", pc);
   int ilen = 4;
   int i;
   uint8_t *inst = (uint8_t *)inst_in;
@@ -60,7 +60,7 @@ static void itrace_record(uint32_t pc, uint32_t __inst){
   p += space_len;
 
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
-  disassemble(p, instbuf + sizeof(instbuf) - p, pc, (uint8_t *)inst_in, ilen);
+  disassemble(p, log_buf + sizeof(log_buf) - p, pc, (uint8_t *)inst_in, ilen);
 }
 
 /* iringbuf implementation */
@@ -68,7 +68,6 @@ void iring(uint32_t pc, uint32_t inst){
   static bool iring_cycle_flag = false;
 
   itrace_record(pc, inst);
-  printf("%s", instbuf);
 
   if(iring_index == IRING_BUF_SIZE){
     iring_cycle_flag = true;
@@ -84,7 +83,7 @@ void iring(uint32_t pc, uint32_t inst){
   char *instbuf = (char *)malloc(128*sizeof(char));
   Assert(instbuf != NULL, "failed to malloc instbuf");
   memset(instbuf, '\0', 128*sizeof(char));
-  memcpy(instbuf, instbuf, 128*sizeof(char));
+  memcpy(instbuf, log_buf, 128*sizeof(char));
   iringbuf[iring_index++] = instbuf;
 }
 
