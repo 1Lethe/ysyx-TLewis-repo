@@ -29,7 +29,6 @@
 #define Assert(cond, format, ...) \
   do { \
     if (!(cond)) { \
-      printf(format); \
       assert_fail_msg(); \
       assert(cond); \
     } \
