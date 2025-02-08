@@ -1,12 +1,13 @@
 .PHONY = all run sim clean clean_wave clean_all syn fix-fanout sta clean_sta
 
-TOPNAME = top
+TOPNAME = ysyx_24120013_top
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
+LDFLAGS += -lreadline
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc  \
-				-O3 --x-assign fast --x-initial fast --noassert
+VERILATOR_CFLAGS += -MMD --build -cc  -trace-fst \
+				-O3 --x-assign fast --x-initial fast --noassert --timing -I./vsrc
 
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
@@ -29,6 +30,8 @@ CSRCS += $(SRC_AUTO_BIND)
 # rules for NVBoard
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
+INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/include
+
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
@@ -42,23 +45,25 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
-SIM_TOPNAME = keyboard_sim
-VER_SIM_V_PATH = vsrc/ps2_keyboard.v vsrc_tb/ps2_keyboard_model.v vsrc_tb/ps2_keyboard_tb.v vsrc/keyboard_display.v
-VER_SIM_C_PATH = csrc/sim_main.cpp
-VER_SIM_CFLAGS = -cc --exe -trace-fst --build
+SIM_TOPNAME = ysyx_24120013_top
+VER_SIM_V_PATH = $(VSRCS)
+VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
+VER_SIM_CFLAGS = --cc --exe -trace-fst --build --timing -I./vsrc
 sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
+	mkdir ./wave
 	$(call git_commit, "sim RTL")
-	verilator -cc --exe --trace-fst --build --timing --top-module $(SIM_TOPNAME) $^ \
-	--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
-	./build/top
+	$(VERILATOR) $(VERILATOR_CFLAGS) \
+		--top-module $(SIM_TOPNAME) $^ \
+		$(addprefix -CFLAGS , $(CXXFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 	@echo "Sim Complete."
 
 
 # For sta
 PROJ_PATH = $(NPC_HOME)
 
-DESIGN ?= top
+DESIGN ?= $(SIM_TOPNAME)
 SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
 RTL_FILES ?= $(VSRCS)
 export CLK_FREQ_MHZ ?= 100
@@ -68,9 +73,6 @@ SCRIPT_DIR = $(PROJ_PATH)/scripts
 NETLIST_SYN_V   = $(RESULT_DIR)/$(DESIGN).netlist.syn.v
 NETLIST_FIXED_V = $(RESULT_DIR)/$(DESIGN).netlist.fixed.v
 TIMING_RPT = $(RESULT_DIR)/$(DESIGN).rpt
-
-init:
-	bash -c "$$(wget -O - https://ysyx.oscc.cc/slides/resources/scripts/init-yosys-sta.sh)"
 
 syn: $(NETLIST_SYN_V)
 $(NETLIST_SYN_V): $(RTL_FILES) $(SCRIPT_DIR)/yosys.tcl

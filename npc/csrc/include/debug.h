@@ -13,13 +13,30 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#include <isa.h>
-#include <cpu/difftest.h>
-#include "../local-include/reg.h"
+#ifndef __DEBUG_H__
+#define __DEBUG_H__
 
-bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
-  return false;
-}
+#include <stdio.h>
+#include <utils.h>
+#include <macro.h>
+#include "trace.h"
 
-void isa_difftest_attach() {
-}
+#define Log(format, ...) \
+    _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
+        __FILE__, __LINE__, __func__, ## __VA_ARGS__)
+
+/* if cond == false, print error message and exit program */
+#define Assert(cond, format, ...) \
+  do { \
+    if (!(cond)) { \
+      printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ## __VA_ARGS__); \
+      assert_fail_msg(); \
+      assert(cond); \
+    } \
+  } while (0)
+
+#define panic(format, ...) Assert(0, format, ## __VA_ARGS__)
+
+#define TODO() panic("please implement me")
+
+#endif
