@@ -17,6 +17,8 @@ extern Elf32_Shdr shdr_symtab;
 void assert_fail_msg(void){
     printf("PC = 0x%x\n", SIM_MODULE_NAME->pc);
     reg_display(SIM_MODULE_NAME);
+    iring_display();
+    iring_free();
     return ;
 }
 
@@ -39,7 +41,7 @@ void iring_init(void){
   }
 }
 
-void itrace_record(uint32_t pc, uint32_t __inst){
+static void itrace_record(uint32_t pc, uint32_t __inst){
   memset(instbuf, '\0', 128);
   uint32_t *inst_in = &__inst;
   char *p = instbuf;
@@ -59,12 +61,13 @@ void itrace_record(uint32_t pc, uint32_t __inst){
 
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, instbuf + sizeof(instbuf) - p, pc, (uint8_t *)inst_in, ilen);
-  printf("%s\n", instbuf);
 }
 
 /* iringbuf implementation */
-void iring(void){
+void iring(uint32_t pc, uint32_t inst){
   static bool iring_cycle_flag = false;
+
+  itrace_record(pc, inst);
 
   if(iring_index == IRING_BUF_SIZE){
     iring_cycle_flag = true;

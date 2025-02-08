@@ -120,4 +120,5 @@ void monitor_init(int argc, char *argv[]){
     parse_elf(&shdr_strtab, &shdr_symtab);
     ftrace_init();
     init_disasm();
+    iring_init();
 }

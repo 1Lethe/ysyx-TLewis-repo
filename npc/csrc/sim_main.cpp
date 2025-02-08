@@ -7,6 +7,7 @@
 #include "sim.h"
 #include "sdb.h"
 #include "debug.h"
+#include "trace.h"
 
 #include <stdio.h>
 
@@ -28,6 +29,7 @@ int main(int argc, char** argv) {
     sdb_mainloop();
 #endif
 
+    iring_free();
     tfp_close();
     return 0;
 }                                                     
