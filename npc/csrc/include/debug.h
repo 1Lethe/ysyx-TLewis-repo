@@ -20,16 +20,15 @@
 #include <utils.h>
 #include <macro.h>
 #include "trace.h"
-#if 0
+
 #define Log(format, ...) \
     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
         __FILE__, __LINE__, __func__, ## __VA_ARGS__)
-#endif
+
 /* if cond == false, print error message and exit program */
 #define Assert(cond, format, ...) \
   do { \
     if (!(cond)) { \
-      printf("123");
       printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ## __VA_ARGS__); \
       assert_fail_msg(); \
       assert(cond); \
