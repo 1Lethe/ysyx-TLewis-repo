@@ -41,7 +41,7 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 #For sim
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
-INC_PATH += vsrc/
+INC_PATH += vsrc/define
 INC_PATH += csrc/include
 INC_PATH += csrc/capstone/repo/include
 
