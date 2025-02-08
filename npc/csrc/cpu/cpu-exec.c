@@ -17,7 +17,7 @@ void cycle(SIM_MODULE* top, uint64_t n){
         single_cycle(top);
 
         if(top->rst != 1){
-            //itrace_record(top->pc, &top->pmem);
+            itrace_record(top->pc, top->pmem);
             ftrace(top->pc);
         }
     }
