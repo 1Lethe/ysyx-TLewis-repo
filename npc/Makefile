@@ -7,7 +7,7 @@ LDFLAGS += -lreadline
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  -trace-fst \
-				-O3 --x-assign fast --x-initial fast --noassert --timing -I./vsrc
+				-O3 --x-assign fast --x-initial fast --noassert --timing
 
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
@@ -30,13 +30,6 @@ CSRCS += $(SRC_AUTO_BIND)
 # rules for NVBoard
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
-INC_PATH += csrc/include
-INC_PATH += csrc/capstone/repo/include
-
-# rules for verilator
-INCFLAGS = $(addprefix -I, $(INC_PATH))
-CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
-
 $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@rm -rf $(OBJ_DIR)
@@ -46,14 +39,18 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
-SIM_TOPNAME = ysyx_24120013_top
-VER_SIM_V_PATH = $(VSRCS)
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
-VER_SIM_CFLAGS = --cc --exe -trace-fst --build --timing -I./vsrc
+
+INC_PATH += csrc/include
+INC_PATH += csrc/capstone/repo/include
 
 include csrc/monitor/filelist.mk
 
-sim:$(VER_SIM_V_PATH) $(VER_SIM_C_PATH)
+# rules for verilator
+INCFLAGS = $(addprefix -I, $(INC_PATH))
+CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
+
+sim:$(VSRCS) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
 	mkdir ./wave
 	$(call git_commit, "sim RTL")
