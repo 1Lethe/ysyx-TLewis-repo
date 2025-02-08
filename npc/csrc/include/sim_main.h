@@ -4,6 +4,8 @@
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 
+extern SIM_MODULE* SIM_MODULE_NAME;
+
 //If you want to use testbench just keep this #define otherwise delete it
 //#define USE_TESTBENCH
 
