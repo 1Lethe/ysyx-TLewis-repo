@@ -17,10 +17,6 @@
 #include <capstone/capstone.h>
 #include <assert.h>
 #include <stdint.h>
-#include <inttypes.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdlib.h>
 
 static size_t (*cs_disasm_dl)(csh handle, const uint8_t *code,
     size_t code_size, uint64_t address, size_t count, cs_insn **insn);
@@ -34,13 +30,13 @@ void init_disasm() {
   assert(dl_handle);
 
   cs_err (*cs_open_dl)(cs_arch arch, cs_mode mode, csh *handle) = NULL;
-  cs_open_dl = dlsym(dl_handle, "cs_open");
+  cs_open_dl = ((cs_err (*)(cs_arch, cs_mode, csh*)))dlsym(dl_handle, "cs_open");
   assert(cs_open_dl);
 
-  cs_disasm_dl = dlsym(dl_handle, "cs_disasm");
+  cs_disasm_dl = ((cs_err (*)(cs_arch, cs_mode, csh*)))dlsym(dl_handle, "cs_disasm");
   assert(cs_disasm_dl);
 
-  cs_free_dl = dlsym(dl_handle, "cs_free");
+  cs_free_dl = ((cs_err (*)(cs_arch, cs_mode, csh*)))dlsym(dl_handle, "cs_free");
   assert(cs_free_dl);
 
   cs_arch arch = CS_ARCH_RISCV,
