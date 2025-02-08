@@ -48,7 +48,7 @@ LDFLAGS += -lreadline
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
--include csrc/monitor/filelist.mk
+# -include csrc/monitor/filelist.mk
 
 sim:$(VSRCS) $(VER_SIM_C_PATH)
 	rm -rf $(WAVE_DIR)
