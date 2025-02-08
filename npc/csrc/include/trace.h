@@ -19,7 +19,7 @@
 void assert_fail_msg(void);
 void iring_dispaly(void);
 void iring_init(void);
-void itrace_record(uint32_t pc, uint32_t *inst_in);
+void itrace_record(uint32_t pc, uint32_t inst_in);
 void iring(void);
 void ftrace_init(void);
 void ftrace(uint32_t pc);
