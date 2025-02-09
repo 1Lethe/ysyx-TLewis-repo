@@ -1,6 +1,6 @@
 `include "define/exu_command.v"
 
-module ysyx_24120013_branch_ctrl #(DATA_WIDTH = 32)(
+module ysyx_24120013_bru #(DATA_WIDTH = 32)(
     input clk,
     input rst,
     input branch_less,

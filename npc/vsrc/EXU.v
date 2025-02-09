@@ -44,9 +44,9 @@ ysyx_24120013_alu #(
 );
 
 // output declaration of module ysyx_24120013_branch_ctrl
-ysyx_24120013_branch_ctrl #(
+ysyx_24120013_bru #(
     .DATA_WIDTH(DATA_WIDTH)
-)u_ysyx_24120013_branch_ctrl(
+)u_ysyx_24120013_bru(
     .clk           	(clk            ),
     .rst           	(rst            ),
     .branch_less    (1'b0),
