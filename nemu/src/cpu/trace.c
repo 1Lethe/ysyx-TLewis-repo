@@ -1,5 +1,7 @@
 #include <cpu/trace.h>
 
+#ifdef CONFIG_ITRACE
+
 char *iringbuf[IRING_BUF_SIZE];
 int iring_index = 0;
 
@@ -63,6 +65,10 @@ void iring_free(void){
     free(iringbuf[i]);
   }
 }
+
+#endif
+
+#ifdef CONFIG_FTRACE
 
 void ftrace_init(void){
   FILE *fp = fopen(elf_file, "r");
@@ -177,3 +183,5 @@ void ftrace(Decode *s){
     if(i == elf_sym_num - 1) panic("Not find function type in symbol tab.");
   }
 }
+
+#endif
