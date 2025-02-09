@@ -1,0 +1,26 @@
+#ifndef __DIFFTEST_H
+#define __DIFFTEST_H
+
+#include <stdio.h>
+#include <stdint.h>
+#include <dlfcn.h>
+
+#include "memory.h"
+#include "utils.h"
+#include "debug.h"
+#include "sim_main.h"
+
+enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
+
+#define RISCV_GPR_TYPE uint32_t
+#define RISCV_GPR_NUM  32
+#define DIFFTEST_REG_SIZE (sizeof(RISCV_GPR_TYPE) * (RISCV_GPR_NUM + 1)) // GPRs + pc
+
+typedef struct {
+    uint32_t gpr[RISCV_GPR_NUM];
+    uint32_t pc;
+} CPU_state;
+
+void init_difftest(SIM_MODULE* top, char *ref_so_file, long img_size, int port);
+void difftest_step(SIM_MODULE* top, uint32_t pc, uint32_t npc);
+#endif

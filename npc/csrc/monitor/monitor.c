@@ -7,6 +7,7 @@ char *diff_so_file = NULL;
 char *img_file = NULL;
 char *elf_file = NULL;
 int difftest_port = 1234;
+long img_size = 0;
 bool is_batch_mode = false;
 
 Elf32_Shdr shdr_strtab;
@@ -116,7 +117,7 @@ void init_disasm();
 
 void monitor_init(int argc, char *argv[]){
     parse_args(argc, argv);
-    load_img();
+    img_size = load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
     ftrace_init();
     init_disasm();
