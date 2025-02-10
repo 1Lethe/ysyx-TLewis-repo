@@ -44,10 +44,42 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire [6:0] funct7;
 
     /* inst decoder signal */
-    wire is_addi;
 
+    wire opcode_is_imm;
+    wire opcode_is_calc;
+    wire opcode_is_lui;
+    wire opcode_is_auipc;
+    wire opcode_is_jal;
+    wire opcode_is_jalr;
+    wire opcode_is_branch;
+    wire opcode_is_load;
+    wire opcode_is_save;
+    wire opcode_is_break;
+
+    wire [7:0] funct3_one_hot;
+
+    wire is_addi;
+    wire is_slti;
+    wire is_sltiu;
+    wire is_andi;
+    wire is_ori;
+    wire is_xori;
+    wire is_slli;
+    wire is_srli;
+    wire is_srai;
     wire is_lui;
     wire is_auipc;
+
+    wire is_add;
+    wire is_sub;
+    wire is_slt;
+    wire is_sltu;
+    wire is_and;
+    wire is_or;
+    wire is_xor;
+    wire is_sll;
+    wire is_srl;
+    wire is_sra;
 
     wire is_jal;
     wire is_jalr;
@@ -80,18 +112,42 @@ module ysyx_24120013_IDU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign funct3 = inst[14:12];
     assign funct7 = inst[31:25];
 
-    assign is_addi   = (opcode == OPC_IMM_C) && (funct3 == 3'b000);
-    assign is_lui    = (opcode == OPC_LUI);
-    assign is_auipc  = (opcode == OPC_AUIPC);
-    assign is_jal    = (opcode == OPC_JAL);
-    assign is_jalr   = (opcode == OPC_JALR) && (funct3 == 3'b000);
-    assign is_ebreak = (opcode == OPC_BREAK);
+    assign opcode_is_imm    = (opcode == OPC_IMM_C);
+    assign opcode_is_calc   = (opcode == OPC_CALC);
+    assign opcode_is_lui    = (opcode == OPC_LUI);
+    assign opcode_is_auipc  = (opcode == OPC_AUIPC);
+    assign opcode_is_jal    = (opcode == OPC_JAL);
+    assign opcode_is_jalr   = (opcode == OPC_JALR);
+    assign opcode_is_branch = (opcode == OPC_BRANCH);
+    assign opcode_is_load   = (opcode == OPC_LOAD);
+    assign opcode_is_save   = (opcode == OPC_SAVE);
+    assign opcode_is_break  = (opcode == OPC_BREAK);
 
-    assign alu_op[0] = is_addi |
-                       is_auipc|
-                       is_jal  |
-                       is_jalr;
-    assign alu_op[10] = is_lui;
+    assign funct3_one_hot = 1'b1 << funct3;
+
+    assign is_addi   = (opcode_is_imm)    & (funct3_one_hot[0]);
+    assign is_lui    = (opcode_is_lui);
+    assign is_auipc  = (opcode_is_auipc);
+    assign is_add    = (opcode_is_calc)   & (funct3_one_hot[0]);
+    assign is_jal    = (opcode_is_jal);
+    assign is_jalr   = (opcode_is_jalr)   & (funct3_one_hot[0]);
+    assign is_ebreak = (opcode_is_break);
+
+    assign alu_op[0]  = is_addi | // add
+                        is_add  |
+                        is_auipc|
+                        is_jal  |
+                        is_jalr;
+    assign alu_op[1]  = is_sub;   // sub
+    assign alu_op[2]  = is_slti;  // less than
+    assign alu_op[3]  = is_sltiu; // less than unsigned
+    assign alu_op[4]  = is_andi;  // and
+    assign alu_op[5]  = is_ori;   // or
+    assign alu_op[6]  = is_xor;   // xor
+    assign alu_op[7]  = is_slli;  // logical left shift
+    assign alu_op[8]  = is_srli;  // logical right shift
+    assign alu_op[9]  = is_srai;  // arithmetic right shift
+    assign alu_op[10] = is_lui;   // select B src
 
     assign branch_op[0] = is_jal;
     assign branch_op[1] = is_jalr;
