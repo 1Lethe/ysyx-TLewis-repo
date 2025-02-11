@@ -10,11 +10,7 @@ extern long img_size;
 
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
-    top->clk = 1;top->eval();
-    if(top->rst != 1){
-        top->pmem = pmem_read(top->pc, 4);top->eval();
-    }
-    dump_wave(top);
+    top->clk = 1;top->eval();dump_wave(top);
     sim_time--;
 }
 
@@ -28,13 +24,13 @@ void cycle(SIM_MODULE* top, uint64_t n){
             init_difftest(top, diff_so_file, img_size, difftest_port);
             difftest_init_flag = true;
         }
-        iring(top->pc, top->pmem);
-        ftrace(top->pc);
         if(!diff_skip){
             diff_skip = true;
         }else{
             difftest_step(top, top->pc, top->pc);
         }
+        iring(top->pc, pmem_read(top->pc, 4));
+        //ftrace(top->pc);
     }
 }
 

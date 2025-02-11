@@ -28,6 +28,15 @@ CPU_state cpu;
 extern const char *regs[];
 
 bool isa_difftest_checkregs(CPU_state *ref_r, uint32_t pc) {
+  if(ref_r->pc != cpu.pc){
+      printf("%s\n", ANSI_FMT("Find error by Difftest. PC fault", ANSI_FG_RED));
+      printf("REF PC = 0x%x DUT PC = 0x%x\n", ref_r->pc, cpu.pc);
+      printf("REF regs:\n");
+      for(int j = 0; j < RISCV_GPR_NUM; j++){
+        printf("%s = 0x%x\n", regs[j], ref_r->gpr[j]);
+      }
+      return false;
+  }
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++){
     if(ref_r->gpr[i] != cpu.gpr[i]){
       printf("%s\n", ANSI_FMT("Find error by Difftest.", ANSI_FG_RED));

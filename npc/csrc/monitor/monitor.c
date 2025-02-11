@@ -119,7 +119,7 @@ void monitor_init(int argc, char *argv[]){
     parse_args(argc, argv);
     img_size = load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
-    ftrace_init();
+    //ftrace_init();
     init_disasm();
     iring_init();
 }

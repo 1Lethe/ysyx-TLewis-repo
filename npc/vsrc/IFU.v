@@ -1,10 +1,12 @@
-module ysyx_24120023_IFU (
+module ysyx_24120023_IFU #(DATA_WIDTH = 32)(
     input clk,
     input rst,
-    input [31:0] pmem,
-    output wire [31:0] IFU_inst
+    input [DATA_WIDTH-1:0] pc,
+    output reg [DATA_WIDTH-1:0] IFU_inst
 );
 
-    assign IFU_inst = pmem;
+    always @(*) begin
+        IFU_inst = (rst == 1'b1 || pc == 32'h80000000 - 4) ? {DATA_WIDTH{1'b0}} : sim_pmem_read(pc);
+    end
 
 endmodule

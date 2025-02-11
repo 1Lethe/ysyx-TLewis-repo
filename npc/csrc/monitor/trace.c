@@ -19,6 +19,7 @@ void assert_fail_msg(void){
     reg_display(SIM_MODULE_NAME);
     iring_display();
     iring_free();
+    tfp_close();
     return ;
 }
 
