@@ -1,14 +1,11 @@
 #ifndef __DIFFTEST_H
 #define __DIFFTEST_H
 
-#include <stdio.h>
-#include <stdint.h>
 #include <dlfcn.h>
 
 #include "memory.h"
 #include "utils.h"
 #include "debug.h"
-#include "sim_main.h"
 
 enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 

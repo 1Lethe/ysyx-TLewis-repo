@@ -1,3 +1,4 @@
+#include "common.h"
 #include "trace.h"
 
 char *iringbuf[IRING_BUF_SIZE];
@@ -17,9 +18,9 @@ extern Elf32_Shdr shdr_symtab;
 void assert_fail_msg(void){
     printf("PC = 0x%x\n", SIM_MODULE_NAME->pc);
     reg_display(SIM_MODULE_NAME);
-    iring_display();
-    iring_free();
-    tfp_close();
+    IFDEF(EN_ITRACE, iring_display());
+    IFDEF(EN_ITEACE, iring_free());
+    IFDEF(EN_DUMP_WAVE, tfp_close());
     return ;
 }
 

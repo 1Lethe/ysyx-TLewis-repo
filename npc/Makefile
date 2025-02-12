@@ -39,7 +39,7 @@ $(BIN): $(VSRCS) $(CSRCS) $(NVBOARD_ARCHIVE)
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 #For sim
-include csrc/monitor/filelist.mk
+include csrc/utils/filelist.mk
 
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
@@ -65,7 +65,7 @@ sim:$(VSRCS) $(VER_SIM_C_PATH)
 # For sta
 PROJ_PATH = $(NPC_HOME)
 
-DESIGN ?= $(SIM_TOPNAME)
+DESIGN ?= $(TOPNAME)
 SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
 RTL_FILES ?= $(VSRCS)
 export CLK_FREQ_MHZ ?= 100

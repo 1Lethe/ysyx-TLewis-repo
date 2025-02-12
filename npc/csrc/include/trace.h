@@ -1,13 +1,8 @@
 #ifndef __TRACE_H
 #define __TRACE_H
 
-#include <stdio.h>
-#include <stdint.h>
 #include <elf.h>
 
-#include "sim_main.h"
-#include "debug.h"
-#include "utils.h"
 #include "reg.h"
 
 #define PRINTF_SPACE(num) for(int __i = 0; __i < num; __i++) printf(" ");

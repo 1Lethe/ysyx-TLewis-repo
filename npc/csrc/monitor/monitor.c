@@ -1,6 +1,5 @@
+#include "common.h"
 #include "monitor.h"
-#include "debug.h"
-#include "trace.h"
 
 char *log_file = NULL;
 char *diff_so_file = NULL;
@@ -12,6 +11,8 @@ bool is_batch_mode = false;
 
 Elf32_Shdr shdr_strtab;
 Elf32_Shdr shdr_symtab;
+
+void init_log(const char *log_file);
 
 static void set_batch_mode(void){
     is_batch_mode = true;
@@ -119,7 +120,8 @@ void monitor_init(int argc, char *argv[]){
     parse_args(argc, argv);
     img_size = load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
-    //ftrace_init();
-    init_disasm();
-    iring_init();
+    init_log(log_file);
+    IFDEF(EN_ITRACE, init_disasm());
+    IFDEF(EN_ITRACE, iring_init());
+    IFDEF(EN_FTRACE, ftrace_init());
 }

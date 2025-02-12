@@ -1,5 +1,5 @@
+#include "common.h"
 #include "memory.h"
-#include "debug.h"
 
 extern char *img_file;
 
@@ -7,24 +7,10 @@ static uint8_t pmem[MEMORY_SIZE] __attribute((aligned(4096))) = {};
 
 static const uint32_t buildin_img[] = {
     0x00000297,  // auipc t0,0
-
-    0x0202ac23,  // sw  zero,56(t0)
-    0x02029823,  // sh zero, 48(t0)
-    0x02029a23,  // sb zero, 52(t0)
-
-    0x0102c503,  // lbu a0,24(t0)
-    0x03028a03,  //  lb  x20 48(t0)
-    0x02c2ca83,  //  lbu x21 44(t0)
-    0x02c29b03,  //  lh  x22 44(t0)
-    0x02c2db83,  //  lhu x23 44(t0)
-    0x02c2ac03,  //  lw  x24 44(t0)
-
-    0x00100073,  // ebreak (used as npc_trap)
+    0x00028823,  // sb  zero,16(t0)
+    0x0102c503,  // lbu a0,16(t0)
+    0x00100073,  // ebreak (used as nemu_trap)
     0xdeadbeef,  // some data
-    0xabcdabcd,
-    0xaaaaaaaa,
-    0xbbbbbbbb,
-    0xcccccccc
 };
 
 // TODO: expand word_t paddr_t ...
@@ -51,16 +37,17 @@ static void host_write(void *addr, int len, uint32_t data) {
 }
 
 void pmem_write(uint32_t addr, int len, uint32_t data) {
-    Assert(!mem_out_of_bound(addr), "Invalid pmem addr.ABORT");
+    IFDEF(EN_MTRACE,printf("PMEM write addr 0x%x len %d value 0x%x\n", addr, len, data));
+    Assert(!mem_out_of_bound(addr), "Invalid pmem addr 0x%x.ABORT", addr);
     /* convert addr and fetch instruction */
     host_write(guest_to_host(addr), len, data);
 }
 
 uint32_t pmem_read(uint32_t addr,uint32_t len){
-    //printf("PMEM read addr 0x%x ", addr);
-    Assert(!mem_out_of_bound(addr), "Invalid pmem addr.ABORT");
+    IFDEF(EN_MTRACE,printf("PMEM read addr 0x%x ", addr));
+    Assert(!mem_out_of_bound(addr), "Invalid pmem addr 0x%x.ABORT", addr);
     uint32_t ret = host_read(guest_to_host(addr), len);
-    //printf("value 0x%08x\n", ret);
+    IFDEF(EN_MTRACE, printf("value 0x%08x\n", ret));
     return ret;
 }
 
@@ -92,7 +79,6 @@ extern "C" void sim_pmem_write(int waddr, int wdata, char wmask) {
         if(wmask >> i & 0x01){
             uint8_t wbyte = (wdata >> (wr_time * 8)) & 0xFF;
             wr_time++;
-            //printf("PMEM write addr 0x%x value 0x%x\n", addr_al + i, wbyte);                
             pmem_write(addr_al + i, 1, wbyte);
         }
     }

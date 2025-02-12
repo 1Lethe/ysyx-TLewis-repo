@@ -13,30 +13,25 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#ifndef __DEBUG_H__
-#define __DEBUG_H__
+#include <common.h>
 
-#include "common.h"
-#include "utils.h"
-#include "macro.h"
-#include "trace.h"
+extern uint64_t g_nr_guest_inst;
 
-#define Log(format, ...) \
-    _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
-        __FILE__, __LINE__, __func__, ## __VA_ARGS__)
+#ifndef CONFIG_TARGET_AM
+FILE *log_fp = NULL;
 
-/* if cond == false, print error message and exit program */
-#define Assert(cond, format, ...) \
-  do { \
-    if (!(cond)) { \
-      printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ## __VA_ARGS__); \
-      assert_fail_msg(); \
-      assert(cond); \
-    } \
-  } while (0)
+void init_log(const char *log_file) {
+  log_fp = stdout;
+  if (log_file != NULL) {
+    FILE *fp = fopen(log_file, "w");
+    Assert(fp, "Can not open '%s'", log_file);
+    log_fp = fp;
+  }
+  Log("Log is written to %s", log_file ? log_file : "stdout");
+}
 
-#define panic(format, ...) Assert(0, format, ## __VA_ARGS__)
-
-#define TODO() panic("please implement me")
-
+bool log_enable() {
+  return MUXDEF(CONFIG_TRACE, (g_nr_guest_inst >= CONFIG_TRACE_START) &&
+         (g_nr_guest_inst <= CONFIG_TRACE_END), false);
+}
 #endif

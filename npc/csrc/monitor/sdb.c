@@ -1,3 +1,4 @@
+#include "common.h"
 #include "sdb.h"
 
 extern SIM_MODULE* SIM_MODULE_NAME;

@@ -1,11 +1,8 @@
 #ifndef __MEMORY_H
 #define __MEMORY_H
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <assert.h>
-#include <string.h>
 
 #define MEMORY_SIZE   0x8000000
 #define MEMORY_BASE  0x80000000

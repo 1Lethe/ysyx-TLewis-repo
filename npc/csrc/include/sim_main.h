@@ -4,9 +4,6 @@
 #include "Vysyx_24120013_top.h"
 #include "verilated.h"
 
-//If you want to use testbench just keep this #define otherwise delete it
-//#define USE_TESTBENCH
-
 #define SIM_MODULE Vysyx_24120013_top
 #define SIM_MODULE_NAME top
 //Usually use DPI-C to end sim, we need to put ebreak in pmem .

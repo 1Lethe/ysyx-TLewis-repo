@@ -1,3 +1,4 @@
+#include "common.h"
 #include "reg.h"
 
 const char *regs[] = {

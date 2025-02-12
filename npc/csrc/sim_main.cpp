@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     sdb_mainloop();
 #endif
 
-    iring_free();
-    tfp_close();
+    IFDEF(EN_ITRACE, iring_free());
+    IFDEF(EN_DUMP_WAVE, tfp_close());
     return 0;
 }                                                     

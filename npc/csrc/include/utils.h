@@ -37,7 +37,7 @@
 #define ANSI_NONE       "\33[0m"
 
 #define ANSI_FMT(str, fmt) fmt str ANSI_NONE
-#if 0
+
 #define log_write(...) IFDEF(CONFIG_TARGET_NATIVE_ELF, \
   do { \
     extern FILE* log_fp; \
@@ -54,6 +54,5 @@
     printf(__VA_ARGS__); \
     log_write(__VA_ARGS__); \
   } while (0)
-#endif
 
 #endif

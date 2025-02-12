@@ -13,30 +13,33 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#ifndef __DEBUG_H__
-#define __DEBUG_H__
+#ifndef __COMMON_H__
+#define __COMMON_H__
 
-#include "common.h"
-#include "utils.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <inttypes.h>
+#include <stdbool.h>
+#include <string.h>
+
 #include "macro.h"
-#include "trace.h"
 
-#define Log(format, ...) \
-    _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
-        __FILE__, __LINE__, __func__, ## __VA_ARGS__)
+#include "Vysyx_24120013_top.h"
+#include "verilated.h"
 
-/* if cond == false, print error message and exit program */
-#define Assert(cond, format, ...) \
-  do { \
-    if (!(cond)) { \
-      printf(ANSI_FMT(format, ANSI_FG_RED) "\n", ## __VA_ARGS__); \
-      assert_fail_msg(); \
-      assert(cond); \
-    } \
-  } while (0)
+#include "sim_main.h"
 
-#define panic(format, ...) Assert(0, format, ## __VA_ARGS__)
+typedef MUXDEF(CONFIG_ISA64, uint64_t, uint32_t) word_t;
+typedef MUXDEF(CONFIG_ISA64, int64_t, int32_t)  sword_t;
+#define FMT_WORD MUXDEF(CONFIG_ISA64, "0x%016" PRIx64, "0x%08" PRIx32)
 
-#define TODO() panic("please implement me")
+typedef word_t vaddr_t;
+typedef MUXDEF(PMEM64, uint64_t, uint32_t) paddr_t;
+#define FMT_PADDR MUXDEF(PMEM64, "0x%016" PRIx64, "0x%08" PRIx32)
+typedef uint16_t ioaddr_t;
+
+#include "debug.h"
+
+#include "config.h"
 
 #endif

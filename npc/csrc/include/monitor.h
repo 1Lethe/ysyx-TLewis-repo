@@ -1,12 +1,10 @@
 #ifndef __MONITOR
 #define __MONITOR
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <getopt.h>
-#include <stdint.h>
 
 #include "memory.h"
+#include "trace.h"
 
 long load_img(void);
 void monitor_init(int argc, char *argv[]);
