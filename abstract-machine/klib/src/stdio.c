@@ -24,9 +24,12 @@ int printf(const char *fmt, ...) {
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
   size_t len = 0;
+  char buffer[200];
+  char *buffer_ptr = buffer + sizeof(buffer) - 1;
 
   while(*fmt){
     if(*fmt == '%'){
+      memset(buffer, '\0', 50);
       fmt++;
       switch(*fmt++){
         case 's':
@@ -42,9 +45,8 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           len++;
           break;
         case 'd':
-          int d = va_arg(ap, int);
-          char buffer[50];
-          char *buffer_ptr = buffer + sizeof(buffer) - 1;
+          uint32_t d = va_arg(ap, int);
+          buffer_ptr = buffer + sizeof(buffer) - 1;
           *buffer_ptr = '\0';
           buffer_ptr--;
           bool is_negative = false;
@@ -69,6 +71,24 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           }
 
           break;
+          case 'x':
+            uint32_t x = va_arg(ap, int);
+            buffer_ptr = buffer + sizeof(buffer) - 1;
+            *buffer_ptr = '\0';
+            buffer_ptr--;
+            do{
+              if(x % 16 < 10) *buffer_ptr-- = '0' + (x % 16);
+              else *buffer_ptr-- = 'a' + ((x % 16) - 10);
+              x = x / 16;
+            }while(x > 0);
+
+            buffer_ptr++;
+            while(*buffer_ptr){
+              *out++ = *buffer_ptr++;
+              len++;
+            }
+
+            break;
       }
     }else{
       *out++ = *fmt++;
