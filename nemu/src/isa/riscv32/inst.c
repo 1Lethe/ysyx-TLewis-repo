@@ -29,22 +29,22 @@ enum {
 
 #define src1R() do { *src1 = R(rs1); } while (0)
 #define src2R() do { *src2 = R(rs2); } while (0)
-#define immI() do { *imm = SEXT(BITS(i, 31, 20), 12); } while(0)
-#define immU() do { *imm = SEXT(BITS(i, 31, 12), 20) << 12; } while(0)
-#define immS() do { *imm = (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7); } while(0)
+#define immI() do { *imm = (word_t)SEXT(BITS(i, 31, 20), 12); } while(0)
+#define immU() do { *imm = (word_t)SEXT(BITS(i, 31, 12), 20) << 12; } while(0)
+#define immS() do { *imm = (word_t)((SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7)); } while(0)
 #define immB() \
   do{ \
-    *imm = (SEXT((BITS(i, 31, 31) << 12) | \
-          (BITS(i, 7, 7) << 11) | \
-          (BITS(i, 30, 25) << 5 )| \
-          (BITS(i, 11, 8) << 1), 12)); \
+    *imm = (word_t)(SEXT((BITS(i, 31, 31) << 11) | \
+          (BITS(i, 7, 7) << 10) | \
+          (BITS(i, 30, 25) << 4)| \
+          (BITS(i, 11, 8)), 12) << 1); \
   }while(0)
 #define immJ() \
   do { \
-    *imm = (SEXT((BITS(i, 31, 31) << 20 ) | \
-          (BITS(i, 19, 12) << 12) | \
-          (BITS(i, 20, 20) << 11) | \
-          (BITS(i, 30, 21) << 1), 21)); \
+    *imm = (word_t)(SEXT((BITS(i, 31, 31) << 19 ) | \
+          (BITS(i, 19, 12) << 11) | \
+          (BITS(i, 20, 20) << 10) | \
+          (BITS(i, 30, 21) ), 20) << 1); \
   } while(0)
 
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
@@ -112,11 +112,11 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 101 ????? 11000 11", bge    , B, if((sword_t)(src1) >= (sword_t)(src2)) s->dnpc = s->pc + imm);
   INSTPAT("??????? ????? ????? 111 ????? 11000 11", bgeu   , B, if(src1 >= src2) s->dnpc = s->pc + imm);
   /* Load and Store */
-  INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw     , I, R(rd) = Mr(src1 + imm, 4));
-  INSTPAT("??????? ????? ????? 001 ????? 00000 11", lh     , I, R(rd) = SEXT(Mr(src1 + imm, 2), 16));
+  INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw     , I, R(rd) = (word_t)Mr(src1 + imm, 4));
+  INSTPAT("??????? ????? ????? 001 ????? 00000 11", lh     , I, R(rd) = (sword_t)SEXT(Mr(src1 + imm, 2), 16));
   INSTPAT("??????? ????? ????? 101 ????? 00000 11", lhu    , I, R(rd) = (word_t)Mr(src1 + imm, 2));
-  INSTPAT("??????? ????? ????? 000 ????? 00000 11", lb     , I, R(rd) = SEXT(Mr(src1 + imm, 1), 8));
-  INSTPAT("??????? ????? ????? 100 ????? 00000 11", lbu    , I, R(rd) = Mr(src1 + imm, 1));
+  INSTPAT("??????? ????? ????? 000 ????? 00000 11", lb     , I, R(rd) = (sword_t)SEXT(Mr(src1 + imm, 1), 8));
+  INSTPAT("??????? ????? ????? 100 ????? 00000 11", lbu    , I, R(rd) = (word_t)Mr(src1 + imm, 1));
   INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
   INSTPAT("??????? ????? ????? 001 ????? 01000 11", sh     , S, Mw(src1 + imm, 2, src2));
   INSTPAT("??????? ????? ????? 000 ????? 01000 11", sb     , S, Mw(src1 + imm, 1, src2));
@@ -147,8 +147,4 @@ static int decode_exec(Decode *s) {
 int isa_exec_once(Decode *s) {
   s->isa.inst = inst_fetch(&s->snpc, 4); // fetch inst in mem (4 bytes) and update s->snpc.
   return decode_exec(s); // decode & execute inst and let s->dnpc = s->snpc
-}
-
-vaddr_t isa_pc_step(Decode *s){
-  return (s->pc - CONFIG_MBASE) / 4; // return PC in words (4 bytes)
 }
