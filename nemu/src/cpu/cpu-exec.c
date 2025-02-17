@@ -139,7 +139,6 @@ void assert_fail_msg() {
   isa_reg_display();
 #ifdef CONFIG_ITRACE
   iring_display();
-  iring_free();
 #endif
   statistic();
 }
@@ -172,9 +171,6 @@ void cpu_exec(uint64_t n) {
           nemu_state.halt_pc);
       // fall through
     case NEMU_QUIT: 
-#ifdef CONFIG_ITRACE
-    iring_free();
-#endif
     statistic();
   }
 }

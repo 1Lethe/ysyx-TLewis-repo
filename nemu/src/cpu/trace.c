@@ -2,8 +2,12 @@
 
 #ifdef CONFIG_ITRACE
 
-char *iringbuf[IRING_BUF_SIZE];
+char iringbuf[IRING_BUF_SIZE][128];
 int iring_index = 0;
+
+#endif
+
+#ifdef CONFIG_FTRACE
 
 Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
 uint32_t elf_sym_num = 0;
@@ -15,9 +19,12 @@ extern char *elf_file;
 extern Elf32_Shdr shdr_strtab;
 extern Elf32_Shdr shdr_symtab;
 
+#endif
+
+#ifdef CONFIG_ITRACE
+
 void iring_display(void){
   for(int i = 0; i < IRING_BUF_SIZE; i++){
-    if(iringbuf[i] == NULL) continue;
     printf("%s", iringbuf[i]);
     if(i != iring_index - 1){
       printf("\n");
@@ -30,42 +37,19 @@ void iring_display(void){
 /* Init iringbuf */
 void iring_init(void){
   for(int i = 0; i < IRING_BUF_SIZE; i++){
-    iringbuf[i] = NULL;
+    memset(iringbuf[i], '\0', 128*sizeof(char));
   }
 }
 
 /* iringbuf implementation */
 void iring(Decode *s){
-  static bool iring_cycle_flag = false;
-
+  memset(iringbuf[iring_index], '\0', 128*sizeof(char));
+  memcpy(iringbuf[iring_index], s->logbuf, 128*sizeof(char));
+  iring_index++;
   if(iring_index == IRING_BUF_SIZE){
-    iring_cycle_flag = true;
     iring_index = 0;
   }
-
-  /* If cycle at least once, free */
-  if(iring_cycle_flag){
-    Assert(iringbuf[iring_index] != NULL, "iringbuf[%d] == NULL", iring_index);
-    free(iringbuf[iring_index]);
-  }
-
-  char *instbuf = (char *)malloc(128*sizeof(char));
-  Assert(instbuf != NULL, "failed to malloc instbuf");
-  memset(instbuf, '\0', 128*sizeof(char));
-  memcpy(instbuf, s->logbuf, 128*sizeof(char));
-  iringbuf[iring_index++] = instbuf;
 }
-
-/* Free iringbuf */
-void iring_free(void){
-  for(int i = 0; i < IRING_BUF_SIZE - 1; i++){
-    if(iringbuf[i] == NULL){
-      continue;
-    }
-    free(iringbuf[i]);
-  }
-}
-
 #endif
 
 #ifdef CONFIG_FTRACE
@@ -117,8 +101,9 @@ void ftrace(Decode *s){
 
   vaddr_t pc = s->pc;
 
+  Assert(elf_sym_num <= MAX_FUN_CALL_TRACE, "Too much sym %d", elf_sym_num);
   for(int i = 0; i < elf_sym_num; i++){
-
+  
     if(ELF32_ST_TYPE(elf_sym[i].st_info) == STT_FUNC && \
       pc >= elf_sym[i].st_value && pc < elf_sym[i].st_value + elf_sym[i].st_size){
       /* Find the function that is executing */
