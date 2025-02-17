@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
+//#define KLIB_DEBUG
 
 size_t strlen(const char *s) {
   size_t len = 0;
@@ -24,16 +25,17 @@ char *strcpy(char *dst, const char *src) {
     panic("dst or src is NULL.");
   }
 
+  char *original_dst = dst;
+
   size_t srclen = strlen(src);
   if((dst > src && dst < src + srclen) || (dst < src && src < dst + srclen)){
     panic("dst and src overlap.");
   }
 
-  char *original_dst = dst;
-  for(int i = 0; i < srclen; i++){
-    *dst++ = *src++;
-  }
-
+  while((*dst++ = *src++) != '\0');
+#ifdef KLIB_DEBUG
+  printf("use klib.strcpy src %s dst %s\n", src, dst);
+#endif
   return original_dst;
 }
 
@@ -47,9 +49,13 @@ char *strncpy(char *dst, const char *src, size_t n) {
   for(i = 0; i < n && *src != '\0'; i++){
     *dst++ = *src++;
   }
-  for( ; i < n; i++){
+
+  for (size_t i = 0; i < n && *dst != '\0'; i++) {
     *dst++ = '\0';
   }
+#ifdef KLIB_DEBUG
+  printf("use klib.strncpy src %s dst %s n %d\n", src, dst, n);
+#endif
 
   return original_dst;
 }
@@ -71,6 +77,9 @@ char *strcat(char *dst, const char *src) {
     *dst++ = *src++;
   }
   *dst++ = '\0';
+#ifdef KLIB_DEBUG
+  printf("use klib.strcat src %s dst %s\n", src, dst);
+#endif
 
   return original_dst;
 }
@@ -80,14 +89,22 @@ int strcmp(const char *s1, const char *s2) {
     panic("s1 or s2 is NULL.");
   }
 
+  int result = 0;
   while(*s1 != '\0' && *s2 != '\0'){
     if((uint8_t)*s1 != (uint8_t) *s2){
-      return (uint8_t)*s1 - (uint8_t)*s2;
+      result = (uint8_t)*s1 - (uint8_t)*s2;
+      #ifdef KLIB_DEBUG
+        printf("use klib.strncpy src %s dst %s\n", s1, s2, result);
+      #endif
+      return result;
     }
     s1++;s2++;
   }
-
-  return (uint8_t)*s1 - (uint8_t)*s2;
+  result = (uint8_t)*s1 - (uint8_t)*s2;
+  #ifdef KLIB_DEBUG
+    printf("use klib.strncpy src %s dst %s\n", s1, s2, result);
+  #endif
+  return result;
 }
 
 int strncmp(const char *s1, const char *s2, size_t n) {
@@ -95,13 +112,22 @@ int strncmp(const char *s1, const char *s2, size_t n) {
     panic("s1 or s2 is NULL.");
   }
 
-  for(size_t i = 0; i < n && (*s1 != '\0' && (*s2 != '\0')); i++){
+  int result = 0;
+  for(size_t i = 0; i < n && ((*s1 != '\0') && (*s2 != '\0')); i++){
     if((uint8_t)*s1 != (uint8_t)*s2){
-      return (uint8_t)*s1 - (uint8_t)*s2;
+      result = (uint8_t)*s1 - (uint8_t)*s2;
+      #ifdef KLIB_DEBUG
+        printf("use klib.strncpy s1 %s dst %s n %d\n", s1, s2, result, n);
+      #endif
+      return result;
     }
     s1++;s2++;
   }
 
+  result = 0;
+#ifdef KLIB_DEBUG
+  printf("use klib.strncpy src %s dst %s n %d\n", s1, s2, result, n);
+#endif
   return 0;
 }
 
@@ -122,6 +148,7 @@ void *memmove(void *dst, const void *src, size_t n) {
   if(dst == NULL || src == NULL){
     panic("dst or src is NULL.");
   }
+  if(n == 0) return dst;
 
   uint8_t *temp = (uint8_t *)malloc(n);
   if(temp == NULL){

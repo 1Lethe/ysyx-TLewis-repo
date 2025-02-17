@@ -45,7 +45,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           len++;
           break;
         case 'd':
-          uint32_t d = va_arg(ap, int);
+          int d = va_arg(ap, int);
           buffer_ptr = buffer + sizeof(buffer) - 1;
           *buffer_ptr = '\0';
           buffer_ptr--;
