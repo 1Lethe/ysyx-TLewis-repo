@@ -26,6 +26,7 @@ int    strncmp   (const char *s1, const char *s2, size_t n);
 // stdlib.h
 void   srand     (unsigned int seed);
 int    rand      (void);
+void   heap_ptr_reset(void);
 void  *malloc    (size_t size);
 void   free      (void *ptr);
 int    abs       (int x);
