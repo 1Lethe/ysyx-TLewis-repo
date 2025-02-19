@@ -2,9 +2,8 @@
 #include <klib.h>
 #include <klib-macros.h>
 
-static char *hbrk;
-
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
+static char *hbrk;
 static unsigned long int next = 1;
 
 int rand(void) {
