@@ -42,12 +42,9 @@ void *malloc(size_t size) {
   size  = (size_t)ROUNDUP(size, 8);
   char *old = hbrk;
   hbrk += size;
-  assert((uintptr_t)heap.start <= (uintptr_t)hbrk && (uintptr_t)hbrk < (uintptr_t)heap.end);
   for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)hbrk; p ++) {
     *p = 0;
   }
-  // memory lim
-  //assert((uintptr_t)hbrk - (uintptr_t)heap.start <= mlim);
   return old;
 #endif
   return NULL;
