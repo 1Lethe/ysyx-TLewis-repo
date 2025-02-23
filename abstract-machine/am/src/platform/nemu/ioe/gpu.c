@@ -19,9 +19,7 @@ void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  if (ctl->sync) {
-    outl(SYNC_ADDR, 1);
-  }else{
+  if(ctl->pixels != NULL){
     int screen_width = io_read(AM_GPU_CONFIG).width;
     uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
     for(int y = 0; y < ctl->h; y++){
@@ -32,6 +30,9 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
         fb[des_offset] = color;
       }
     }
+  }
+  if(ctl->sync){
+    outl(SYNC_ADDR, 1);
   }
 }
 
