@@ -4,7 +4,7 @@
 int sim_time = SIM_TIME_MAX;
 
 VerilatedContext* contextp = NULL;
-VerilatedFstC* tfp = NULL;
+VerilatedVcdC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
 
 void halt(void){
@@ -23,10 +23,10 @@ void sim_init(int argc, char** argv){
     contextp->commandArgs(argc, argv);
     SIM_MODULE_NAME = new SIM_MODULE{contextp};
 #ifdef EN_DUMP_WAVE
-    tfp = new VerilatedFstC;
+    tfp = new VerilatedVcdC;
     contextp->traceEverOn(true);
     SIM_MODULE_NAME->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
-    tfp->open("/home/tonglewis/ysyx-workbench/npc/wave/wave.fst");
+    tfp->open("/home/tonglewis/ysyx-workbench/npc/wave/wave.vcd");
 #endif
 }
 

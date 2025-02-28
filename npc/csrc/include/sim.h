@@ -2,9 +2,7 @@
 #ifndef __SIM_H
 #define __SIM_H
 
-#include "Vysyx_24120013_top.h"
-#include "verilated.h"
-#include "verilated_fst_c.h"
+#include "verilated_vcd_c.h"
 #include "Vysyx_24120013_top__Dpi.h"
 
 #include "sim_main.h"

@@ -7,7 +7,7 @@
 #define SIM_MODULE Vysyx_24120013_top
 #define SIM_MODULE_NAME top
 //Usually use DPI-C to end sim, we need to put ebreak in pmem .
-#define SIM_TIME_MAX 500000
+#define SIM_TIME_MAX 500000000
 
 extern SIM_MODULE* SIM_MODULE_NAME;
 
