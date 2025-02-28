@@ -87,12 +87,11 @@ void create_bp(vaddr_t pc_break, bool *success){
 bool trace_bp(Decode *s){
     BP *bp = head;
     bool isStop = false;
-    vaddr_t pc_guest = isa_pc_step(s);
     vaddr_t pc = s->pc;
 
     while(bp != NULL){
         if(bp->pc_break == pc){
-            printf("Breakpoint %d hit at PC: 0x%x Step: %d\n", bp->NO, s->pc, pc_guest);
+            printf("Breakpoint %d hit at PC: 0x%x\n", bp->NO, s->pc);
             isStop = true;
         }
         bp = bp->next;

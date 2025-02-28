@@ -14,10 +14,12 @@
 ***************************************************************************************/
 
 #include <cpu/cpu.h>
+#include <cpu/trace.h>
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <memory/paddr.h>
 #include <locale.h>
+#include <elf.h>
 
 bool trace_wp();
 bool trace_bp(Decode *s);
@@ -28,6 +30,8 @@ bool trace_bp(Decode *s);
  * You can modify this value as you want.
  */
 #define MAX_INST_TO_PRINT 10
+
+#define MAX_LOOP_TIME 10000
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
@@ -57,9 +61,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
-  s->snpc = pc;
-  isa_exec_once(s); // fetch and execute code s->pc & update static nextpc s->snpc.
-  cpu.pc = s->dnpc; // update pc
+  s->snpc = pc;// update s->pc and s->snpc.
+  isa_exec_once(s); // fetch inst to isa->inst and execute inst s->pc and update s-> dnpc.
+  cpu.pc = s->dnpc; // update cpu.pc
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
@@ -83,7 +87,31 @@ static void exec_once(Decode *s, vaddr_t pc) {
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
+
+  /* Record inst to iring */
+  iring(s);
 #endif
+#ifdef CONFIG_FTRACE
+  ftrace(s);
+#endif
+}
+
+static void loop_find(vaddr_t pc){
+  static vaddr_t pc_prev = 0;
+  static vaddr_t pc_now = 0;
+  static uint64_t loop_time = 0;
+
+  pc_prev = pc_now;
+  pc_now = pc;
+  if(pc_prev == pc_now){
+    loop_time++;
+    if(loop_time == MAX_LOOP_TIME){
+      nemu_state.state = NEMU_STOP;
+      Log("PC stop at 0x%x for %d time.Might be a dead loop.", pc_now, MAX_LOOP_TIME);
+    }
+  }else{
+    loop_time = 0;
+  }
 }
 
 static void execute(uint64_t n) {
@@ -92,6 +120,7 @@ static void execute(uint64_t n) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
+    loop_find(cpu.pc); /* Find dead loop */
     if (nemu_state.state != NEMU_RUNNING) break;// Run program till quit or end
     IFDEF(CONFIG_DEVICE, device_update());
   }
@@ -108,6 +137,9 @@ static void statistic() {
 
 void assert_fail_msg() {
   isa_reg_display();
+#ifdef CONFIG_ITRACE
+  iring_display();
+#endif
   statistic();
 }
 
@@ -138,6 +170,7 @@ void cpu_exec(uint64_t n) {
             ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))),
           nemu_state.halt_pc);
       // fall through
-    case NEMU_QUIT: statistic();
+    case NEMU_QUIT: 
+    statistic();
   }
 }

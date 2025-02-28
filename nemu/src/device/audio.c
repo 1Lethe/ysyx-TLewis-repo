@@ -24,13 +24,52 @@ enum {
   reg_sbuf_size,
   reg_init,
   reg_count,
+  reg_readconfig,
   nr_reg
 };
 
 static uint8_t *sbuf = NULL;
 static uint32_t *audio_base = NULL;
 
+static uint8_t *sbuf_rptr = NULL;
+static int sbuf_rindex = 0;
+
+static void SDL_audio_callback(void *userdata, uint8_t *stream, int len){
+  int buf_count = audio_base[reg_count];
+  int audio_playcount = (buf_count < len) ? buf_count : len;
+
+  for(int i = 0; i < audio_playcount; i++){
+    sbuf_rindex = (sbuf_rindex + 1) % CONFIG_SB_SIZE;
+    memcpy(stream + i, sbuf + sbuf_rindex, 1);
+  }
+  audio_base[reg_count] = buf_count - audio_playcount;
+}
+
+static void SDL_audio_config(int freq, int channels, int samples) {
+  SDL_AudioSpec s = {};
+  s.format = AUDIO_S16SYS;
+  s.userdata = NULL;
+  s.freq = freq;
+  s.channels = channels;
+  s.samples = samples;
+  s.callback = SDL_audio_callback;
+  SDL_InitSubSystem(SDL_INIT_AUDIO);
+  Assert(SDL_OpenAudio(&s, NULL) == 0, "Failed to init SDL audio");
+}
+
 static void audio_io_handler(uint32_t offset, int len, bool is_write) {
+  if(audio_base[reg_init]){
+    SDL_audio_config(audio_base[reg_freq], audio_base[reg_channels], audio_base[reg_samples]);
+    sbuf_rptr = sbuf + sbuf_rindex;
+    audio_base[reg_init] = 0;
+    return;
+  }else if(audio_base[reg_readconfig]){
+    audio_base[reg_readconfig] = 0;
+    return;
+  }else{
+    SDL_PauseAudio(0);
+    return;
+  }
 }
 
 void init_audio() {
@@ -44,4 +83,5 @@ void init_audio() {
 
   sbuf = (uint8_t *)new_space(CONFIG_SB_SIZE);
   add_mmio_map("audio-sbuf", CONFIG_SB_ADDR, sbuf, CONFIG_SB_SIZE, NULL);
+  audio_base[reg_sbuf_size] = CONFIG_SB_SIZE;
 }

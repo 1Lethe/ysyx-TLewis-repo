@@ -6,20 +6,30 @@
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
 int printf(const char *fmt, ...) {
-  panic("Not implemented");
+  char putchar_buf[1000];
+  va_list ap;
+  size_t len = 0;
+
+  memset(putchar_buf, '\0', 1000);
+  va_start(ap, fmt);
+  len = vsprintf(putchar_buf, fmt, ap);
+  va_end(ap);
+
+  for(int i = 0; i < len; i++){
+    putch(putchar_buf[i]);
+  }
+
+  return len;
 }
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
-  panic("Not implemented");
-}
-
-int sprintf(char *out, const char *fmt, ...) {
-  va_list ap;
   size_t len = 0;
-  
-  va_start(ap, fmt);
+  char buffer[200];
+  char *buffer_ptr = buffer + sizeof(buffer) - 1;
+
   while(*fmt){
     if(*fmt == '%'){
+      memset(buffer, '\0', 50);
       fmt++;
       switch(*fmt++){
         case 's':
@@ -36,8 +46,7 @@ int sprintf(char *out, const char *fmt, ...) {
           break;
         case 'd':
           int d = va_arg(ap, int);
-          char buffer[50];
-          char *buffer_ptr = buffer + sizeof(buffer) - 1;
+          buffer_ptr = buffer + sizeof(buffer) - 1;
           *buffer_ptr = '\0';
           buffer_ptr--;
           bool is_negative = false;
@@ -62,15 +71,43 @@ int sprintf(char *out, const char *fmt, ...) {
           }
 
           break;
+          case 'x':
+            uint32_t x = va_arg(ap, int);
+            buffer_ptr = buffer + sizeof(buffer) - 1;
+            *buffer_ptr = '\0';
+            buffer_ptr--;
+            do{
+              if(x % 16 < 10) *buffer_ptr-- = '0' + (x % 16);
+              else *buffer_ptr-- = 'a' + ((x % 16) - 10);
+              x = x / 16;
+            }while(x > 0);
+
+            buffer_ptr++;
+            while(*buffer_ptr){
+              *out++ = *buffer_ptr++;
+              len++;
+            }
+
+            break;
       }
     }else{
       *out++ = *fmt++;
       len++;
     }
   }
-  va_end(ap);
 
   *out = '\0';
+
+  return len;
+}
+
+int sprintf(char *out, const char *fmt, ...) {
+  va_list ap;
+  size_t len = 0;
+
+  va_start(ap, fmt);
+  len = vsprintf(out, fmt, ap);
+  va_end(ap);
 
   return len;
 }

@@ -101,7 +101,8 @@ void create_wp(char *e, bool *success){
     free_wp(wp);
     return;
   }else{
-    strncpy(wp->expr, e, WP_EXPR_LEN);
+    strncpy(wp->expr, e, WP_EXPR_LEN - 1);
+    wp->expr[WP_EXPR_LEN - 1] = '\0';
     wp->prev_value = result;
     wp->curr_value = result;
   }

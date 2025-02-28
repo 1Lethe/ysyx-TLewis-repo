@@ -7,15 +7,31 @@ void __am_gpu_init() {
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
+  uint32_t config_data = inl(VGACTL_ADDR);
+  int screen_width  = config_data >> 16;
+  int screen_height = config_data & 0xFFFF;
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
-    .width = 0, .height = 0,
+    .width = screen_width,
+    .height = screen_height,
     .vmemsz = 0
   };
 }
 
 void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
-  if (ctl->sync) {
+  if(ctl->pixels != NULL){
+    int screen_width = io_read(AM_GPU_CONFIG).width;
+    uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
+    for(int y = 0; y < ctl->h; y++){
+      for(int x = 0; x < ctl->w; x++){
+        int col_offset = ctl->w * y + x;
+        int des_offset = (ctl->y + y) * screen_width + (ctl->x + x);
+        uint32_t color = ((uint32_t *)(ctl->pixels))[col_offset];
+        fb[des_offset] = color;
+      }
+    }
+  }
+  if(ctl->sync){
     outl(SYNC_ADDR, 1);
   }
 }
