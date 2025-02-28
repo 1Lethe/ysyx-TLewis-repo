@@ -5,24 +5,6 @@ module ysyx_24120013_alu #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     input [DATA_WIDTH-1:0] src2,
     input [`ysyx_24120013_ALUOP_WIDTH-1:0] alu_op,
 
-<<<<<<< HEAD
-    output reg [DATA_WIDTH-1:0] alu_result
-);
-
-    wire [DATA_WIDTH-1:0] add_res;
-    wire [DATA_WIDTH-1:0] and_res;
-    wire [DATA_WIDTH-1:0] or_res;
-    wire [DATA_WIDTH-1:0] xor_res;
-    wire [DATA_WIDTH-1:0] src2_res;
-
-    assign add_res = src1 + src2;
-    assign and_res = src1 & src2;
-    assign or_res  = src1 | src2;
-    assign src2_res = src2;
-
-    assign alu_result = ({DATA_WIDTH{alu_op[0]}} & add_res) |
-                        ({DATA_WIDTH{alu_op[10]}}& src2_res);
-=======
     output wire [DATA_WIDTH-1:0] alu_result,
     output wire branch_less,
     output wire branch_zero
@@ -138,6 +120,5 @@ module ysyx_24120013_alu #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign branch_less = ((op_slt  | op_get ) & slt_res[0] ) |
                          ((op_sltu | op_getu) & sltu_res[0]);
     assign branch_zero = equ_res[0];
->>>>>>> npc
 
 endmodule

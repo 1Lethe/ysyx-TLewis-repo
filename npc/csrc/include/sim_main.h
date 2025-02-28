@@ -7,13 +7,9 @@
 #define SIM_MODULE Vysyx_24120013_top
 #define SIM_MODULE_NAME top
 //Usually use DPI-C to end sim, we need to put ebreak in pmem .
-<<<<<<< HEAD
-#define SIM_TIME_MAX 200
-=======
 #define SIM_TIME_MAX 500000
 
 extern SIM_MODULE* SIM_MODULE_NAME;
->>>>>>> npc
 
 void sim_init(int argc, char** argv[]);
 void dump_wave(SIM_MODULE* top);
