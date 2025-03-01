@@ -19,5 +19,6 @@ typedef struct {
 } CPU_state;
 
 void init_difftest(SIM_MODULE* top, char *ref_so_file, long img_size, int port);
+void difftest_skip_ref();
 void difftest_step(SIM_MODULE* top, uint32_t pc, uint32_t npc);
 #endif

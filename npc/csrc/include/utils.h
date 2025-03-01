@@ -55,4 +55,6 @@
     log_write(__VA_ARGS__); \
   } while (0)
 
+uint64_t get_time();
+
 #endif

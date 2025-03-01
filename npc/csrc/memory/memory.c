@@ -1,5 +1,7 @@
 #include "common.h"
 #include "memory.h"
+#include "device/map.h"
+#include "device/mmio.h"
 
 extern char *img_file;
 
@@ -18,7 +20,7 @@ static const uint32_t buildin_img[] = {
 uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - RESET_VECTOR; }
 uint32_t host_to_guest(uint8_t *haddr) { return haddr - pmem + RESET_VECTOR; }
 
-static uint32_t host_read(void *addr, int len){
+uint32_t host_read(void *addr, int len){
     switch(len){
         case 1: return *(uint8_t *)addr;
         case 2: return *(uint16_t *)addr;
@@ -27,7 +29,7 @@ static uint32_t host_read(void *addr, int len){
     }
 }
 
-static void host_write(void *addr, int len, uint32_t data) {
+void host_write(void *addr, int len, uint32_t data) {
     switch(len){
         case 1: *(uint8_t *)addr = (uint8_t)data; break;
         case 2: *(uint16_t *)addr = (uint16_t)data; break;
@@ -37,6 +39,12 @@ static void host_write(void *addr, int len, uint32_t data) {
 }
 
 void pmem_write(uint32_t addr, int len, uint32_t data) {
+#ifdef EN_DEVICE
+    if(addr == SERIAL_MMIO){
+        mmio_write(addr, len, data);
+        return;
+    }
+#endif
     IFDEF(EN_MTRACE,printf("PMEM write addr 0x%x len %d value 0x%x\n", addr, len, data));
     Assert(!mem_out_of_bound(addr), "Invalid pmem addr 0x%x.ABORT", addr);
     /* convert addr and fetch instruction */
@@ -44,10 +52,14 @@ void pmem_write(uint32_t addr, int len, uint32_t data) {
 }
 
 uint32_t pmem_read(uint32_t addr,uint32_t len){
-    IFDEF(EN_MTRACE,printf("PMEM read addr 0x%x ", addr));
+#ifdef EN_DEVICE
+    if(addr == RTC_MMIO || addr == RTC_MMIO + 4){
+        return mmio_read(addr, len);
+    }
+#endif
     Assert(!mem_out_of_bound(addr), "Invalid pmem addr 0x%x.ABORT", addr);
     uint32_t ret = host_read(guest_to_host(addr), len);
-    IFDEF(EN_MTRACE, printf("value 0x%08x\n", ret));
+    IFDEF(EN_MTRACE, printf("PMEM read addr 0x%x value 0x%08x\n", addr, ret));
     return ret;
 }
 

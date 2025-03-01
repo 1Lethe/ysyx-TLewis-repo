@@ -130,7 +130,6 @@ void difftest_step(SIM_MODULE* top, uint32_t pc, uint32_t npc) {
   state_struct_cpy(top);
 
   if (skip_dut_nr_inst > 0) {
-    assert(0);
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
     if (ref_r.pc == npc) {
       skip_dut_nr_inst = 0;
@@ -144,7 +143,6 @@ void difftest_step(SIM_MODULE* top, uint32_t pc, uint32_t npc) {
   }
 
   if (is_skip_ref) {
-    assert(0);
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
     is_skip_ref = false;

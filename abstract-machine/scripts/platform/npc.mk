@@ -9,10 +9,11 @@ AM_SRCS := riscv/npc/start.S \
            platform/dummy/mpe.c
 
 CFLAGS    += -fdata-sections -ffunction-sections
+CFLAGS    += -I$(AM_HOME)/am/src/riscv/npc/include
 LDSCRIPTS += $(AM_HOME)/scripts/linker.ld
 LDFLAGS   += --defsym=_pmem_start=0x80000000 --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _start
-NPCFLAGS  += -b --elf=$(IMAGE).elf --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so --port=1234 $(IMAGE).bin
+NPCFLAGS  += -b --elf=$(IMAGE).elf --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so --port=1234 -l $(shell dirname $(IMAGE).elf)/nemu-log.txt $(IMAGE).bin
 
 MAINARGS_MAX_LEN = 64
 MAINARGS_PLACEHOLDER = The insert-arg rule in Makefile will insert mainargs here.
