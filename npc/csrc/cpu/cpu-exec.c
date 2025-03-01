@@ -3,16 +3,16 @@
 #include "difftest.h"
 
 bool difftest_init_flag = false;
-extern int sim_time;
 
 extern char *diff_so_file;
 extern int difftest_port;
 extern long img_size;
 
+void device_update();
+
 void single_cycle(SIM_MODULE* top){
     top->clk = 0;top->eval();dump_wave(top);
     top->clk = 1;top->eval();dump_wave(top);
-    sim_time--;
 }
 
 void cycle(SIM_MODULE* top, uint64_t n){
@@ -33,6 +33,7 @@ void cycle(SIM_MODULE* top, uint64_t n){
 #endif
         IFDEF(EN_ITRACE, iring(top->pc, pmem_read(top->pc, 4)));
         IFDEF(EN_FTRACE, ftrace(top->pc));
+        device_update();
     }
 }
 
