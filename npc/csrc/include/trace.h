@@ -6,7 +6,8 @@
 #include "reg.h"
 
 #define PRINTF_SPACE(num) for(int __i = 0; __i < num; __i++) printf(" ");
-#define MAX_FUN_CALL_TRACE 100
+#define MAX_SYM 10000
+#define MAX_FUN_CALL_TRACE 1000
 #define IRING_BUF_SIZE 16
 
 #define FMT_WORD MUXDEF(CONFIG_ISA64, "0x%016" PRIx64, "0x%08" PRIx32)

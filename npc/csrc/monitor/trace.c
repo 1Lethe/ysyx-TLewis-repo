@@ -5,7 +5,7 @@ char *iringbuf[IRING_BUF_SIZE];
 int iring_index = 0;
 char log_buf[128];
 
-Elf32_Sym elf_sym[MAX_FUN_CALL_TRACE];
+Elf32_Sym elf_sym[MAX_SYM];
 uint32_t elf_sym_num = 0;
 
 uint32_t funcall_name_stack[MAX_FUN_CALL_TRACE] = {0};
@@ -102,18 +102,17 @@ void iring_free(void){
 void ftrace_init(void){
   FILE *fp = fopen(elf_file, "r");
   Assert(fp != NULL, "Failed to read elf_file.\nMaybe you use build-in image.In that case, please turn off ftrace.");
-
   /* Init ELF symbol table */
   Assert(fseek(fp, shdr_symtab.sh_offset, SEEK_SET) != -1, \
     "Failed to read '%s' symtab", elf_file);
   elf_sym_num = shdr_symtab.sh_size / shdr_symtab.sh_entsize;
+  Assert(elf_sym_num <= MAX_SYM, "symbol number too much");
   for(int i = 0; i < elf_sym_num; i++){
     Assert(fseek(fp, shdr_symtab.sh_offset + i * shdr_symtab.sh_entsize, SEEK_SET) != -1, \
       "Failed to read '%s' symtab[%d]", elf_file, i);
     Assert(fread(&elf_sym[i], 1, shdr_symtab.sh_entsize, fp) == shdr_symtab.sh_entsize, \
       "Failed to read '%s' symtab[%d]", elf_file, i);
   }
-
   fclose(fp);
 }
 
