@@ -25,7 +25,7 @@ const char *regs[] = {
 
 void isa_reg_display() {
   for(int i = 0;i < MUXDEF(CONFIG_RVE, 16, 32);i++){
-    printf("%s = 0x%x\n", reg_name(i), gpr(i));// display all regs' value.
+    printf("x%d %s = 0x%x\n", i, reg_name(i), gpr(i));// display all regs' value.
   }
 }
 
@@ -45,4 +45,28 @@ word_t isa_reg_str2val(const char *s, bool *success) {
   *success = false;
   printf("Unknown reg name %s.\n",s);
   return 0;
+}
+
+void csr_write(word_t addr, word_t data) {
+  switch(addr){
+    case CSR_MSTATUS : CSR_wr(mstatus, data); break;
+    case CSR_MTVEC   : CSR_wr(mtvec  , data); break;
+    case CSR_MEPC    : CSR_wr(mepc   , data); break;
+    case CSR_MCAUSE  : CSR_wr(mcause , data); break;
+    default : panic("unsupported write CSR addr 0x%x", addr);
+  }
+  IFDEF(CONFIG_CSRTRACE, printf("CSRTRACE addr 0x%x data 0x%x\n", addr, data);)
+}
+
+word_t csr_read(word_t addr) {
+  word_t ret = 0;
+  switch(addr){
+    case CSR_MSTATUS : ret = CSR(mstatus); break;
+    case CSR_MTVEC   : ret = CSR(mtvec);   break;
+    case CSR_MEPC    : ret = CSR(mepc);    break;
+    case CSR_MCAUSE  : ret = CSR(mcause);  break;
+    default : panic("unsupported read CSR addr 0x%x", addr);
+  }
+  IFDEF(CONFIG_CSRTRACE, printf("CSRTRACE addr 0x%x data 0x%x\n", addr, ret);)
+  return ret;
 }

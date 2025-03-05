@@ -34,6 +34,19 @@ void isa_reg_display();
 void diff_isa_reg_display(CPU_state *ref);
 word_t isa_reg_str2val(const char *name, bool *success);
 
+// csr reg
+enum{
+  CSR_MSTATUS = 0x300,
+  CSR_MTVEC   = 0x305,
+  CSR_MEPC    = 0x341,
+  CSR_MCAUSE  = 0X342
+};
+void csr_write(word_t addr, word_t data);
+word_t csr_read(word_t addr);
+
+#define CSR(name) (cpu.name)
+#define CSR_wr(name, data) (CSR(name) = data)
+
 // exec
 struct Decode;
 int isa_exec_once(struct Decode *s);
