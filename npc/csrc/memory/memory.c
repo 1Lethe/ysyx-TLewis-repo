@@ -86,11 +86,9 @@ extern "C" void sim_pmem_write(int waddr, int wdata, char wmask) {
     // `wmask`中每比特表示`wdata`中1个字节的掩码,
     // 如`wmask = 0x3`代表只写入最低2个字节, 内存中的其它字节保持不变
     int addr_al = waddr & ~0x3u;
-    int wr_time = 0;;
     for(int i = 0;i < 4; i++){
         if(wmask >> i & 0x01){
-            uint8_t wbyte = (wdata >> (wr_time * 8)) & 0xFF;
-            wr_time++;
+            uint8_t wbyte = (wdata >> (i * 8)) & 0xFF;
             pmem_write(addr_al + i, 1, wbyte);
         }
     }

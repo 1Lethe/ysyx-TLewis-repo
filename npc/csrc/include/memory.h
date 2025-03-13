@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <stdint.h>
 
+// NOTE: Must same as REF in difftest
 #define MEMORY_SIZE   0x8000000
 #define MEMORY_BASE  0x80000000
 #define RESET_VECTOR 0x80000000
