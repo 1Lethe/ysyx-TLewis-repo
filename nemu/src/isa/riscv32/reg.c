@@ -55,7 +55,7 @@ void csr_write(word_t addr, word_t data) {
     case CSR_MCAUSE  : CSR_wr(mcause , data); break;
     default : panic("unsupported write CSR addr 0x%x", addr);
   }
-  IFDEF(CONFIG_CSRTRACE, printf("CSRTRACE addr 0x%x data 0x%x\n", addr, data);)
+  IFDEF(CONFIG_CSRTRACE, printf("CSRTRACE wr addr 0x%x data 0x%x\n", addr, data);)
 }
 
 word_t csr_read(word_t addr) {
@@ -67,6 +67,6 @@ word_t csr_read(word_t addr) {
     case CSR_MCAUSE  : ret = CSR(mcause);  break;
     default : panic("unsupported read CSR addr 0x%x", addr);
   }
-  IFDEF(CONFIG_CSRTRACE, printf("CSRTRACE addr 0x%x data 0x%x\n", addr, ret);)
+  IFDEF(CONFIG_CSRTRACE, printf("CSRTRACE rd addr 0x%x data 0x%x\n", addr, ret);)
   return ret;
 }
