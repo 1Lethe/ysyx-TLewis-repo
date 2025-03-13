@@ -22,6 +22,12 @@ module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input [`ysyx_24120013_ZERO_WIDTH-1:0] mem_zero_width,
         input [`ysyx_24120013_SEXT_WIDTH-1:0] mem_sext_width,
 
+        input [`ysyx_24120013_ECU_WIDTH-1:0] ecu_op,
+        input [DATA_WIDTH-1:0] ecu_pc,
+        input [DATA_WIDTH-1:0] ecu_reg_rdata,
+        input [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] ecu_csr_waddr,
+        input [DATA_WIDTH-1:0] csr_rdata,
+
         input break_ctrl,
 
         input [ADDR_WIDTH-1:0] wr_reg_des,
@@ -29,6 +35,15 @@ module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output wire reg_wen,
         output wire [ADDR_WIDTH-1:0] reg_waddr,
         output wire [DATA_WIDTH-1:0] reg_wdata,
+
+        output wire csr_wen,
+        output wire [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] csr_waddr1,
+        output wire [DATA_WIDTH-1:0] csr_wdata1,
+        output wire [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] csr_waddr2,
+        output wire [DATA_WIDTH-1:0] csr_wdata2,
+        output wire [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] csr_waddr3,
+        output wire [DATA_WIDTH-1:0] csr_wdata3,
+
         output wire [DATA_WIDTH-1:0] branch_jmp_pc
     );
 
@@ -64,15 +79,17 @@ ysyx_24120013_alu #(
 ysyx_24120013_bru #(
     .DATA_WIDTH(DATA_WIDTH)
 )u_ysyx_24120013_bru(
-    .clk           	(clk            ),
-    .rst           	(rst            ),
-    .branch_less    (branch_less    ),
-    .branch_zero    (branch_zero    ),
-    .branch_op     	(branch_op      ),
-    .branch_imm    	(branch_imm     ),
-    .branch_rs1    	(branch_rs1     ),
-    .branch_pc     	(branch_pc      ),
-    .branch_jmp_pc 	(branch_jmp_pc  )
+    .clk           	  (clk              ),
+    .rst           	  (rst              ),
+    .branch_less      (branch_less      ),
+    .branch_zero      (branch_zero      ),
+    .branch_op   	  (branch_op        ),
+    .branch_imm    	  (branch_imm       ),
+    .branch_rs1    	  (branch_rs1       ),
+    .branch_pc     	  (branch_pc        ),
+    .ecu_jump_pc_flag (ecu_jump_pc_flag ),
+    .ecu_jump_pc      (ecu_jump_pc      ),
+    .branch_jmp_pc 	  (branch_jmp_pc    )
 );
 
 // output declaration of module ysyx_24120013_mmu
@@ -93,5 +110,36 @@ ysyx_24120013_mmu #(
     .mem_wdata  	(mem_wdata       ),
     .mem_wreg       (mem_wreg        )
 );
+
+// output declaration of module ysyx_24120013_ECU
+wire [ADDR_WIDTH-1:0] ecu_reg_waddr;
+wire [DATA_WIDTH-1:0] ecu_reg_wdata;
+wire ecu_jump_pc_flag;
+wire [DATA_WIDTH-1:0] ecu_jump_pc;
+
+ysyx_24120013_ECU #(
+    .ADDR_WIDTH(ADDR_WIDTH),
+    .DATA_WIDTH(DATA_WIDTH)
+) u_ysyx_24120013_ECU(
+    .clk              	(clk               ),
+    .rst              	(rst               ),
+    .ecu_op           	(ecu_op            ),
+    .ecu_pc           	(ecu_pc            ),
+    .ecu_csr_waddr      (ecu_csr_waddr     ),
+    .alu_csr_rdata    	(alu_result        ),
+    .csr_rdata        	(csr_rdata         ),
+    .ecu_reg_rdata      (ecu_reg_rdata     ),
+    .ecu_reg_wdata    	(ecu_reg_wdata     ),
+    .csr_wen            (csr_wen           ),
+    .csr_waddr1       	(csr_waddr1        ),
+    .csr_waddr2       	(csr_waddr2        ),
+    .csr_waddr3       	(csr_waddr3        ),
+    .csr_wdata1       	(csr_wdata1        ),
+    .csr_wdata2       	(csr_wdata2        ),
+    .csr_wdata3       	(csr_wdata3        ),
+    .ecu_jump_pc_flag 	(ecu_jump_pc_flag  ),
+    .ecu_jump_pc      	(ecu_jump_pc       )
+);
+
 
 endmodule

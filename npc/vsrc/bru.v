@@ -9,6 +9,10 @@ module ysyx_24120013_bru #(DATA_WIDTH = 32)(
     input [DATA_WIDTH-1:0] branch_imm,
     input [DATA_WIDTH-1:0] branch_rs1,
     input [DATA_WIDTH-1:0] branch_pc,
+
+    input ecu_jump_pc_flag,
+    input [DATA_WIDTH-1:0] ecu_jump_pc,
+
     output wire [DATA_WIDTH-1:0] branch_jmp_pc 
 );
 
@@ -56,7 +60,8 @@ module ysyx_24120013_bru #(DATA_WIDTH = 32)(
     assign branch_src1 = (is_jmp == 1'b1) ? branch_imm : 4;
     assign branch_src2 = (op_jalr == 1'b1) ? branch_rs1 : branch_pc;
 
-    assign branch_jmp_pc = (op_jalr == 1'b1) ? (branch_src1 + branch_src2) & (~32'b1) : 
+    assign branch_jmp_pc =  (ecu_jump_pc_flag == 1'b1) ? ecu_jump_pc : 
+                            (op_jalr == 1'b1) ? (branch_src1 + branch_src2) & (~32'b1) : 
                                                branch_src1 + branch_src2;
 
 endmodule

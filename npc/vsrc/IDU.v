@@ -7,8 +7,17 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input [DATA_WIDTH-1:0] pc,
         input [DATA_WIDTH-1:0] reg_rdata1,
         input [DATA_WIDTH-1:0] reg_rdata2,
+
+        input [DATA_WIDTH-1:0] csr_rdata,
+
         output wire [ADDR_WIDTH-1:0] reg_raddr1,
         output wire [ADDR_WIDTH-1:0] reg_raddr2,
+
+        output wire [`ysyx_24120013_ECU_WIDTH-1:0] ecu_op,
+        output wire [DATA_WIDTH-1:0] ecu_pc,
+        output wire [DATA_WIDTH-1:0] ecu_reg_rdata,
+        output wire [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] csr_raddr,
+        output wire [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] ecu_csr_waddr,
 
         output wire [DATA_WIDTH-1:0] alu_src1,
         output wire [DATA_WIDTH-1:0] alu_src2,
@@ -43,7 +52,7 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     parameter OPC_BRANCH = 7'b1100011;
     parameter OPC_LOAD   = 7'b0000011;
     parameter OPC_SAVE   = 7'b0100011;
-    parameter OPC_BREAK  = 7'b1110011; //ebreak
+    parameter OPC_CSR    = 7'b1110011; 
 
     /* extract parts of the inst signal */
     wire [6:0] opcode;
@@ -52,6 +61,8 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire [4:0] rd;
     wire [2:0] funct3;
     wire [6:0] funct7;
+
+    wire [11:0] csr;
 
     /* inst decoder signal */
 
@@ -64,7 +75,7 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire opcode_is_branch;
     wire opcode_is_load;
     wire opcode_is_save;
-    wire opcode_is_break;
+    wire opcode_is_csr;
 
     wire [7:0] funct3_one_hot;
 
@@ -111,6 +122,11 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     wire is_sb;
 
     wire is_ebreak;
+    wire is_ecall;
+
+    wire is_csrrw;
+    wire is_csrrs;
+    wire is_mret;
 
     /* immediate number calc signal */
     wire [DATA_WIDTH-1:0] imm_i;
@@ -128,11 +144,13 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     /* alu src control signal */
     wire alu_src1_reg;
     wire bru_src1_reg;
+    wire ecu_src1_reg;
     wire alu_src1_pc;
     wire alu_src2_reg;
     wire mmu_src2_reg;
     wire alu_src2_imm;
-    wire alu_src2_plus4; 
+    wire alu_src2_plus4;
+    wire alu_src2_csr;
     wire not_wr_reg;
 
     assign opcode = inst[6:0];
@@ -141,6 +159,7 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign rd = inst[11:7];
     assign funct3 = inst[14:12];
     assign funct7 = inst[31:25];
+    assign csr = inst[31:20];
 
     assign opcode_is_imm    = (opcode == OPC_IMM_C);
     assign opcode_is_calc   = (opcode == OPC_CALC);
@@ -151,7 +170,7 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign opcode_is_branch = (opcode == OPC_BRANCH);
     assign opcode_is_load   = (opcode == OPC_LOAD);
     assign opcode_is_save   = (opcode == OPC_SAVE);
-    assign opcode_is_break  = (opcode == OPC_BREAK);
+    assign opcode_is_csr    = (opcode == OPC_CSR);
 
     assign funct3_one_hot = 1'b1 << funct3;
 
@@ -198,7 +217,12 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign is_sh     = (opcode_is_save)   & (funct3_one_hot[1]);
     assign is_sb     = (opcode_is_save)   & (funct3_one_hot[0]);
 
-    assign is_ebreak = (opcode_is_break);
+    assign is_ebreak = (opcode_is_csr)   && (rd == 5'b0) && (funct3 == 3'b0) && (inst[31:20] == 12'b1);
+    assign is_ecall  = (opcode_is_csr)   && (rd == 5'b0) && (funct3 == 3'b0) && (inst[31:20] == 12'b0);
+
+    assign is_csrrs  = (opcode_is_csr)   && (funct3_one_hot[2]);
+    assign is_csrrw  = (opcode_is_csr)   && (funct3_one_hot[1]);
+    assign is_mret   = (opcode_is_csr)   && (rd == 5'b0) && (funct3 == 3'b0) && (rs2 == 5'b10) && (funct7 == 7'b0011000); 
 
     assign alu_op[0]  = is_addi  |            // add
                         is_add   |
@@ -219,7 +243,8 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign alu_op[3]  = is_sltiu | is_sltu | // less than unsigned
                         is_bltu;
     assign alu_op[4]  = is_andi  | is_and;   // and
-    assign alu_op[5]  = is_ori   | is_or;    // or
+    assign alu_op[5]  = is_ori   | is_or   | // or
+                        is_csrrs;
     assign alu_op[6]  = is_xori  | is_xor;   // xor
     assign alu_op[7]  = is_slli  | is_sll;   // logical left shift
     assign alu_op[8]  = is_srli  | is_srl;   // logical right shift
@@ -256,13 +281,22 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign mem_wen   = (opcode_is_save);
     assign mem_wdata = reg_rdata2;
 
-    assign mem_wtype[0] = is_sw;
+    assign mem_wtype[0] = is_sb;
     assign mem_wtype[1] = is_sh;
     assign mem_wtype[2] = is_sw;
 
     assign mem_rtype[0] = is_lb | is_lbu;
     assign mem_rtype[1] = is_lh | is_lhu;
     assign mem_rtype[2] = is_lw;
+
+    assign ecu_op[0] = (is_csrrs);
+    assign ecu_op[1] = (is_csrrw);
+    assign ecu_op[2] = (is_ecall);
+    assign ecu_op[3] = (is_mret) ;
+
+    assign ecu_pc = pc;
+
+    assign ecu_csr_waddr = csr;
 
     assign break_ctrl = (is_ebreak == 1'b1) ? 1'b1 : 1'b0;
 
@@ -288,9 +322,12 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                           (opcode_is_calc)   |
                           (opcode_is_branch) |
                           (opcode_is_load)   |
-                          (opcode_is_save); 
+                          (opcode_is_save)   |
+                          (is_csrrs);
 
     assign bru_src1_reg = (opcode_is_jalr); 
+
+    assign ecu_src1_reg = (is_csrrs) | (is_csrrw);
 
     assign alu_src1_pc  = (opcode_is_auipc)  |
                           (opcode_is_jal  )  |
@@ -310,14 +347,23 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign alu_src2_plus4 = (opcode_is_jal ) |
                             (opcode_is_jalr);
 
-    assign not_wr_reg  = (opcode_is_branch) |
-                         (opcode_is_save);
+    assign alu_src2_csr = (opcode_is_csr);
 
-    assign reg_raddr1 = (alu_src1_reg | bru_src1_reg == 1'b1) ? rs1 : {ADDR_WIDTH{1'b0}};
+    assign not_wr_reg  = (opcode_is_branch) |
+                         (opcode_is_save)   |
+                         (is_ecall)         |
+                         (is_mret);
+
+    assign reg_raddr1 = (alu_src1_reg | bru_src1_reg | ecu_src1_reg == 1'b1) ? rs1 : {ADDR_WIDTH{1'b0}};
     assign reg_raddr2 = (alu_src2_reg | mmu_src2_reg == 1'b1) ? rs2 : {ADDR_WIDTH{1'b0}};
     assign alu_src1 = (alu_src1_pc == 1'b1) ? pc : reg_rdata1;
     assign alu_src2 = (alu_src2_imm == 1'b1) ? imm : 
-                      (alu_src2_plus4 == 1'b1) ? 4 : reg_rdata2;
+                      (alu_src2_plus4 == 1'b1) ? 4 : 
+                      (alu_src2_csr == 1'b1)? csr_rdata : reg_rdata2;
+    assign ecu_reg_rdata = (ecu_src1_reg == 1'b1) ? reg_rdata1 : {DATA_WIDTH{1'b0}};
+    assign csr_raddr = ({`ysyx_24120013_CSR_ADDR_WIDTH{is_csrrs | is_csrrw}} & csr                  ) |
+                       ({`ysyx_24120013_CSR_ADDR_WIDTH{is_ecall}}            & `ysyx_24120013_MTVEC ) |
+                       ({`ysyx_24120013_CSR_ADDR_WIDTH{is_mret }}            & `ysyx_24120013_MEPC  );
     assign wr_reg_des = (not_wr_reg == 1'b1) ? {ADDR_WIDTH{1'b0}} : rd;
 
 endmodule
