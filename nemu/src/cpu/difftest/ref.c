@@ -21,6 +21,10 @@
 struct diff_context_t{
   word_t gpr[MUXDEF(CONFIG_RVE, 16, 32)];
   word_t pc;
+  word_t mstatus;
+  word_t mtvec;
+  word_t mepc;
+  word_t mcause;
 };
 
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
@@ -48,6 +52,10 @@ void diff_get_regs(void *diff_context){
     ctx->gpr[i] = cpu.gpr[i];
   }
   ctx->pc = cpu.pc;
+  ctx->mstatus = cpu.mstatus;
+  ctx->mtvec = cpu.mtvec;
+  ctx->mepc = cpu.mepc;
+  ctx->mcause = cpu.mcause;
 }
 
 __EXPORT void difftest_regcpy(void *dut, bool direction) {

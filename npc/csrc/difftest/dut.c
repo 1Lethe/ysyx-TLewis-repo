@@ -29,26 +29,47 @@ CPU_state cpu;
 extern const char *regs[];
 
 bool isa_difftest_checkregs(CPU_state *ref_r, uint32_t pc) {
+  bool diff_status = true;
   if(ref_r->pc != cpu.pc){
       printf("%s\n", ANSI_FMT("Find error by Difftest. PC fault", ANSI_FG_RED));
       printf("REF PC = 0x%x DUT PC = 0x%x\n", ref_r->pc, cpu.pc);
-      printf("REF regs:\n");
-      for(int j = 0; j < RISCV_GPR_NUM; j++){
-        printf("%s = 0x%x\n", regs[j], ref_r->gpr[j]);
-      }
-      return false;
+      diff_status = false;
+  }
+  if(ref_r->mstatus != cpu.mstatus) {
+      printf("%s\n", ANSI_FMT("Find error by Difftest. CSR fault", ANSI_FG_RED));
+      printf("REF mstatus = 0x%x DUT mstatus = 0x%x\n", ref_r->mstatus, cpu.mstatus);
+      diff_status = false;
+  }
+  if(ref_r->mtvec != cpu.mtvec) {
+      printf("%s\n", ANSI_FMT("Find error by Difftest. CSR fault", ANSI_FG_RED));
+      printf("REF mtvec = 0x%x DUT mtvec = 0x%x\n", ref_r->mtvec, cpu.mtvec);
+      diff_status = false;
+  }
+  if(ref_r->mepc != cpu.mepc) {
+      printf("%s\n", ANSI_FMT("Find error by Difftest. CSR fault", ANSI_FG_RED));
+      printf("REF mepc = 0x%x DUT mepc = 0x%x\n", ref_r->mepc, cpu.mepc);
+      diff_status = false;
+  }
+  if(ref_r->mcause != cpu.mcause) {
+      printf("%s\n", ANSI_FMT("Find error by Difftest. CSR fault", ANSI_FG_RED));
+      printf("REF mcause = 0x%x DUT mcause = 0x%x\n", ref_r->mcause, cpu.mcause);
+      diff_status = false;
   }
   for(int i = 0; i < MUXDEF(CONFIG_RVE, 16, 32); i++){
     if(ref_r->gpr[i] != cpu.gpr[i]){
       printf("%s\n", ANSI_FMT("Find error by Difftest.", ANSI_FG_RED));
-      printf("REF regs:\n");
-      for(int j = 0; j < RISCV_GPR_NUM; j++){
-        printf("%s = 0x%x\n", regs[j], ref_r->gpr[j]);
-      }
-      return false;
+      printf("REF x%d = 0x%x DUT x%d = 0x%x\n", i, ref_r->gpr[i], i, cpu.gpr[i]);
+      diff_status = false;
+      continue;
     }
   }
-  return true;
+  if(diff_status == false){
+    printf("REF regs:\n");
+    for(int j = 0; j < RISCV_GPR_NUM; j++){
+      printf("%s = 0x%x\n", regs[j], ref_r->gpr[j]);
+    }
+  }
+  return diff_status;
 }
 
 static void state_struct_cpy(SIM_MODULE* top){
@@ -56,6 +77,10 @@ static void state_struct_cpy(SIM_MODULE* top){
     cpu.gpr[i] = top->rf_dis[i];
   }
   cpu.pc = top->pc;
+  cpu.mstatus = top->csr_mstatus_dis;
+  cpu.mtvec = top->csr_mtvec_dis;
+  cpu.mepc = top->csr_mepc_dis;
+  cpu.mcause = top->csr_mcause_dis;
 }
 
 // this is used to let ref skip instructions which
@@ -119,13 +144,15 @@ void init_difftest(SIM_MODULE* top, char *ref_so_file, long img_size, int port) 
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
-static void checkregs(CPU_state *ref, uint32_t pc) {
+static bool checkregs(CPU_state *ref, uint32_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
-    Assert(0, "Difftest failed.");
+    printf("Difftest failed.\n");
+    return false;
   }
+  return true;
 }
 
-void difftest_step(SIM_MODULE* top, uint32_t pc, uint32_t npc) {
+bool difftest_step(SIM_MODULE* top, uint32_t pc, uint32_t npc) {
   CPU_state ref_r;
   state_struct_cpy(top);
 
@@ -133,24 +160,23 @@ void difftest_step(SIM_MODULE* top, uint32_t pc, uint32_t npc) {
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
     if (ref_r.pc == npc) {
       skip_dut_nr_inst = 0;
-      checkregs(&ref_r, npc);
-      return;
+      return checkregs(&ref_r, npc);;
     }
     skip_dut_nr_inst --;
     if (skip_dut_nr_inst == 0)
       panic("can not catch up with ref.pc = " FMT_WORD " at pc = " FMT_WORD, ref_r.pc, pc);
-    return;
+    return true;
   }
 
   if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
     is_skip_ref = false;
-    return;
+    return true;
   }
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
 
-  checkregs(&ref_r, pc);
+  return checkregs(&ref_r, pc);
 }
