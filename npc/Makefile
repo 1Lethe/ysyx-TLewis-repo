@@ -5,7 +5,7 @@ NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc  -trace \
+VERILATOR_CFLAGS += -MMD --build -cc  --trace-fst \
 				-O3 --x-assign fast --x-initial fast --noassert --timing -I./vsrc
 
 BUILD_DIR = ./build
