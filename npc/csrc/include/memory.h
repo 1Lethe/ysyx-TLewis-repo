@@ -25,5 +25,6 @@ void pmem_write(uint32_t addr, int len, uint32_t data);
 uint32_t pmem_read(uint32_t addr, uint32_t len);
 bool mem_out_of_bound(uint32_t addr);
 void cpy_buildin_img(void);
+void init_mem(void);
 
 #endif

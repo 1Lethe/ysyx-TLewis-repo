@@ -11,6 +11,7 @@
 #define EN_DIFFTEST 1
 #define EN_DEVICE 1
 //#define EN_DUMP_WAVE 1
+#define CONFIG_MEM_RANDOM 1
 
 
 #endif

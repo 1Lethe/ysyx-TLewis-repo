@@ -67,6 +67,11 @@ void cpy_buildin_img(void){
     memcpy(guest_to_host(MEMORY_BASE), buildin_img, sizeof(buildin_img));
 }
 
+void init_mem() {
+  IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), MEMORY_SIZE));
+  Log("NPC physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
+}
+
 bool mem_out_of_bound(uint32_t addr){
     if(addr < MEMORY_BASE || addr > MEMORY_BASE + MEMORY_SIZE){
         return true;

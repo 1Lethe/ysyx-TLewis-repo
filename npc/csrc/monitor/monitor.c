@@ -51,7 +51,7 @@ static int parse_args(int argc, char *argv[]) {
 
 long load_img() {
     if(img_file == NULL){
-        printf("No image is given.Use the default build-in image.\n");
+        Log("No image is given.Use the default build-in image.");
         cpy_buildin_img();
         return 4096;
     }
@@ -75,7 +75,7 @@ long load_img() {
 
 static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
   if(elf_file == NULL){
-    printf("No elf file is given.\n");
+    Log("No elf file is given.");
     return ;
   }
 
@@ -119,6 +119,7 @@ void init_disasm();
 
 void monitor_init(int argc, char *argv[]){
     parse_args(argc, argv);
+    init_mem();
     img_size = load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
     init_log(log_file);

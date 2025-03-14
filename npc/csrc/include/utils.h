@@ -56,5 +56,6 @@
   } while (0)
 
 uint64_t get_time();
+void init_rand();
 
 #endif
