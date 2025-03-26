@@ -22,7 +22,8 @@ void cycle(SIM_MODULE* top, uint64_t n){
         single_cycle(top);
 #ifdef EN_DIFFTEST
         if(!difftest_init_flag){
-            init_difftest(top, diff_so_file, MEMORY_SIZE, difftest_port);
+            extern long img_size;
+            init_difftest(top, diff_so_file, img_size, difftest_port);
             difftest_init_flag = true;
         }
         if(!diff_skip){
