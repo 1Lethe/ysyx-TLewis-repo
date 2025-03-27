@@ -5,10 +5,12 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-#define PUTCHAR_BUF_SIZE 5000
+#define PUTCHAR_BUF_SIZE 2000
+
+/* putchar buffer set in heap (if not may lead stack overflow) */
+char putchar_buf[PUTCHAR_BUF_SIZE];
 
 int printf(const char *fmt, ...) {
-  char putchar_buf[PUTCHAR_BUF_SIZE];
   va_list ap;
   size_t len = 0;
 
@@ -33,7 +35,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 
   while(*fmt){
     if(*fmt == '%'){
-      memset(buffer, '\0', 50);
+      memset(buffer, '\0', 200);
       fmt++;
       switch(*fmt++){
         case 's':
