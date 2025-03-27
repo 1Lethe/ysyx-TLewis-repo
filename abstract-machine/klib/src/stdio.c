@@ -5,14 +5,18 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
+#define PUTCHAR_BUF_SIZE 5000
+
 int printf(const char *fmt, ...) {
-  char putchar_buf[1000];
+  char putchar_buf[PUTCHAR_BUF_SIZE];
   va_list ap;
   size_t len = 0;
 
-  memset(putchar_buf, '\0', 1000);
+  memset(putchar_buf, '\0', PUTCHAR_BUF_SIZE);
+
   va_start(ap, fmt);
   len = vsprintf(putchar_buf, fmt, ap);
+  if(len > PUTCHAR_BUF_SIZE) panic("putchar buffer not enough!");
   va_end(ap);
 
   for(int i = 0; i < len; i++){
@@ -71,6 +75,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
           }
 
           break;
+          case 'p':
           case 'x':
             uint32_t x = va_arg(ap, int);
             buffer_ptr = buffer + sizeof(buffer) - 1;
