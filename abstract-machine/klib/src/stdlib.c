@@ -31,7 +31,7 @@ int atoi(const char* nptr) {
 }
 
 void heap_ptr_reset(void){
-  hbrk = (char *)heap.start;
+  hbrk = (void *)ROUNDUP(heap.start, 8);
 }
 
 void *malloc(size_t size) {
