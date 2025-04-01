@@ -1,4 +1,5 @@
 #include <proc.h>
+#include <fs.h>
 #include <elf.h>
 
 #ifdef __LP64__
@@ -21,22 +22,25 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr elf_ehdr;
   Elf_Phdr elf_phdr;
 
-  ramdisk_read(&elf_ehdr, 0, sizeof(elf_ehdr));
+  int elf_fd = fs_open(filename, 0, 0);
+  fs_read(elf_fd, &elf_ehdr, sizeof(elf_ehdr));
 
   assert(*(uint32_t *)elf_ehdr.e_ident == 0x464c457f); // elf magic number
   assert(elf_ehdr.e_machine == EXPECT_TYPE);
 
   for(int i = 0; i < elf_ehdr.e_phnum; i++){
     // read elf program header (offset i) in ramdisk to struct elf_phdr
-    ramdisk_read(&elf_phdr, elf_ehdr.e_phoff + i * elf_ehdr.e_phentsize, elf_ehdr.e_phentsize);
+    fs_lseek(elf_fd, elf_ehdr.e_phoff + i * elf_ehdr.e_phentsize, SEEK_SET);
+    fs_read(elf_fd, &elf_phdr, elf_ehdr.e_phentsize);
     if(elf_phdr.p_type == PT_LOAD){
       uint8_t *vaddr_ptr = (uint8_t *)elf_phdr.p_vaddr;
+      fs_lseek(elf_fd, elf_phdr.p_offset, SEEK_SET);
 
       // write segment to memory
       for(int j = 0; j < elf_phdr.p_memsz; j++){
         if(j < elf_phdr.p_filesz){
           uint8_t seg_data = 0;
-          ramdisk_read(&seg_data, elf_phdr.p_offset + j, 1);
+          fs_read(elf_fd, &seg_data, 1);
           *(vaddr_ptr + j) = seg_data;
         }else{
           *(vaddr_ptr + j) = 0;
@@ -44,6 +48,8 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       }
     }
   }
+
+  fs_close(elf_fd);
 
   return elf_ehdr.e_entry;
 }
