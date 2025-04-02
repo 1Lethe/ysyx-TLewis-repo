@@ -1,4 +1,5 @@
 #include <fs.h>
+#include "device.h"
 #include "proc.h"
 
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
@@ -13,7 +14,7 @@ typedef struct {
   WriteFn write;
 } Finfo;
 
-enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB};
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, DEVICE_SERIAL, FD_FB};
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -30,6 +31,7 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin", 0, 0, 0, invalid_read, invalid_write},
   [FD_STDOUT] = {"stdout", 0, 0, 0, invalid_read, invalid_write},
   [FD_STDERR] = {"stderr", 0, 0, 0, invalid_read, invalid_write},
+  [DEVICE_SERIAL] = {"serial", 0, 0, 0, invalid_read, serial_write},
 #include "files.h"
 };
 
@@ -80,6 +82,10 @@ size_t fs_read(int fd, void *buf, size_t len) {
 size_t fs_write(int fd, const void *buf, size_t len) {
   assert(fd_is_valid(fd) == true);
   assert(buf != NULL);
+
+  if(fd == FD_STDOUT || fd == FD_STDERR) {
+    return (file_table[DEVICE_SERIAL].write(buf, 0, len));
+  }
 
   if (file_table[fd].open_offset >= file_table[fd].size) {
     return 0;

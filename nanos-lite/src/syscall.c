@@ -1,9 +1,10 @@
 #include <common.h>
 #include <fs.h>
 #include "syscall.h"
+#include "device.h"
 
 #ifdef CONFIG_STRACE
-char strace_text[20][10] = {
+char strace_text[20][20] = {
   "SYS_exit",   // num = 0
   "SYS_yield",  // num = 1
   "SYS_open",   // num = 2
@@ -11,7 +12,8 @@ char strace_text[20][10] = {
   "SYS_write",  // num = 4
   "SYS_close",  // num = 7
   "SYS_lseek",  // num = 8
-  "SYS_brk"     // num = 9
+  "SYS_brk",     // num = 9
+  "SYS_gettimeofday"   // num = 19
 };
 #endif
 
@@ -34,19 +36,6 @@ static int f_SYS_read(int fd, void *buf, size_t len) {
 }
 
 static long f_SYS_write(int fd, void *buf, int count){
-  // fd is stdout(== 1) or stderr(== 2)
-  if(fd == 1 || fd == 2){
-    int charput_num = 0;
-    char *char_buf = (char *)(intptr_t)buf;
-
-    for(int i = 0; i < count; i++){
-      putch(*char_buf++);
-      charput_num++;
-    }
-
-    return charput_num;
-  }
-
   if(fd_is_valid(fd)){
     int ret = fs_write(fd, buf, count);
     return ret;
@@ -70,6 +59,11 @@ static int f_SYS_brk(intptr_t addr){
   return 0;
 }
 
+static size_t f_SYS_gettimeofday(struct timeval *tv, struct timezone *tz) {
+  int ret = timer_gettimeofday(tv, tz);
+  return ret;
+}
+
 #ifdef CONFIG_STRACE
 static void strace(int syscall_num, int arg1){
   int strace_text_index = -1;
@@ -85,6 +79,7 @@ static void strace(int syscall_num, int arg1){
     case SYS_close  : strace_text_index = 5; display_file_fd = true; break;
     case SYS_lseek  : strace_text_index = 6; display_file_fd = true; break;
     case SYS_brk    : strace_text_index = 7; break;
+    case SYS_gettimeofday : strace_text_index = 8; break;
     default : return; // syscall not exist
   }
 
@@ -110,12 +105,13 @@ void do_syscall(Context *c) {
   switch (a[0]) {
     case SYS_exit   : f_SYS_halt(a[1]); break;
     case SYS_yield  : f_SYS_yield(); break;
-    case SYS_open   : *ret_1 = f_SYS_open((const char *)a[1], a[2], a[3]); break;
+    case SYS_open   : *ret_1 = f_SYS_open((void *)a[1], a[2], a[3]); break;
     case SYS_read   : *ret_1 = f_SYS_read(a[1], (void *)a[2], a[3]); break;
     case SYS_write  : *ret_1 = f_SYS_write(a[1], (void *)a[2], a[3]); break;
     case SYS_close  : *ret_1 = f_SYS_close(a[1]); break;
     case SYS_lseek  : *ret_1 = f_SYS_lseek(a[1], a[2], a[3]); break;
     case SYS_brk    : *ret_1 = f_SYS_brk(a[1]); break;
+    case SYS_gettimeofday : *ret_1 = f_SYS_gettimeofday((void *)a[1], (void *)a[2]); break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
