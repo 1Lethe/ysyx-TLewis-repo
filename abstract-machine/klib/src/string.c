@@ -204,4 +204,35 @@ int memcmp(const void *s1, const void *s2, size_t n) {
   return 0;
 }
 
+char *strstr(const char *haystack, const char *needle) {
+  if(haystack == NULL || needle == NULL){
+    panic("s1 or s2 is NULL");
+  }
+
+  size_t haystack_len = strlen(haystack);
+  size_t needle_len = strlen(needle);
+
+  if(needle_len == 0) {
+    return (char *)haystack;
+  }
+
+  if(needle_len > haystack_len) {
+    return NULL;
+  }
+
+  for (size_t start = 0; start + needle_len <= haystack_len; start++) {
+    bool found = true;
+    for (size_t i = 0; i < needle_len; i++) {
+      if (haystack[start + i] != needle[i]) {
+        found = false;
+        break;
+      }
+    }
+    if (found) {
+      return (char *)(haystack + start);
+    }
+  }
+  return NULL;
+}
+
 #endif
