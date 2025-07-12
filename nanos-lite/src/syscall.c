@@ -4,16 +4,26 @@
 #include "device.h"
 
 #ifdef CONFIG_STRACE
-char strace_text[20][20] = {
-  "SYS_exit",   // num = 0
-  "SYS_yield",  // num = 1
-  "SYS_open",   // num = 2
-  "SYS_read",   // num = 3
-  "SYS_write",  // num = 4
-  "SYS_close",  // num = 7
-  "SYS_lseek",  // num = 8
-  "SYS_brk",     // num = 9
-  "SYS_gettimeofday"   // num = 19
+
+typedef enum {
+  STRACE_NONE = 0,
+  STRACE_FILE_PATHNAME
+} attach_textconfig;
+typedef struct {
+  char *name;
+  attach_textconfig attach_textconfig_0;
+}strace_context;
+
+strace_context strace_ctx[20] = {
+  [SYS_exit]  = {"SYS_exit"},   // num = 0
+  [SYS_yield] = {"SYS_yield"},  // num = 1
+  [SYS_open]  = {"SYS_open",  STRACE_FILE_PATHNAME},   // num = 2
+  [SYS_read]  = {"SYS_read",  STRACE_FILE_PATHNAME},   // num = 3
+  [SYS_write] = {"SYS_write", STRACE_FILE_PATHNAME},  // num = 4
+  [SYS_close] = {"SYS_close", STRACE_FILE_PATHNAME},  // num = 7
+  [SYS_lseek] = {"SYS_lseek", STRACE_FILE_PATHNAME},  // num = 8
+  [SYS_brk]   = {"SYS_brk"},     // num = 9
+  [SYS_gettimeofday] = {"SYS_gettimeofday"}   // num = 19
 };
 #endif
 
@@ -65,27 +75,18 @@ static size_t f_SYS_gettimeofday(struct timeval *tv, struct timezone *tz) {
 }
 
 #ifdef CONFIG_STRACE
-static void strace(int syscall_num, int arg1){
-  int strace_text_index = -1;
-  bool display_file_path = false;
-  bool display_file_fd = false;
+static void strace(int syscall_num, int arg1, int arg2, int arg3){
+  char attach_text[100];
 
-  switch(syscall_num){
-    case SYS_exit   : strace_text_index = 0; break;
-    case SYS_yield  : strace_text_index = 1; break;
-    case SYS_open   : strace_text_index = 2; display_file_path = true ;break;
-    case SYS_read   : strace_text_index = 3; display_file_fd = true; break;
-    case SYS_write  : strace_text_index = 4; display_file_fd = true; break;
-    case SYS_close  : strace_text_index = 5; display_file_fd = true; break;
-    case SYS_lseek  : strace_text_index = 6; display_file_fd = true; break;
-    case SYS_brk    : strace_text_index = 7; break;
-    case SYS_gettimeofday : strace_text_index = 8; break;
-    default : return; // syscall not exist
+  switch(strace_ctx[syscall_num].attach_textconfig_0){
+    case STRACE_NONE : memset(attach_text, '\0', sizeof(attach_text)); break;
+    case STRACE_FILE_PATHNAME : 
+      if(syscall_num == SYS_open) strncpy(attach_text, (char *)arg1, sizeof(attach_text) - 1);
+      else strncpy(attach_text, find_fd2name(arg1), sizeof(attach_text) - 1);
+      break;
   }
 
-  if(display_file_path == true) printf("%s - ", arg1);
-  if(display_file_fd == true) printf("%s - ", find_fd2name(arg1));
-  printf("syscall %d : %s\n", syscall_num, strace_text[strace_text_index]);
+  printf("syscall %d : %s %s\n", syscall_num, strace_ctx[syscall_num].name, attach_text);
 }
 #endif
 
@@ -99,7 +100,7 @@ void do_syscall(Context *c) {
   a[3] = c->GPR4;
 
 #ifdef CONFIG_STRACE
-  strace(a[0], a[1]);
+  strace(a[0], a[1], a[2], a[3]);
 #endif
 
   switch (a[0]) {
