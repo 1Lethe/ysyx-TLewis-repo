@@ -43,7 +43,13 @@ int timer_gettimeofday(struct timeval *tv, struct timezone *tz) {
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  return 0;
+  AM_INPUT_KEYBRD_T ev = io_read(AM_INPUT_KEYBRD);
+  sprintf((char *)buf, "%s %s", ev.keydown ? "kd" : "ku", keyname[ev.keycode]);
+  if(ev.keycode == AM_KEY_NONE){
+    return 0;
+  }else{
+    return 1;
+  }
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
