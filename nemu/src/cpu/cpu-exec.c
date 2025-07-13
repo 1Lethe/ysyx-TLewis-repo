@@ -31,6 +31,7 @@ bool trace_bp(Decode *s);
  */
 #define MAX_INST_TO_PRINT 10
 
+#define USE_FIND_LOOP
 #define MAX_LOOP_TIME 10000
 
 CPU_state cpu = {};
@@ -96,6 +97,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #endif
 }
 
+#ifdef CONFIG_FIND_DEADLOOP
 static void loop_find(vaddr_t pc){
   static vaddr_t pc_prev = 0;
   static vaddr_t pc_now = 0;
@@ -113,6 +115,7 @@ static void loop_find(vaddr_t pc){
     loop_time = 0;
   }
 }
+#endif
 
 static void execute(uint64_t n) {
   Decode s;
@@ -120,7 +123,7 @@ static void execute(uint64_t n) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
-    loop_find(cpu.pc); /* Find dead loop */
+    IFDEF(CONFIG_FIND_DEADLOOP, loop_find(cpu.pc)); /* Find dead loop */
     if (nemu_state.state != NEMU_RUNNING) break;// Run program till quit or end
     IFDEF(CONFIG_DEVICE, device_update());
   }
