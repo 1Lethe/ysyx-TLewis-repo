@@ -1,20 +1,22 @@
 #include <am.h>
 #include <nemu.h>
 
-#define SYNC_ADDR (VGACTL_ADDR + 4)
+#define SYNC_ADDR      (VGACTL_ADDR + 4)
+#define VMEM_SIZE_ADDR (VGACTL_ADDR + 8)
 
 void __am_gpu_init() {
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
   uint32_t config_data = inl(VGACTL_ADDR);
+  uint32_t vmem_size = inl(VMEM_SIZE_ADDR);
   int screen_width  = config_data >> 16;
   int screen_height = config_data & 0xFFFF;
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
     .width = screen_width,
     .height = screen_height,
-    .vmemsz = 0
+    .vmemsz = vmem_size
   };
 }
 
