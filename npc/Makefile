@@ -102,4 +102,10 @@ clean:
 	rm -rf $(WAVE_DIR)/*
 	@echo "Clean all complete."
 
+count :
+	@echo $(shell find $(NPC_HOME) -name "*.v" | xargs wc -l | grep 'total')
+
+count_noempty:
+	@echo $(shell find $(NPC_HOME) -name "*.v" | xargs grep -v "^\s*\$$" | wc -l)
+
 include ../Makefile

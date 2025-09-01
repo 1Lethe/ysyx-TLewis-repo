@@ -127,4 +127,5 @@ void monitor_init(int argc, char *argv[]){
     IFDEF(EN_ITRACE, iring_init());
     IFDEF(EN_FTRACE, ftrace_init());
     IFDEF(EN_DEVICE, init_device());
+    Log("Welcome to riscv32e-NPC-Tlewis!");
 }
