@@ -5,6 +5,7 @@
 bool difftest_init_flag = false;
 
 extern char *diff_so_file;
+extern long img_size;
 extern int difftest_port;
 
 void device_update();
@@ -22,7 +23,7 @@ void cycle(SIM_MODULE* top, uint64_t n){
         single_cycle(top);
 #ifdef EN_DIFFTEST
         if(!difftest_init_flag){
-            init_difftest(top, diff_so_file, MEMORY_SIZE, difftest_port);
+            init_difftest(top, diff_so_file, img_size, difftest_port);
             difftest_init_flag = true;
         }
         if(!diff_skip){
