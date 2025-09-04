@@ -8,7 +8,6 @@ VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
 
 void halt(void){
-    dump_wave(SIM_MODULE_NAME);
     if(SIM_MODULE_NAME->trap_flag == 0){
         Log("NPC: %s PC = 0x%x", ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN), SIM_MODULE_NAME->pc);
     }else{
