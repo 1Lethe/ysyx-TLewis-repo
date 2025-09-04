@@ -1,7 +1,8 @@
 #include "common.h"
 #include "sim.h"
+#include "cpu-exec.h"
 
-bool sim_stop_flag = false;
+static bool sim_stop_flag = false;
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
@@ -38,7 +39,7 @@ void dump_wave(SIM_MODULE* top){
 bool is_sim_continue(void){
     bool ret = (!contextp->gotFinish() && sim_stop_flag == false);
     if(!ret){
-        Log("Sim stop.");
+        Log("Sim stop.cycle time = %ld", get_cycle_time());
     }
     return ret;
 }
