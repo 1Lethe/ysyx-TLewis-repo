@@ -128,6 +128,6 @@ void monitor_init(int argc, char *argv[]){
     IFDEF(EN_ITRACE, iring_init());
     IFDEF(EN_FTRACE, ftrace_init());
     IFDEF(EN_DEVICE, init_device());
-    IFDEF(EN_DIFFTEST, init_difftest(top, diff_so_file, img_size, difftest_port));
+    IFDEF(EN_DIFFTEST, init_difftest(top, diff_so_file, MEMORY_SIZE, difftest_port));
     Log("Welcome to riscv32e-NPC-Tlewis!");
 }
