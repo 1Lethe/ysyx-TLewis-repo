@@ -66,6 +66,7 @@ vaddr_t isa_raise_intr(word_t NO, vaddr_t epc);
 word_t isa_query_intr();
 
 // difftest
+void diff_set_REF_memtrace_struct(word_t data, word_t address, word_t length);
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc);
 void isa_difftest_attach();
 

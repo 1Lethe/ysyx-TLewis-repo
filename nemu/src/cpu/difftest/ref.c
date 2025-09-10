@@ -27,6 +27,30 @@ struct diff_context_t{
   word_t mcause;
 };
 
+// store write memory trace to compare with DUT
+struct diff_memtrace_t{
+  word_t data;
+  word_t address;
+  int length;
+  bool is_write_mem;
+};
+
+static struct diff_memtrace_t diff_memtrace_ref;
+
+void diff_set_REF_memtrace_struct(word_t data, word_t address, word_t length) {
+  if(length <= 0) {
+    diff_memtrace_ref.data = 0;
+    diff_memtrace_ref.address = 0;
+    diff_memtrace_ref.length = 0;
+    diff_memtrace_ref.is_write_mem = false;
+  }else {
+    diff_memtrace_ref.data = data;
+    diff_memtrace_ref.address = address;
+    diff_memtrace_ref.length = length;
+    diff_memtrace_ref.is_write_mem = true;
+  }
+}
+
 __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction) {
   if(direction == DIFFTEST_TO_REF){
     uint8_t *mem_dut = (uint8_t *)buf;
@@ -58,11 +82,27 @@ void diff_get_regs(void *diff_context){
   ctx->mcause = cpu.mcause;
 }
 
+void diff_get_memtrace(void *diff_memtrace){
+  struct diff_memtrace_t *memt = (struct diff_memtrace_t*)diff_memtrace;
+  memt->data = diff_memtrace_ref.data;
+  memt->address = diff_memtrace_ref.address;
+  memt->length = diff_memtrace_ref.length;
+  memt->is_write_mem = diff_memtrace_ref.is_write_mem;
+}
+
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
   if(direction == DIFFTEST_TO_REF){
     diff_set_regs(dut);
   }else{
     diff_get_regs(dut);
+  }
+}
+
+__EXPORT void difftest_memtrace_cpy(void *dut, bool direction) {
+  if(direction == DIFFTEST_TO_DUT){
+    diff_get_memtrace(dut);
+  }else{
+    assert(0);
   }
 }
 

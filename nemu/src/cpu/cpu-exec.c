@@ -63,6 +63,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;// update s->pc and s->snpc.
+  IFDEF(CONFIG_DIFFTEST, diff_set_REF_memtrace_struct(0, 0, 0)); // reset memtrace struct 
   isa_exec_once(s); // fetch inst to isa->inst and execute inst s->pc and update s-> dnpc.
   cpu.pc = s->dnpc; // update cpu.pc
 #ifdef CONFIG_ITRACE
