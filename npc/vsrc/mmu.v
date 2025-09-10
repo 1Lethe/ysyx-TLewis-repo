@@ -35,10 +35,8 @@ module ysyx_24120013_mmu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     assign mem_waddr = (mem_valid == 1'b1 && mem_wen == 1'b1) ? alu_result : 0;
     assign mem_raddr = (mem_valid == 1'b1 && mem_ren == 1'b1) ? alu_result : 0;
 
-    wire [4:0] a1 = mem_waddr[1:0] << 3;
-
-    assign sh_maskd_data = mem_wdata << a1;
-    assign sb_maskd_data = mem_wdata << a1;
+    assign sh_maskd_data = mem_wdata << {mem_waddr[1:0], 3'b000};
+    assign sb_maskd_data = mem_wdata << {mem_waddr[1:0], 3'b000};
 
     assign mem_wdata_align = ({DATA_WIDTH{is_sw_align_mem}} & mem_wdata) |
                              ({DATA_WIDTH{is_sh_align_mem}} & (sh_maskd_data)) |
