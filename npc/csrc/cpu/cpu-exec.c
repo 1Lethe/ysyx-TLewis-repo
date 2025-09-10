@@ -20,9 +20,11 @@ void cycle(SIM_MODULE* top, uint64_t n){
         single_cycle(top);
         cycle_time++;
 #ifdef EN_DIFFTEST
-        if(!difftest_step(top, top->pc, top->pc)){
-            assert_fail_msg();
-            halt();
+        if(top->difftest_check_flag){
+            if(!difftest_step(top, top->pc, top->pc)){
+                assert_fail_msg();
+                halt();
+            }
         }
 #endif
         IFDEF(EN_ITRACE, iring(top->pc, pmem_read(top->pc, 4)));

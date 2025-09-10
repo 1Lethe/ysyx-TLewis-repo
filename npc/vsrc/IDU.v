@@ -39,8 +39,19 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
         output wire [ADDR_WIDTH-1:0] wr_reg_des,
 
-        output wire break_ctrl
+        output wire break_ctrl,
+
+        // shakehand signal
+        input inst_is_valid,
+        output wire id_is_ready,
+
+        input ex_is_ready, 
+        output wire id_is_valid
     );
+
+    /* Shake hand signal */
+    assign id_is_ready = ~rst ;
+    assign id_is_valid = inst_is_valid;
 
     /* Decoder opcode parameter */
     parameter OPC_IMM_C  = 7'b0010011; // immediate calc

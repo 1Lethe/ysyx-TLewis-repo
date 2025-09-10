@@ -26,8 +26,16 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         output wire [DATA_WIDTH-1:0] csr_mtvec_dis,
         output wire [DATA_WIDTH-1:0] csr_mepc_dis,
         output wire [DATA_WIDTH-1:0] csr_mcause_dis,
-        output wire [DATA_WIDTH-1:0] trap_flag
+        output wire [DATA_WIDTH-1:0] trap_flag,
+
+        input ex_is_valid,
+        output wire wb_is_ready,
+
+        output wire next_inst_flag
     );
+
+    assign wb_is_ready = ~rst;
+    assign next_inst_flag = ex_is_valid;
 
     reg [DATA_WIDTH-1:0] rf [2**ADDR_WIDTH-1:0];
     reg [DATA_WIDTH-1:0] mstatus;
@@ -43,7 +51,7 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
     always @(posedge clk) begin
         if(wen) begin
             rf[waddr] <= wdata;
-        end
+        end 
         rf[0] <= {DATA_WIDTH{1'b0}};
     end
 

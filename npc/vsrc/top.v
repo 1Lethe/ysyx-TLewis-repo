@@ -16,6 +16,7 @@ module ysyx_24120013_top (
     output wire [DATA_WIDTH-1:0] csr_mtvec_dis,
     output wire [DATA_WIDTH-1:0] csr_mepc_dis,
     output wire [DATA_WIDTH-1:0] csr_mcause_dis,
+    output reg difftest_check_flag,
     output wire [DATA_WIDTH-1:0] trap_flag
 );
 
@@ -29,20 +30,25 @@ wire [DATA_WIDTH-1:0] branch_jmp_pc;
 ysyx_24120013_PC #(
     .DATA_WIDTH(DATA_WIDTH)
 )u_ysyx_24120013_PC(
-    .clk        	(clk          ),
-    .rst        	(rst          ),
-    .pc_jmp_val 	(branch_jmp_pc),
-    .pc         	(pc           )
+    .clk        	(clk             ),
+    .rst        	(rst             ),
+    .pc_jmp_val 	(branch_jmp_pc   ),
+    .pc         	(pc              ),
+    .next_inst_flag (next_inst_flag  )
 );
 
 // output declaration of module ysyx_24120023_IFU
-wire [31:0]inst;
+wire [DATA_WIDTH-1:0]inst;
+wire inst_is_valid;
 
 ysyx_24120023_IFU u_ysyx_24120023_IFU(
-    .clk      	(clk       ),
-    .rst      	(rst       ),
-    .pc         (pc        ),
-    .IFU_inst 	(inst      )
+    .clk      	   (clk              ),
+    .rst      	   (rst              ),
+    .pc            (pc               ),
+    .next_inst_flag(next_inst_flag   ),
+    .id_is_ready   (id_is_ready      ),
+    .inst_is_valid (inst_is_valid    ),
+    .IFU_inst      (inst             )
 );
 
 // output declaration of module ysyx_24120013_IDU
@@ -69,6 +75,8 @@ wire [`ysyx_24120013_ZERO_WIDTH-1:0] mem_zero_width;
 wire [`ysyx_24120013_SEXT_WIDTH-1:0] mem_sext_width;
 wire [`ysyx_24120013_ECU_WIDTH-1:0] ecu_op;
 wire break_ctrl;
+wire id_is_ready;
+wire id_is_valid;
 
 ysyx_24120013_IDU #(
     .MEM_WIDTH  (MEM_WIDTH ),
@@ -105,7 +113,11 @@ ysyx_24120013_IDU #(
     .mem_zero_width (mem_zero_width  ),
     .mem_sext_width (mem_sext_width  ),
     .wr_reg_des     (wr_reg_des      ),
-    .break_ctrl     (break_ctrl      )
+    .break_ctrl     (break_ctrl      ),
+    .inst_is_valid  (inst_is_valid   ),
+    .id_is_ready    (id_is_ready     ),
+    .ex_is_ready    (ex_is_ready     ),
+    .id_is_valid    (id_is_valid     )
 );
 
 // output declaration of module ysyx_24120013_RegisterFile
@@ -120,6 +132,15 @@ wire [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] csr_waddr2;
 wire [DATA_WIDTH-1:0] csr_wdata2;
 wire [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] csr_waddr3;
 wire [DATA_WIDTH-1:0] csr_wdata3;
+wire wb_is_ready;
+wire next_inst_flag;
+
+always @(posedge clk) begin
+    if(rst)
+        difftest_check_flag <= 1'b0;
+    else
+        difftest_check_flag <= next_inst_flag;
+end
 
 ysyx_24120013_RegisterFile #(
     .ADDR_WIDTH (ADDR_WIDTH),
@@ -148,13 +169,19 @@ ysyx_24120013_RegisterFile #(
     .csr_mtvec_dis   (csr_mtvec_dis    ),
     .csr_mepc_dis    (csr_mepc_dis     ),
     .csr_mcause_dis  (csr_mcause_dis   ),
-    .trap_flag       (trap_flag        )
+    .trap_flag       (trap_flag        ),
+
+    .ex_is_valid     (ex_is_valid      ),
+    .wb_is_ready     (wb_is_ready      ),
+    .next_inst_flag  (next_inst_flag   )
 );
 
 // output declaration of module ysyx_24120013_EXU
 wire reg_wen;
 wire [ADDR_WIDTH-1:0] reg_waddr;
 wire [DATA_WIDTH-1:0] reg_wdata;
+wire ex_is_ready;
+wire ex_is_valid;
 
 ysyx_24120013_EXU #(
     .MEM_WIDTH (MEM_WIDTH),
@@ -195,7 +222,12 @@ ysyx_24120013_EXU #(
     .csr_wdata2     (csr_wdata2    ),
     .csr_waddr3     (csr_waddr3    ),
     .csr_wdata3     (csr_wdata3    ),
-    .branch_jmp_pc  (branch_jmp_pc )
+    .branch_jmp_pc  (branch_jmp_pc ),
+
+    .id_is_valid     (id_is_valid  ),
+    .ex_is_ready     (ex_is_ready  ),
+    .wb_is_ready     (wb_is_ready  ),
+    .ex_is_valid     (ex_is_valid  )
 );
 
 endmodule

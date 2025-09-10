@@ -44,24 +44,43 @@ module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output wire [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] csr_waddr3,
         output wire [DATA_WIDTH-1:0] csr_wdata3,
 
-        output wire [DATA_WIDTH-1:0] branch_jmp_pc
+        output wire [DATA_WIDTH-1:0] branch_jmp_pc,
+
+        input id_is_valid,
+        output wire ex_is_ready,
+
+        input wb_is_ready,
+        output wire ex_is_valid
     );
+
+    wire ex_shakehand;
+    assign ex_is_ready = ~rst;
+    assign ex_is_valid = id_is_valid;
+
+    assign ex_shakehand = id_is_valid & ex_is_ready;
 
     wire [DATA_WIDTH-1:0] alu_result;
 
+    wire mem_valid_shaked;
     wire [DATA_WIDTH-1:0] mem_wreg;
 
-    wire branch_less;
-    wire branch_zero;
+    assign mem_valid_shaked = mem_valid & ex_shakehand;
 
-    assign reg_wen = (wr_reg_des == 0) ? 1'b0 : 1'b1;
-    assign reg_waddr = (wr_reg_des == 0) ? {ADDR_WIDTH{1'b0}} : wr_reg_des;
-    assign reg_wdata = (wr_reg_des == 0) ? {DATA_WIDTH{1'b0}} : 
+    assign reg_wen = (wr_reg_des == 0 && ex_shakehand == 1'b0) ? 1'b0 : 1'b1;
+    assign reg_waddr = (wr_reg_des == 0 && ex_shakehand == 1'b0) ? {ADDR_WIDTH{1'b0}} : wr_reg_des;
+    assign reg_wdata = (wr_reg_des == 0 && ex_shakehand == 1'b0) ? {DATA_WIDTH{1'b0}} : 
                        (mem_valid & mem_ren == 1'b1) ? mem_wreg : alu_result;
+
+    wire ecu_csr_wen;
+
+    assign csr_wen = ecu_csr_wen & ex_shakehand;
 
     always @(*) begin
         if(break_ctrl) halt();
     end
+
+    wire branch_less;
+    wire branch_zero;
 
 ysyx_24120013_alu #(
     .ADDR_WIDTH(ADDR_WIDTH),
@@ -99,7 +118,7 @@ ysyx_24120013_mmu #(
 )u_ysyx_24120013_mmu(
     .clk       	    (clk             ),
     .rst       	    (rst             ),
-    .mem_valid 	    (mem_valid       ),
+    .mem_valid 	    (mem_valid_shaked),
     .mem_ren        (mem_ren         ),
     .mem_wen   	    (mem_wen         ),
     .alu_result     (alu_result      ),
@@ -130,7 +149,7 @@ ysyx_24120013_ECU #(
     .csr_rdata        	(csr_rdata         ),
     .ecu_reg_rdata      (ecu_reg_rdata     ),
     .ecu_reg_wdata    	(ecu_reg_wdata     ),
-    .csr_wen            (csr_wen           ),
+    .csr_wen            (ecu_csr_wen       ),
     .csr_waddr1       	(csr_waddr1        ),
     .csr_waddr2       	(csr_waddr2        ),
     .csr_waddr3       	(csr_waddr3        ),
