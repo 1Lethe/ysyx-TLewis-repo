@@ -54,8 +54,11 @@ module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     );
 
     wire ex_shakehand;
+    wire mem_rvalid;
+    wire mem_wcomplete;
     assign ex_is_ready = ~rst;
-    assign ex_is_valid = id_is_valid;
+    assign ex_is_valid = (id_is_valid == 1'b1) && ((mem_ren == 1'b1) ? mem_rvalid : 1'b1) 
+                        && ((mem_wen == 1'b1) ? mem_wcomplete : 1'b1);
 
     assign ex_shakehand = id_is_valid & ex_is_ready;
 
@@ -66,9 +69,9 @@ module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     assign mem_valid_shaked = mem_valid & ex_shakehand;
 
-    assign reg_wen = (wr_reg_des == 0 && ex_shakehand == 1'b0) ? 1'b0 : 1'b1;
-    assign reg_waddr = (wr_reg_des == 0 && ex_shakehand == 1'b0) ? {ADDR_WIDTH{1'b0}} : wr_reg_des;
-    assign reg_wdata = (wr_reg_des == 0 && ex_shakehand == 1'b0) ? {DATA_WIDTH{1'b0}} : 
+    assign reg_wen = (wr_reg_des == 0 || ex_is_valid == 1'b0) ? 1'b0 : 1'b1;
+    assign reg_waddr = (wr_reg_des == 0 || ex_is_valid == 1'b0) ? {ADDR_WIDTH{1'b0}} : wr_reg_des;
+    assign reg_wdata = (wr_reg_des == 0 || ex_is_valid == 1'b0) ? {DATA_WIDTH{1'b0}} : 
                        (mem_valid & mem_ren == 1'b1) ? mem_wreg : alu_result;
 
     wire ecu_csr_wen;
@@ -112,6 +115,7 @@ ysyx_24120013_bru #(
 );
 
 // output declaration of module ysyx_24120013_mmu
+
 ysyx_24120013_mmu #(
     .MEM_WIDTH(MEM_WIDTH),
     .DATA_WIDTH(DATA_WIDTH)
@@ -127,7 +131,9 @@ ysyx_24120013_mmu #(
     .mem_zero_width (mem_zero_width  ),
     .mem_sext_width (mem_sext_width  ),
     .mem_wdata  	(mem_wdata       ),
-    .mem_wreg       (mem_wreg        )
+    .mem_wreg       (mem_wreg        ),
+    .mem_wcomplete  (mem_wcomplete   ),
+    .mem_rvalid     (mem_rvalid      )
 );
 
 // output declaration of module ysyx_24120013_ECU

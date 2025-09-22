@@ -12,7 +12,9 @@ module ysyx_24120013_mmu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     input [`ysyx_24120013_ZERO_WIDTH-1:0] mem_zero_width,
     input [`ysyx_24120013_SEXT_WIDTH-1:0] mem_sext_width,
     input [DATA_WIDTH-1:0] mem_wdata,
-    output reg [DATA_WIDTH-1:0] mem_wreg
+    output wire [DATA_WIDTH-1:0] mem_wreg,
+    output wire mem_wcomplete,
+    output wire mem_rvalid
     );
 
     wire [DATA_WIDTH-1:0] mem_rdata;
@@ -102,12 +104,181 @@ module ysyx_24120013_mmu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
                        (mem_rtype[1] == 1'b1) ? 8'b00000011 << mem_raddr[1:0] : 
                        (mem_rtype[0] == 1'b1) ? 8'b00000001 << mem_raddr[1:0] : 8'b0;
 
-    assign mem_rdata = (mem_valid == 1'b1 && mem_ren == 1'b1) ? sim_pmem_read(mem_raddr) : 0;
+    reg mem_wen_r1;
+    reg mem_ren_r1;
+    always @(posedge clk) begin
+        if(rst)
+            mem_wen_r1 <= 1'b0;
+        else
+            mem_wen_r1 <= mem_wen;
+    end
 
     always @(posedge clk) begin
-        if (mem_valid & mem_wen) begin // 有写请求时
-            sim_pmem_write(mem_waddr, mem_wdata_align, mem_wmask);
+        if(rst)
+            mem_ren_r1 <= 1'b0;
+        else
+            mem_ren_r1 <= mem_ren;
+    end
+
+    wire mem_wen_pos;
+    wire mem_ren_pos;
+    assign mem_wen_pos = mem_wen & ~mem_wen_r1;
+    assign mem_ren_pos = mem_ren & ~mem_ren_r1;
+
+    reg m_awvalid;
+    wire s_awready;
+    reg [MEM_WIDTH-1:0] m_awaddr;
+    reg [2:0] m_awprot;
+
+    reg m_wvalid;
+    wire s_wready;
+    reg [DATA_WIDTH-1:0] m_wdata;
+    reg [7:0] m_wstrb;
+
+    wire s_bvalid;
+    reg m_bready;
+    wire [1:0] s_bresp;
+
+    wire awshakehand;
+    wire wshakehand;
+    wire bshakehand;
+
+    assign awshakehand = m_awvalid & s_awready;
+    assign wshakehand = m_wvalid & s_wready;
+    assign bshakehand = s_bvalid & m_bready;
+
+    always @(posedge clk) begin
+        if(rst) begin
+            m_awvalid <= 1'b0;
+            m_awaddr <= {MEM_WIDTH{1'b0}};
+            m_awprot <= 3'b0;
+        end else if(mem_wen_pos) begin
+            m_awvalid <= 1'b1;
+            m_awaddr <= mem_waddr;
+            m_awprot <= 3'b000;
+        end else if(awshakehand) begin
+            m_awvalid <= 1'b0;
+            m_awaddr <= {MEM_WIDTH{1'b0}};
+            m_awprot <= 3'b0;
         end
     end
+
+    always @(posedge clk) begin
+        if(rst) begin
+            m_wvalid <= 1'b0;
+            m_wdata <= {DATA_WIDTH{1'b0}};
+            m_wstrb <= 8'b0;
+        end else if(awshakehand) begin
+            m_wvalid <= 1'b1;
+            m_wdata <= mem_wdata_align;
+            m_wstrb <= mem_wmask;
+        end else if(wshakehand) begin
+            m_wvalid <= 1'b0;
+            m_wdata <= {DATA_WIDTH{1'b0}};
+            m_wstrb <= 8'b0;
+        end
+    end
+
+    always @(posedge clk) begin
+        if(rst) begin
+            m_bready <= 1'b0;
+        end else if(bshakehand) begin
+            m_bready <= 1'b0;
+        end else if(s_bvalid) begin
+            m_bready <= 1'b1;
+        end
+    end
+
+    assign mem_wcomplete = bshakehand;
+
+    wire arshakehand;
+    reg arcomplete;
+
+    wire rshakehand;
+
+    assign arshakehand = m_arvalid & s_arready;
+    assign rshakehand = s_rvalid & m_rready;
+
+    always @(posedge clk) begin
+        if(rst) begin
+            arcomplete <= 1'b0;
+        end else if(arshakehand) begin
+            arcomplete <= 1'b1;
+        end else if(rshakehand) begin
+            arcomplete <= 1'b0;
+        end
+    end
+
+    reg m_arvalid;
+    wire s_arready;
+    reg [MEM_WIDTH-1:0] m_araddr;
+    reg [2:0] m_arprot;
+
+    wire s_rvalid;
+    reg m_rready;
+    wire [DATA_WIDTH-1:0] s_rdata;
+    wire [1:0] s_rresp;
+
+    always @(posedge clk) begin
+        if(rst) begin
+            m_arvalid <= 1'b0;
+            m_araddr <= {MEM_WIDTH{1'b0}};
+            m_arprot <= 3'b0;
+        end else if(mem_ren_pos) begin
+            m_arvalid <= 1'b1;
+            m_araddr <= mem_raddr;
+            m_arprot <= 3'b0;
+        end else if(arshakehand) begin
+            m_arvalid <= 1'b0;
+            m_araddr <= {MEM_WIDTH{1'b0}};
+            m_arprot <= 3'b0;
+        end
+    end
+
+    always @(posedge clk) begin
+        if(rst) begin
+            m_rready <= 1'b0;
+        end else if(rshakehand) begin
+            m_rready <= 1'b0;
+        end else if(s_rvalid) begin
+            m_rready <= 1'b1;
+        end
+    end
+
+    assign mem_rdata = (rshakehand) ? s_rdata : {DATA_WIDTH{1'b0}};
+    assign mem_rvalid = rshakehand;
+
+    pmem_sim #(
+        .MEM_WIDTH(MEM_WIDTH),
+        .DATA_WIDTH(DATA_WIDTH)
+    )u_pmem_sim(
+        .aclk      (clk       ),
+        .areset_n  (rst       ),
+
+        .m_awvalid (m_awvalid ),
+        .s_awready (s_awready ),
+        .m_awaddr  (m_awaddr  ),
+        .m_awprot  (m_awprot  ),
+
+        .m_wvalid  (m_wvalid  ),
+        .s_wready  (s_wready  ),
+        .m_wdata   (m_wdata   ),
+        .m_wstrb   (m_wstrb   ),
+
+        .s_bvalid  (s_bvalid  ),
+        .m_bready  (m_bready  ),
+        .s_bresp   (s_bresp   ),
+
+        .m_arvalid (m_arvalid ),
+        .s_arready (s_arready ),
+        .m_araddr  (m_araddr  ),
+        .m_arprot  (m_arprot  ),
+
+        .s_rvalid  (s_rvalid  ),
+        .m_rready  (m_rready  ),
+        .s_rdata   (s_rdata   ),
+        .s_rresp   (s_rresp   )
+    );
+
 
 endmodule
