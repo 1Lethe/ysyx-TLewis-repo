@@ -1,6 +1,6 @@
 `include "define/exu_command.v"
 
-module ysyx_24120013_mmu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
+module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     input clk,
     input rst,
     input mem_valid,

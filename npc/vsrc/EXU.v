@@ -114,12 +114,12 @@ ysyx_24120013_bru #(
     .branch_jmp_pc 	  (branch_jmp_pc    )
 );
 
-// output declaration of module ysyx_24120013_mmu
+// output declaration of module ysyx_24120013_lsu
 
-ysyx_24120013_mmu #(
+ysyx_24120013_lsu #(
     .MEM_WIDTH(MEM_WIDTH),
     .DATA_WIDTH(DATA_WIDTH)
-)u_ysyx_24120013_mmu(
+)u_ysyx_24120013_lsu(
     .clk       	    (clk             ),
     .rst       	    (rst             ),
     .mem_valid 	    (mem_valid_shaked),
