@@ -180,10 +180,15 @@ module pmem_sim #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
     // TODO: AXI4-lite一次仅传输一个数据，当拓展到AXI4时，我们需要修改这里
 
     wire mem_rreq;
+    wire mem_rready;
+
     reg [MEM_WIDTH-1:0] mem_raddr_buff;
+    wire [MEM_WIDTH-1:0] mem_raddr;
 
     // NOTE: 可能需要进一步修改这个信号
     assign mem_rreq = arshakehand;
+
+    assign mem_rready = arshakehand | arcomplete;
 
     always @(posedge aclk) begin
         if(areset_n) begin
@@ -195,6 +200,9 @@ module pmem_sim #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
         end
     end
 
+    assign mem_raddr = (~mem_rready) ? {MEM_WIDTH{1'b0}} :
+                        (mem_rreq) ? m_araddr : mem_raddr_buff;
+
     always @(posedge aclk) begin
         if(areset_n) begin
             s_rvalid <= 1'b0;
@@ -202,7 +210,7 @@ module pmem_sim #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
             s_rresp <= 2'b0;
         end else if(mem_rreq) begin
             s_rvalid <= 1'b1;
-            s_rdata <= sim_pmem_read(m_araddr);
+            s_rdata <= sim_pmem_read(mem_raddr);
             s_rresp <= RESP_OKAY;
         end else if(rshakehand) begin
             s_rvalid <= 1'b0;
