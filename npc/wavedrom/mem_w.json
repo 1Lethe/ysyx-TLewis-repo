@@ -1,0 +1,26 @@
+{ signal:[
+        {name:"aclk",             wave:"p.|....|....|.."},
+        // 写请求通道
+        {name:"m_awvalid",        wave:"01|.0.........."},
+        {name:"s_awready",        wave:"0.|10.........."},
+        {name:"m_awaddr",         wave:"x2|.x.........."},
+        {name:"m_awprot",         wave:"02|.0.........."},
+        // 写数据通道
+        {name:"m_wvalid",         wave:"0.....1|.0....."},
+        {name:"s_wready",         wave:"0......|10....."},
+        {name:"m_wdata",          wave:"x.....2|.x....."},
+        {name:"m_wstrb",          wave:"x.....2|.x....."},
+        // 写回复通道
+        {name:"s_bvalid",         wave:"0..........1|.0"},
+        {name:"m_bready",         wave:"0...........|10"},
+        {name:"s_bresp",          wave:"0..........2..0", data:["OKAY"]},
+        // 私有信号
+        {name:"awshakehand",     wave:"0..10.........."},
+        {name:"awcomplete",      wave:"0...1.........0"},
+        {name:"wshakehand",      wave:"0.......10....."},
+        {name:"wcomplete",       wave:"0........1....0"},
+        {name:"bshakehand",      wave:"0............10"},
+        {name:"mem_wready",      wave:"0.......10....."},
+        {name:"mem_wdata",       wave:"0.......20....."}, // slave
+    ]
+}

@@ -1,0 +1,13 @@
+{ signal: [
+  { name: "clk",            wave: "pp.........." },
+  { name: "pc",             wave: "2...2.2.2.2.", data: ["0x80000000","0x80000004"] },
+  { name: "rst",            wave: "1.0........."},
+  { name: "fetch_enable",   wave: "1..010101010"}, 
+  { name: "inst_fetch",     wave: "0.x2x2x2x2x2", data: ["inst", "inst"]},
+  { name: "ifu_valid",      wave: "0..101010101"},
+  { name: "idu_ready",      wave: "0.1........."},
+  { name: "idu_valid",      wave: "0..101010101"},
+  { name: "wbu_valid",      wave: "0..101010101"}, // next pc
+  { name: "next_inst",      wave: "0..101010101"}, // 下一条指令
+  {},
+]}

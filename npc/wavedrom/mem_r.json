@@ -1,0 +1,21 @@
+{ signal:[
+        {name:"aclk",          wave:"p.|....|...."},
+        // 读请求通道
+        {name:"m_arvalid",       wave:"01|.0......."},
+        {name:"s_arready",       wave:"0.|10......."},
+        {name:"m_araddr",        wave:"x2|.x......."},
+        {name:"m_arprot",        wave:"02|.0......."},
+        // 读数据通道
+        {name:"s_rvalid",        wave:"0.....1|.0.."},
+        {name:"m_rready",        wave:"0......|10.."},
+        {name:"s_rdata",         wave:"x.....2|.x.."},
+        {name:"s_rresp",         wave:"0.....2..0..", data:["OKAY"]},
+        // 私有信号
+        {name:"arshakehand",     wave:"0..10......."},
+        {name:"mem_rready",      wave:"0..1.....0.."},
+        {name:"arcomplete",      wave:"0...1....0.."},
+        {name:"mem_raddr_buff",  wave:"0...2....0.."},
+        {name:"rshakehand",      wave:"0.......10.."},
+        {name:"mem_rreq",        wave:"0..10......."},
+    ]
+}

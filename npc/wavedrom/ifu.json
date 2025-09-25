@@ -1,0 +1,12 @@
+{ signal:[
+        { name: "next_inst_flag",     wave: "0..10......10..10...."}, // 上一个指令完成处理的标志
+        { name: "pc",                 wave: "2...2.......2...2...."}, // raddr
+        { name: "inst_fetch_enable",  wave: "0...10......10..10..."}, // ren
+        { name: "rdata_inst",         wave: "0........20....20..20", data:["A", "B", "C"]}, // rdata
+        { name: "rvalid_inst",        wave: "0........10....10..10"}, // rvalid
+        { name: "IFU_Inst",           wave: "2...x....2..x..2x..2.", data:["", "A","B","C"]},
+        { name: "inst_is_valid",      wave: "0........1..0..10..1."},
+        { name: "inst_buffer_enable", wave: "0.........1.0.......1"},
+        { name: "inst_buffer",        wave: "0.........2.0.......2"},
+    ]
+}
