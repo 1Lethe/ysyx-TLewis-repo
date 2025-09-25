@@ -13,6 +13,9 @@
 #define EN_DUMP_WAVE 1
 #define CONFIG_MEM_RANDOM 1
 
+// 启用硬件的内存映射，关闭仿真环境的sim_pmem_write映射
+#define EN_MMIO_HARDWARE
+
 // We use RV32E now, so we need to match number of regs in difftest
 #define CONFIG_RVE 1
 

@@ -47,3 +47,11 @@ bool is_sim_continue(void){
 void tfp_close(void){
     tfp->close();
 }
+
+extern "C" void sim_hardware_fault_handle(int NO, int arg0) {
+    if(NO == 1) {
+        Assert(0, "ACCESS MEMORY FAULT 0x%x.ABORT.", arg0);
+    }else {
+        assert(0);
+    }
+}

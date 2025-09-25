@@ -14,7 +14,32 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     input [DATA_WIDTH-1:0] mem_wdata,
     output wire [DATA_WIDTH-1:0] mem_wreg,
     output wire mem_wcomplete,
-    output wire mem_rvalid
+    output wire mem_rvalid,
+    output wire mem_access_flag,
+
+    output reg m_axi_pmem_awvalid,
+    input wire s_axi_pmem_awready,
+    output reg [MEM_WIDTH-1:0] m_axi_pmem_awaddr,
+    output reg [2:0] m_axi_pmem_awprot,
+
+    output reg m_axi_pmem_wvalid,
+    input wire s_axi_pmem_wready,
+    output reg [DATA_WIDTH-1:0] m_axi_pmem_wdata,
+    output reg [7:0] m_axi_pmem_wstrb,
+
+    input wire s_axi_pmem_bvalid,
+    output reg m_axi_pmem_bready,
+    input wire [1:0] s_axi_pmem_bresp,
+
+    output reg m_axi_pmem_arvalid,
+    input wire s_axi_pmem_arready,
+    output reg [MEM_WIDTH-1:0] m_axi_pmem_araddr,
+    output reg [2:0] m_axi_pmem_arprot,
+
+    input wire s_axi_pmem_rvalid,
+    output reg m_axi_pmem_rready,
+    input wire [DATA_WIDTH-1:0] s_axi_pmem_rdata,
+    input wire [1:0] s_axi_pmem_rresp
     );
 
     wire [DATA_WIDTH-1:0] mem_rdata;
@@ -125,67 +150,55 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     assign mem_wen_pos = mem_wen & ~mem_wen_r1;
     assign mem_ren_pos = mem_ren & ~mem_ren_r1;
 
-    reg m_awvalid;
-    wire s_awready;
-    reg [MEM_WIDTH-1:0] m_awaddr;
-    reg [2:0] m_awprot;
-
-    reg m_wvalid;
-    wire s_wready;
-    reg [DATA_WIDTH-1:0] m_wdata;
-    reg [7:0] m_wstrb;
-
-    wire s_bvalid;
-    reg m_bready;
-    wire [1:0] s_bresp;
+    assign mem_access_flag = mem_wen_pos | mem_ren_pos;
 
     wire awshakehand;
     wire wshakehand;
     wire bshakehand;
 
-    assign awshakehand = m_awvalid & s_awready;
-    assign wshakehand = m_wvalid & s_wready;
-    assign bshakehand = s_bvalid & m_bready;
+    assign awshakehand = m_axi_pmem_awvalid & s_axi_pmem_awready;
+    assign wshakehand  = m_axi_pmem_wvalid  & s_axi_pmem_wready;
+    assign bshakehand  = s_axi_pmem_bvalid  & m_axi_pmem_bready;
 
     always @(posedge clk) begin
         if(rst) begin
-            m_awvalid <= 1'b0;
-            m_awaddr <= {MEM_WIDTH{1'b0}};
-            m_awprot <= 3'b0;
+            m_axi_pmem_awvalid <= 1'b0;
+            m_axi_pmem_awaddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_pmem_awprot  <= 3'b0;
         end else if(mem_wen_pos) begin
-            m_awvalid <= 1'b1;
-            m_awaddr <= mem_waddr;
-            m_awprot <= 3'b000;
+            m_axi_pmem_awvalid <= 1'b1;
+            m_axi_pmem_awaddr  <= mem_waddr;
+            m_axi_pmem_awprot  <= 3'b000;
         end else if(awshakehand) begin
-            m_awvalid <= 1'b0;
-            m_awaddr <= {MEM_WIDTH{1'b0}};
-            m_awprot <= 3'b0;
+            m_axi_pmem_awvalid <= 1'b0;
+            m_axi_pmem_awaddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_pmem_awprot  <= 3'b0;
         end
     end
 
     always @(posedge clk) begin
         if(rst) begin
-            m_wvalid <= 1'b0;
-            m_wdata <= {DATA_WIDTH{1'b0}};
-            m_wstrb <= 8'b0;
+            m_axi_pmem_wvalid <= 1'b0;
+            m_axi_pmem_wdata  <= {DATA_WIDTH{1'b0}};
+            m_axi_pmem_wstrb  <= 8'b0;
         end else if(awshakehand) begin
-            m_wvalid <= 1'b1;
-            m_wdata <= mem_wdata_align;
-            m_wstrb <= mem_wmask;
+            m_axi_pmem_wvalid <= 1'b1;
+            m_axi_pmem_wdata  <= mem_wdata_align;
+            m_axi_pmem_wstrb  <= mem_wmask;
         end else if(wshakehand) begin
-            m_wvalid <= 1'b0;
-            m_wdata <= {DATA_WIDTH{1'b0}};
-            m_wstrb <= 8'b0;
+            m_axi_pmem_wvalid <= 1'b0;
+            m_axi_pmem_wdata  <= {DATA_WIDTH{1'b0}};
+            m_axi_pmem_wstrb  <= 8'b0;
         end
     end
 
     always @(posedge clk) begin
         if(rst) begin
-            m_bready <= 1'b0;
+            m_axi_pmem_bready <= 1'b0;
         end else if(bshakehand) begin
-            m_bready <= 1'b0;
-        end else if(s_bvalid) begin
-            m_bready <= 1'b1;
+            m_axi_pmem_bready <= 1'b0;
+        end else if(s_axi_pmem_bvalid) begin
+            m_axi_pmem_bready <= 1'b1;
         end
     end
 
@@ -193,11 +206,10 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
 
     wire arshakehand;
     reg arcomplete;
-
     wire rshakehand;
 
-    assign arshakehand = m_arvalid & s_arready;
-    assign rshakehand = s_rvalid & m_rready;
+    assign arshakehand = m_axi_pmem_arvalid & s_axi_pmem_arready;
+    assign rshakehand  = s_axi_pmem_rvalid  & m_axi_pmem_rready;
 
     always @(posedge clk) begin
         if(rst) begin
@@ -209,76 +221,33 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
         end
     end
 
-    reg m_arvalid;
-    wire s_arready;
-    reg [MEM_WIDTH-1:0] m_araddr;
-    reg [2:0] m_arprot;
-
-    wire s_rvalid;
-    reg m_rready;
-    wire [DATA_WIDTH-1:0] s_rdata;
-    wire [1:0] s_rresp;
-
     always @(posedge clk) begin
         if(rst) begin
-            m_arvalid <= 1'b0;
-            m_araddr <= {MEM_WIDTH{1'b0}};
-            m_arprot <= 3'b0;
+            m_axi_pmem_arvalid <= 1'b0;
+            m_axi_pmem_araddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_pmem_arprot  <= 3'b0;
         end else if(mem_ren_pos) begin
-            m_arvalid <= 1'b1;
-            m_araddr <= mem_raddr;
-            m_arprot <= 3'b0;
+            m_axi_pmem_arvalid <= 1'b1;
+            m_axi_pmem_araddr  <= mem_raddr;
+            m_axi_pmem_arprot  <= 3'b0;
         end else if(arshakehand) begin
-            m_arvalid <= 1'b0;
-            m_araddr <= {MEM_WIDTH{1'b0}};
-            m_arprot <= 3'b0;
+            m_axi_pmem_arvalid <= 1'b0;
+            m_axi_pmem_araddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_pmem_arprot  <= 3'b0;
         end
     end
 
     always @(posedge clk) begin
         if(rst) begin
-            m_rready <= 1'b0;
+            m_axi_pmem_rready <= 1'b0;
         end else if(rshakehand) begin
-            m_rready <= 1'b0;
-        end else if(s_rvalid) begin
-            m_rready <= 1'b1;
+            m_axi_pmem_rready <= 1'b0;
+        end else if(s_axi_pmem_rvalid) begin
+            m_axi_pmem_rready <= 1'b1;
         end
     end
 
-    assign mem_rdata = (rshakehand) ? s_rdata : {DATA_WIDTH{1'b0}};
+    assign mem_rdata  = (rshakehand) ? s_axi_pmem_rdata : {DATA_WIDTH{1'b0}};
     assign mem_rvalid = rshakehand;
-
-    pmem_sim #(
-        .MEM_WIDTH(MEM_WIDTH),
-        .DATA_WIDTH(DATA_WIDTH)
-    )u_pmem_sim(
-        .aclk      (clk       ),
-        .areset_n  (rst       ),
-
-        .m_awvalid (m_awvalid ),
-        .s_awready (s_awready ),
-        .m_awaddr  (m_awaddr  ),
-        .m_awprot  (m_awprot  ),
-
-        .m_wvalid  (m_wvalid  ),
-        .s_wready  (s_wready  ),
-        .m_wdata   (m_wdata   ),
-        .m_wstrb   (m_wstrb   ),
-
-        .s_bvalid  (s_bvalid  ),
-        .m_bready  (m_bready  ),
-        .s_bresp   (s_bresp   ),
-
-        .m_arvalid (m_arvalid ),
-        .s_arready (s_arready ),
-        .m_araddr  (m_araddr  ),
-        .m_arprot  (m_arprot  ),
-
-        .s_rvalid  (s_rvalid  ),
-        .m_rready  (m_rready  ),
-        .s_rdata   (s_rdata   ),
-        .s_rresp   (s_rresp   )
-    );
-
 
 endmodule

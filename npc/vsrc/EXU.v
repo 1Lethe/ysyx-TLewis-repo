@@ -21,6 +21,7 @@ module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input [7:0] mem_rtype,
         input [`ysyx_24120013_ZERO_WIDTH-1:0] mem_zero_width,
         input [`ysyx_24120013_SEXT_WIDTH-1:0] mem_sext_width,
+        output wire mem_access_flag,
 
         input [`ysyx_24120013_ECU_WIDTH-1:0] ecu_op,
         input [DATA_WIDTH-1:0] ecu_pc,
@@ -50,7 +51,31 @@ module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output wire ex_is_ready,
 
         input wb_is_ready,
-        output wire ex_is_valid
+        output wire ex_is_valid,
+
+        output  m_axi_pmem_lsu_awvalid,
+        input wire s_axi_pmem_lsu_awready,
+        output  [MEM_WIDTH-1:0] m_axi_pmem_lsu_awaddr,
+        output  [2:0] m_axi_pmem_lsu_awprot,
+
+        output  m_axi_pmem_lsu_wvalid,
+        input wire s_axi_pmem_lsu_wready,
+        output  [DATA_WIDTH-1:0] m_axi_pmem_lsu_wdata,
+        output  [7:0] m_axi_pmem_lsu_wstrb,
+
+        input wire s_axi_pmem_lsu_bvalid,
+        output  m_axi_pmem_lsu_bready,
+        input wire [1:0] s_axi_pmem_lsu_bresp,
+
+        output  m_axi_pmem_lsu_arvalid,
+        input wire s_axi_pmem_lsu_arready,
+        output  [MEM_WIDTH-1:0] m_axi_pmem_lsu_araddr,
+        output  [2:0] m_axi_pmem_lsu_arprot,
+
+        input wire s_axi_pmem_lsu_rvalid,
+        output  m_axi_pmem_lsu_rready,
+        input wire [DATA_WIDTH-1:0] s_axi_pmem_lsu_rdata,
+        input wire [1:0] s_axi_pmem_lsu_rresp
     );
 
     wire ex_shakehand;
@@ -133,7 +158,32 @@ ysyx_24120013_lsu #(
     .mem_wdata  	(mem_wdata       ),
     .mem_wreg       (mem_wreg        ),
     .mem_wcomplete  (mem_wcomplete   ),
-    .mem_rvalid     (mem_rvalid      )
+    .mem_rvalid     (mem_rvalid      ),
+    .mem_access_flag(mem_access_flag ),
+
+    .m_axi_pmem_awvalid   (m_axi_pmem_lsu_awvalid   ),
+    .s_axi_pmem_awready   (s_axi_pmem_lsu_awready   ),
+    .m_axi_pmem_awaddr    (m_axi_pmem_lsu_awaddr    ),
+    .m_axi_pmem_awprot    (m_axi_pmem_lsu_awprot    ),
+
+    .m_axi_pmem_wvalid    (m_axi_pmem_lsu_wvalid    ),
+    .s_axi_pmem_wready    (s_axi_pmem_lsu_wready    ),
+    .m_axi_pmem_wdata     (m_axi_pmem_lsu_wdata     ),
+    .m_axi_pmem_wstrb     (m_axi_pmem_lsu_wstrb     ),
+
+    .s_axi_pmem_bvalid    (s_axi_pmem_lsu_bvalid    ),
+    .m_axi_pmem_bready    (m_axi_pmem_lsu_bready    ),
+    .s_axi_pmem_bresp     (s_axi_pmem_lsu_bresp     ),
+
+    .m_axi_pmem_arvalid   (m_axi_pmem_lsu_arvalid   ),
+    .s_axi_pmem_arready   (s_axi_pmem_lsu_arready   ),
+    .m_axi_pmem_araddr    (m_axi_pmem_lsu_araddr    ),
+    .m_axi_pmem_arprot    (m_axi_pmem_lsu_arprot    ),
+
+    .s_axi_pmem_rvalid    (s_axi_pmem_lsu_rvalid    ),
+    .m_axi_pmem_rready    (m_axi_pmem_lsu_rready    ),
+    .s_axi_pmem_rdata     (s_axi_pmem_lsu_rdata     ),
+    .s_axi_pmem_rresp     (s_axi_pmem_lsu_rresp     )
 );
 
 // output declaration of module ysyx_24120013_ECU

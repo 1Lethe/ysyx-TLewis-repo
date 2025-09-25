@@ -7,8 +7,17 @@ module ysyx_24120023_IFU #(MEM_WIDTH = 32,DATA_WIDTH = 32)(
 
     input id_is_ready,
     output wire inst_is_valid,
+    output wire [DATA_WIDTH-1:0] IFU_inst,
 
-    output wire [DATA_WIDTH-1:0] IFU_inst
+    output reg m_axi_pmem_ifu_arvalid,
+    input wire s_axi_pmem_ifu_arready,
+    output reg [MEM_WIDTH-1:0] m_axi_pmem_ifu_araddr,
+    output reg [2:0]  m_axi_pmem_ifu_arprot,
+
+    input wire s_axi_pmem_ifu_rvalid,
+    output reg m_axi_pmem_ifu_rready,
+    input wire [DATA_WIDTH-1:0] s_axi_pmem_ifu_rdata,
+    input wire [1:0]  s_axi_pmem_ifu_rresp
 );
 
     wire [DATA_WIDTH-1:0] inst_fetch;
@@ -35,8 +44,8 @@ module ysyx_24120023_IFU #(MEM_WIDTH = 32,DATA_WIDTH = 32)(
 
     wire rshakehand;
 
-    assign arshakehand = m_arvalid & s_arready;
-    assign rshakehand = s_rvalid & m_rready;
+    assign arshakehand = m_axi_pmem_ifu_arvalid & s_axi_pmem_ifu_arready;
+    assign rshakehand = s_axi_pmem_ifu_rvalid & m_axi_pmem_ifu_rready;
 
     always @(posedge clk) begin
         if(rst) begin
@@ -48,71 +57,34 @@ module ysyx_24120023_IFU #(MEM_WIDTH = 32,DATA_WIDTH = 32)(
         end
     end
 
-    reg m_arvalid;
-    wire s_arready;
-    reg [MEM_WIDTH-1:0] m_araddr;
-    reg [2:0] m_arprot;
-
-    wire s_rvalid;
-    reg m_rready;
-    wire [DATA_WIDTH-1:0] s_rdata;
-    wire [1:0] s_rresp;
-
     always @(posedge clk) begin
         if(rst) begin
-            m_arvalid <= 1'b0;
-            m_araddr <= {MEM_WIDTH{1'b0}};
-            m_arprot <= 3'b0;
+            m_axi_pmem_ifu_arvalid <= 1'b0;
+            m_axi_pmem_ifu_araddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_pmem_ifu_arprot  <= 3'b0;
         end else if(inst_fetch_enable) begin
-            m_arvalid <= 1'b1;
-            m_araddr <= pc;
-            m_arprot <= 3'b100;
+            m_axi_pmem_ifu_arvalid <= 1'b1;
+            m_axi_pmem_ifu_araddr  <= pc;
+            m_axi_pmem_ifu_arprot  <= 3'b100;
         end else if(arshakehand) begin
-            m_arvalid <= 1'b0;
-            m_araddr <= {MEM_WIDTH{1'b0}};
-            m_arprot <= 3'b0;
+            m_axi_pmem_ifu_arvalid <= 1'b0;
+            m_axi_pmem_ifu_araddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_pmem_ifu_arprot  <= 3'b0;
         end
     end
 
     always @(posedge clk) begin
         if(rst) begin
-            m_rready <= 1'b0;
+            m_axi_pmem_ifu_rready <= 1'b0;
         end else if(rshakehand) begin
-            m_rready <= 1'b0;
-        end else if(s_rvalid) begin
-            m_rready <= 1'b1;
+            m_axi_pmem_ifu_rready <= 1'b0;
+        end else if(s_axi_pmem_ifu_rvalid) begin
+            m_axi_pmem_ifu_rready <= 1'b1;
         end
     end
 
-    assign rdata_inst = (rshakehand) ? s_rdata : {DATA_WIDTH{1'b0}};
+    assign rdata_inst = (rshakehand) ? s_axi_pmem_ifu_rdata : {DATA_WIDTH{1'b0}};
     assign rvalid_inst = rshakehand;
-
-    pmem_sim #(
-        .MEM_WIDTH(MEM_WIDTH),
-        .DATA_WIDTH(DATA_WIDTH)
-    )u_pmem_sim(
-        .aclk   	(clk                  ),
-        .areset_n   (rst                  ),
-        .m_awvalid  (1'b0                 ),
-        .s_awready  (                     ),
-        .m_awaddr   ({MEM_WIDTH{1'b0}}    ),
-        .m_awprot   (3'b0                 ),
-        .m_wvalid   (1'b0                 ),
-        .s_wready   (                     ),
-        .m_wdata    ({DATA_WIDTH{1'b0}}   ),
-        .m_wstrb    (8'b0                 ),
-        .s_bvalid   (                     ),
-        .m_bready   (1'b0                 ),
-        .s_bresp    (                     ),
-        .m_arvalid  (m_arvalid            ),
-        .s_arready  (s_arready            ),
-        .m_araddr   (m_araddr             ),
-        .m_arprot   (m_arprot             ),
-        .s_rvalid   (s_rvalid             ),
-        .m_rready   (m_rready             ),
-        .s_rdata    (s_rdata              ),
-        .s_rresp    (s_rresp              )
-    );
 
     assign inst_fetch = rdata_inst;
     assign inst_is_valid = rvalid_inst | inst_buffer_enable;

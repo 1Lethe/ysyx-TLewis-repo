@@ -39,7 +39,7 @@ void host_write(void *addr, int len, uint32_t data) {
 }
 
 void pmem_write(uint32_t addr, int len, uint32_t data) {
-#ifdef EN_DEVICE
+#if defined(EN_DEVICE) && !defined(EN_MMIO_HARDWARE)
     if(addr == SERIAL_MMIO){
         mmio_write(addr, len, data);
         return;
@@ -52,7 +52,7 @@ void pmem_write(uint32_t addr, int len, uint32_t data) {
 }
 
 uint32_t pmem_read(uint32_t addr,uint32_t len){
-#ifdef EN_DEVICE
+#if defined(EN_DEVICE) && !defined(EN_MMIO_HARDWARE)
     if(addr == RTC_MMIO || addr == RTC_MMIO + 4){
         return mmio_read(addr, len);
     }
@@ -98,3 +98,11 @@ extern "C" void sim_pmem_write(int waddr, int wdata, char wmask) {
         }
     }
 }
+
+#if defined(EN_DEVICE) && defined(EN_MMIO_HARDWARE)
+extern "C" int sim_read_RTC(int raddr) {
+    // 用于使用AM环境读RTC外设的函数
+    Assert(raddr == RTC_MMIO || raddr == RTC_MMIO + 4,"Invalid read RTC addr 0x%x.ABORT", raddr);
+    return mmio_read(raddr, 4);
+}
+#endif
