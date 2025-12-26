@@ -1,3 +1,4 @@
+// NOTE: 仅用于测试，现不使用
 module uart_sim #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
         input aclk,
         input areset_n,
