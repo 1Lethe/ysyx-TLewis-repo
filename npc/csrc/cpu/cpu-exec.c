@@ -11,8 +11,8 @@ extern int difftest_port;
 void device_update();
 
 void single_cycle(SIM_MODULE* top){
-    top->clk = 0;top->eval();dump_wave(top);
-    top->clk = 1;top->eval();dump_wave(top);
+    top->clock = 0;top->eval();dump_wave(top);
+    top->clock = 1;top->eval();dump_wave(top);
 }
 
 void cycle(SIM_MODULE* top, uint64_t n){
@@ -39,7 +39,7 @@ uint64_t get_cycle_time(void) {
 
 // NOTE: 在这里注意Verilog的冒险行为！即若在时钟上升沿修改数据，会发生数据冒险，结果往往不正常。
 void reset(SIM_MODULE* top, int n){
-    top->rst = 1; top->eval();
+    top->reset = 1; top->eval();
     while(n-- > 0) single_cycle(top);
-    top->rst = 0; top->eval(); 
+    top->reset = 0; top->eval(); 
 }

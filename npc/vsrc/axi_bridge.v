@@ -1,4 +1,4 @@
-module ysyx_24120013_pmem_arbiter 
+module ysyx_24120013_axi_bridge
     #(
         MEM_WIDTH = 32, 
         DATA_WIDTH = 32,
@@ -13,6 +13,7 @@ module ysyx_24120013_pmem_arbiter
         input aclk,
         input areset_n,
 
+        // TODO: 修改这里的端口命名
         /* master 1 (lsu) AXI4-Lite bus */
         input  m_axi_pmem_lsu_awvalid,
         output wire s_axi_pmem_lsu_awready,

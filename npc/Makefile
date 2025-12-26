@@ -1,6 +1,6 @@
 .PHONY = all run sim clean clean_wave clean_all syn fix-fanout sta clean_sta
 
-TOPNAME = ysyx_24120013_top
+TOPNAME = ysyx_24120013
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 

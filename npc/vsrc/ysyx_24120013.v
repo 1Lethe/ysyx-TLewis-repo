@@ -7,9 +7,9 @@ import "DPI-C" function void halt ();
 
 `include "define/exu_command.v"
 
-module ysyx_24120013_top (
-    input clk,
-    input rst,
+module ysyx_24120013 (
+    input clock,
+    input reset,
     output reg [DATA_WIDTH-1:0] pc,
 
     /* display to C++ interface */
@@ -40,8 +40,8 @@ wire [DATA_WIDTH-1:0] branch_jmp_pc;
 ysyx_24120013_PC #(
     .DATA_WIDTH(DATA_WIDTH)
 )u_ysyx_24120013_PC(
-    .clk        	(clk             ),
-    .rst        	(rst             ),
+    .clk        	(clock             ),
+    .rst        	(reset             ),
     .pc_jmp_val 	(branch_jmp_pc   ),
     .pc         	(pc              ),
     .next_inst_flag (next_inst_flag  )
@@ -62,8 +62,8 @@ wire [DATA_WIDTH-1:0] s_axi_pmem_ifu_rdata;
 wire [1:0]  s_axi_pmem_ifu_rresp;
 
 ysyx_24120023_IFU u_ysyx_24120023_IFU(
-    .clk      	             (clk                       ),
-    .rst      	             (rst                       ),
+    .clk      	             (clock                       ),
+    .rst      	             (reset                       ),
     .pc                      (pc                        ),
     .next_inst_flag          (next_inst_flag            ),
     .id_is_ready             (id_is_ready               ),
@@ -111,8 +111,8 @@ ysyx_24120013_IDU #(
     .ADDR_WIDTH (ADDR_WIDTH),
     .DATA_WIDTH (DATA_WIDTH)
 )u_ysyx_24120013_IDU(
-    .clk         	(clk             ),
-    .rst         	(rst             ),
+    .clk         	(clock             ),
+    .rst         	(reset             ),
     .inst        	(inst            ),
     .pc             (pc              ),
     .reg_rdata1     (reg_rdata1      ),
@@ -163,8 +163,8 @@ wire [DATA_WIDTH-1:0] csr_wdata3;
 wire wb_is_ready;
 wire next_inst_flag;
 
-always @(posedge clk) begin
-    if(rst)
+always @(posedge clock) begin
+    if(reset)
         difftest_check_flag <= 1'b0;
     else
         difftest_check_flag <= next_inst_flag;
@@ -174,8 +174,8 @@ ysyx_24120013_RegisterFile #(
     .ADDR_WIDTH (ADDR_WIDTH),
     .DATA_WIDTH (DATA_WIDTH)
 )u_ysyx_24120013_RegisterFile(
-    .clk    	     (clk              ),
-    .rst    	     (rst              ),
+    .clk    	     (clock              ),
+    .rst    	     (reset              ),
     .wdata  	     (reg_wdata        ),
     .waddr  	     (reg_waddr        ),
     .wen    	     (reg_wen          ),
@@ -241,8 +241,8 @@ ysyx_24120013_EXU #(
     .ADDR_WIDTH (ADDR_WIDTH),
     .DATA_WIDTH (DATA_WIDTH)
 )u_ysyx_24120013_EXU(
-    .clk       	    (clk           ),
-    .rst       	    (rst           ),
+    .clk       	    (clock           ),
+    .rst       	    (reset           ),
     .alu_src1      	(alu_src1      ),
     .alu_src2      	(alu_src2      ),
     .alu_op         (alu_op        ),
@@ -337,8 +337,8 @@ pmem_sim #(
     .MEM_WIDTH (MEM_WIDTH),
     .DATA_WIDTH (DATA_WIDTH)
 )u_pmem_sim(
-    .aclk       (clk               ),
-    .areset_n   (rst               ),
+    .aclk       (clock               ),
+    .areset_n   (reset               ),
     .m_awvalid  (m_axi_pmem_awvalid),
     .s_awready  (s_axi_pmem_awready),
     .m_awaddr   (m_axi_pmem_awaddr ),
@@ -380,8 +380,8 @@ uart_sim #(
     .MEM_WIDTH(MEM_WIDTH),
     .DATA_WIDTH(DATA_WIDTH)
 ) u_uart_sim (
-    .aclk        (clk               ),
-    .areset_n    (rst               ),
+    .aclk        (clock               ),
+    .areset_n    (reset               ),
     .m_awvalid   (m_axi_uart_awvalid),
     .s_awready   (s_axi_uart_awready),
     .m_awaddr    (m_axi_uart_awaddr ),
@@ -412,8 +412,8 @@ ysyx_24120013_CLINT #(
     .CLINT_MMIO_BASE   (CLINT_MMIO_BASE),
     .CLINT_MMIO_SIZE   (CLINT_MMIO_SIZE)
 )u_ysyx_24120013_CLINT(
-    .aclk               (clk                 ),
-    .areset_n           (rst                 ),
+    .aclk               (clock                 ),
+    .areset_n           (reset                 ),
     .m_arvalid          (m_axi_clint_arvalid ),
     .s_arready          (s_axi_clint_arready ),
     .m_araddr           (m_axi_clint_araddr  ),
@@ -425,7 +425,7 @@ ysyx_24120013_CLINT #(
 );
 
 
-ysyx_24120013_pmem_arbiter #(
+ysyx_24120013_axi_bridge #(
     .MEM_WIDTH        (MEM_WIDTH),
     .DATA_WIDTH       (DATA_WIDTH),
     .PMEM_BASE        (PMEM_BASE),
@@ -434,9 +434,9 @@ ysyx_24120013_pmem_arbiter #(
     .UART_MMIO_SIZE   (UART_MMIO_SIZE),
     .CLINT_MMIO_BASE  (CLINT_MMIO_BASE),
     .CLINT_MMIO_SIZE  (CLINT_MMIO_SIZE)
-)u_ysyx_24120013_pmem_arbiter( 
-    .aclk                   	(clk                     ),
-    .areset_n               	(rst                     ),
+)u_ysyx_24120013_axi_bridge( 
+    .aclk                   	(clock                     ),
+    .areset_n               	(reset                     ),
 
     .m_axi_pmem_lsu_awvalid 	(m_axi_pmem_lsu_awvalid  ),
     .s_axi_pmem_lsu_awready 	(s_axi_pmem_lsu_awready  ),

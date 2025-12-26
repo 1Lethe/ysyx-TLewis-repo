@@ -3,7 +3,7 @@
 #define __SIM_H
 
 #include "verilated_fst_c.h"
-#include "Vysyx_24120013_top__Dpi.h"
+#include "Vysyx_24120013__Dpi.h"
 
 #include "sim_main.h"
 

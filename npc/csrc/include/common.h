@@ -24,7 +24,6 @@
 
 #include "macro.h"
 
-#include "Vysyx_24120013_top.h"
 #include "verilated.h"
 
 #include "sim_main.h"

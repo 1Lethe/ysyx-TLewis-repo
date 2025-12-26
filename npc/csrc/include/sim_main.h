@@ -1,10 +1,10 @@
 #ifndef __SIM_MAIN_H
 #define __SIM_MAIN_H
 
-#include "Vysyx_24120013_top.h"
+#include "Vysyx_24120013.h"
 #include "verilated.h"
 
-#define SIM_MODULE Vysyx_24120013_top
+#define SIM_MODULE Vysyx_24120013
 #define SIM_MODULE_NAME top
 
 extern SIM_MODULE* SIM_MODULE_NAME;

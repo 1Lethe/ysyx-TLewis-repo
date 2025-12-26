@@ -29,6 +29,6 @@ image: image-dep
 
 run: insert-arg
 	$(MAKE) -C $(NPC_HOME) ISA=$(ISA) sim IMG=$(IMAGE).bin
-	$(NPC_HOME)/build/ysyx_24120013_top $(NPCFLAGS)
+	$(NPC_HOME)/build/ysyx_24120013 $(NPCFLAGS)
 
 .PHONY: insert-arg
