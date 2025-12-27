@@ -436,7 +436,7 @@ ysyx_24120013_axi_bridge #(
     .CLINT_MMIO_SIZE  (CLINT_MMIO_SIZE)
 )u_ysyx_24120013_axi_bridge( 
     .aclk                   	(clock                     ),
-    .areset_n               	(reset                     ),
+    .areset               	    (reset                     ),
 
     .m_axi_pmem_lsu_awvalid 	(m_axi_pmem_lsu_awvalid  ),
     .s_axi_pmem_lsu_awready 	(s_axi_pmem_lsu_awready  ),

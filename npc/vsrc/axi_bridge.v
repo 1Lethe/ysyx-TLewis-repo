@@ -11,7 +11,7 @@ module ysyx_24120013_axi_bridge
         CLINT_MMIO_SIZE = 32'h8
       )(
         input aclk,
-        input areset_n,
+        input areset,
 
         // TODO: 修改这里的端口命名
         /* master 1 (lsu) AXI4-Lite bus */
@@ -119,7 +119,7 @@ module ysyx_24120013_axi_bridge
     reg [1:0] arbiter_pmem_state;
 
     always @(posedge aclk) begin
-        if(areset_n) begin
+        if(areset) begin
             arbiter_pmem_state <= ARBITER_PMEM_IDLE;
         end else begin
             case(arbiter_pmem_state)
@@ -268,7 +268,7 @@ module ysyx_24120013_axi_bridge
     end
 
     always @(posedge aclk) begin
-        if(areset_n) begin
+        if(areset) begin
             xbar_pmem_buff <= 1'b0;
         end else if((s_bvalid & m_bready) | (s_rvalid & m_rready)) begin
             xbar_pmem_buff <= 1'b0;
@@ -278,7 +278,7 @@ module ysyx_24120013_axi_bridge
     end
 
     always @(posedge aclk) begin
-        if(areset_n) begin
+        if(areset) begin
             xbar_uart_buff <= 1'b0;
         end else if((s_bvalid & m_bready) | (s_rvalid & m_rready)) begin
             xbar_uart_buff <= 1'b0;
@@ -288,7 +288,7 @@ module ysyx_24120013_axi_bridge
     end
 
     always @(posedge aclk) begin
-        if(areset_n) begin
+        if(areset) begin
             xbar_clint_buff <= 1'b0;
         end else if((s_bvalid & m_bready) | (s_rvalid & m_rready)) begin
             xbar_clint_buff <= 1'b0;
