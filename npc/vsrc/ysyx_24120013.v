@@ -58,10 +58,10 @@ wire [DATA_WIDTH-1:0] simplebus_ifu_mem_rd_data;
 wire [1:0]  simplebus_ifu_mem_rd_resp;
 wire        simplebus_ifu_mem_rd_complete;
 
-ysyx_24120023_IFU #(
+ysyx_24120013_IFU #(
     .MEM_WIDTH  (MEM_WIDTH ),
     .DATA_WIDTH (DATA_WIDTH)
-) u_ysyx_24120023_IFU(
+) u_ysyx_24120013_IFU(
     .clk      	             (clock                       ),
     .rst      	             (reset                       ),
     .pc                      (pc                        ),
