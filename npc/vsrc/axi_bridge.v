@@ -14,84 +14,73 @@ module ysyx_24120013_axi_bridge
         input areset,
 
         // TODO: 修改这里的端口命名
-        /* master 1 (lsu) AXI4-Lite bus */
-        input  m_axi_pmem_lsu_awvalid,
-        output wire s_axi_pmem_lsu_awready,
-        input  [MEM_WIDTH-1:0] m_axi_pmem_lsu_awaddr,
-        input  [2:0] m_axi_pmem_lsu_awprot,
+        /* master 1 (lsu) AXI4-Lite bus interface */
+        input  wire        m_axi_lsu_mem_awvalid,
+        output wire        s_axi_lsu_mem_awready,
+        input  wire [MEM_WIDTH-1:0] m_axi_lsu_mem_awaddr,
+        input  wire [2:0]  m_axi_lsu_mem_awprot,
 
-        input  m_axi_pmem_lsu_wvalid,
-        output wire s_axi_pmem_lsu_wready,
-        input  [DATA_WIDTH-1:0] m_axi_pmem_lsu_wdata,
-        input  [3:0] m_axi_pmem_lsu_wstrb,
+        input  wire        m_axi_lsu_mem_wvalid,
+        output wire        s_axi_lsu_mem_wready,
+        input  wire [DATA_WIDTH-1:0] m_axi_lsu_mem_wdata,
+        input  wire [3:0]  m_axi_lsu_mem_wstrb,
 
-        output wire s_axi_pmem_lsu_bvalid,
-        input  m_axi_pmem_lsu_bready,
-        output wire [1:0] s_axi_pmem_lsu_bresp,
+        output wire        s_axi_lsu_mem_bvalid,
+        input  wire        m_axi_lsu_mem_bready,
+        output wire [1:0]  s_axi_lsu_mem_bresp,
 
-        input  m_axi_pmem_lsu_arvalid,
-        output wire s_axi_pmem_lsu_arready,
-        input  [MEM_WIDTH-1:0] m_axi_pmem_lsu_araddr,
-        input  [2:0] m_axi_pmem_lsu_arprot,
+        input  wire        m_axi_lsu_mem_arvalid,
+        output wire        s_axi_lsu_mem_arready,
+        input  wire [MEM_WIDTH-1:0] m_axi_lsu_mem_araddr,
+        input  wire [2:0]  m_axi_lsu_mem_arprot,
 
-        output wire s_axi_pmem_lsu_rvalid,
-        input  m_axi_pmem_lsu_rready,
-        output wire [DATA_WIDTH-1:0] s_axi_pmem_lsu_rdata,
-        output wire [1:0] s_axi_pmem_lsu_rresp,
+        output wire        s_axi_lsu_mem_rvalid,
+        input  wire        m_axi_lsu_mem_rready,
+        output wire [DATA_WIDTH-1:0] s_axi_lsu_mem_rdata,
+        output wire [1:0]  s_axi_lsu_mem_rresp,
 
-        /* master 2 (ifu) AXI4-Lite bus */
-        input  m_axi_pmem_ifu_arvalid,
-        output wire s_axi_pmem_ifu_arready,
-        input  [MEM_WIDTH-1:0] m_axi_pmem_ifu_araddr,
-        input  [2:0]  m_axi_pmem_ifu_arprot,
+        /* master 2 (ifu) AXI4-Lite bus interface */
+        input  wire        m_axi_ifu_mem_arvalid,
+        output wire        s_axi_ifu_mem_arready,
+        input  wire [MEM_WIDTH-1:0] m_axi_ifu_mem_araddr,
+        input  wire [2:0]  m_axi_ifu_mem_arprot,
 
-        output wire s_axi_pmem_ifu_rvalid,
-        input  m_axi_pmem_ifu_rready,
-        output wire [DATA_WIDTH-1:0] s_axi_pmem_ifu_rdata,
-        output wire [1:0]  s_axi_pmem_ifu_rresp,
+        output wire        s_axi_ifu_mem_rvalid,
+        input  wire        m_axi_ifu_mem_rready,
+        output wire [DATA_WIDTH-1:0] s_axi_ifu_mem_rdata,
+        output wire [1:0]  s_axi_ifu_mem_rresp,
 
-        /* slave 1 (pmem) AXI4-Lite bus */
-        output wire m_axi_pmem_awvalid,
-        input  s_axi_pmem_awready,
-        output wire [MEM_WIDTH-1:0] m_axi_pmem_awaddr,
-        output wire [2:0] m_axi_pmem_awprot,
+        /* SoC AXI4-Lite bus interface */
+        // --- Write Address Channel ---
+        output wire                     io_master_awvalid,
+        input  wire                     io_master_awready,
+        output wire [MEM_WIDTH-1:0]     io_master_awaddr,
+        output wire [2:0]               io_master_awprot,
 
-        output wire m_axi_pmem_wvalid,
-        input  s_axi_pmem_wready,
-        output wire [DATA_WIDTH-1:0] m_axi_pmem_wdata,
-        output wire [3:0] m_axi_pmem_wstrb,
+        // --- Write Data Channel ---
+        output wire                     io_master_wvalid,
+        input  wire                     io_master_wready,
+        output wire [DATA_WIDTH-1:0]    io_master_wdata,
+        output wire [3:0] io_master_wstrb,
 
-        input  s_axi_pmem_bvalid,
-        output wire m_axi_pmem_bready,
-        input  [1:0] s_axi_pmem_bresp,
+        // --- Write Response Channel ---
+        input  wire                     io_master_bvalid,
+        output wire                     io_master_bready,
+        input  wire [1:0]               io_master_bresp,
 
-        output wire m_axi_pmem_arvalid,
-        input  s_axi_pmem_arready,
-        output wire [MEM_WIDTH-1:0] m_axi_pmem_araddr,
-        output wire [2:0] m_axi_pmem_arprot,
+        // --- Read Address Channel ---
+        output wire                     io_master_arvalid,
+        input  wire                     io_master_arready,
+        output wire [MEM_WIDTH-1:0]     io_master_araddr,
+        output wire [2:0]               io_master_arprot,
 
-        input  s_axi_pmem_rvalid,
-        output wire m_axi_pmem_rready,
-        input  [DATA_WIDTH-1:0] s_axi_pmem_rdata,
-        input  [1:0] s_axi_pmem_rresp,
+        // --- Read Data Channel ---
+        input  wire                     io_master_rvalid,
+        output wire                     io_master_rready,
+        input  wire [DATA_WIDTH-1:0]    io_master_rdata,
+        input  wire [1:0]               io_master_rresp,
 
-        // TODO: 整合这里的SOC信号
-        /* slave 2 (uart) AXI4-lite bus */
-        output wire m_axi_uart_awvalid,
-        input  s_axi_uart_awready,
-        output wire [MEM_WIDTH-1:0] m_axi_uart_awaddr,
-        output wire [2:0] m_axi_uart_awprot,
-
-        output wire m_axi_uart_wvalid,
-        input  s_axi_uart_wready,
-        output wire [DATA_WIDTH-1:0] m_axi_uart_wdata,
-        output wire [3:0] m_axi_uart_wstrb,
-
-        input  s_axi_uart_bvalid,
-        output wire m_axi_uart_bready,
-        input  [1:0] s_axi_uart_bresp,
-
-        /* slave 3 (CLINT) AXI4-lite bus */
+        /* slave 2 (CLINT) AXI4-lite bus */
         output wire   m_axi_clint_arvalid,
         input         s_axi_clint_arready,
         output wire [MEM_WIDTH-1:0] m_axi_clint_araddr,
@@ -175,196 +164,142 @@ module ysyx_24120013_axi_bridge
     wire [1:0] s_rresp;
 
     // 写通道信号驱动
-    assign m_awvalid = (arbiter_allow_lsu) ? m_axi_pmem_lsu_awvalid :
-                    (arbiter_allow_ifu) ? 1'b0 : 1'b0;
+    assign m_awvalid = (arbiter_allow_lsu) ? m_axi_lsu_mem_awvalid :
+                       (arbiter_allow_ifu) ? 1'b0 : 1'b0;
 
-    assign s_axi_pmem_lsu_awready = (arbiter_allow_lsu) ? s_awready : 1'b0;
+    assign s_axi_lsu_mem_awready = (arbiter_allow_lsu) ? s_awready : 1'b0;
 
-    assign m_awaddr = (arbiter_allow_lsu) ? m_axi_pmem_lsu_awaddr :
-                    (arbiter_allow_ifu) ? {MEM_WIDTH{1'b0}} : {MEM_WIDTH{1'b0}};
+    assign m_awaddr = (arbiter_allow_lsu) ? m_axi_lsu_mem_awaddr :
+                      (arbiter_allow_ifu) ? {MEM_WIDTH{1'b0}} : {MEM_WIDTH{1'b0}};
 
-    assign m_awprot = (arbiter_allow_lsu) ? m_axi_pmem_lsu_awprot :
-                    (arbiter_allow_ifu) ? 3'b0 : 3'b0;
+    assign m_awprot = (arbiter_allow_lsu) ? m_axi_lsu_mem_awprot :
+                      (arbiter_allow_ifu) ? 3'b0 : 3'b0;
 
-    assign m_wvalid = (arbiter_allow_lsu) ? m_axi_pmem_lsu_wvalid :
-                    (arbiter_allow_ifu) ? 1'b0 : 1'b0;
+    assign m_wvalid = (arbiter_allow_lsu) ? m_axi_lsu_mem_wvalid :
+                      (arbiter_allow_ifu) ? 1'b0 : 1'b0;
 
-    assign s_axi_pmem_lsu_wready = (arbiter_allow_lsu) ? s_wready : 1'b0;
+    assign s_axi_lsu_mem_wready = (arbiter_allow_lsu) ? s_wready : 1'b0;
 
-    assign m_wdata = (arbiter_allow_lsu) ? m_axi_pmem_lsu_wdata :
-                    (arbiter_allow_ifu) ? {DATA_WIDTH{1'b0}} : {DATA_WIDTH{1'b0}};
+    assign m_wdata = (arbiter_allow_lsu) ? m_axi_lsu_mem_wdata :
+                     (arbiter_allow_ifu) ? {DATA_WIDTH{1'b0}} : {DATA_WIDTH{1'b0}};
 
-    assign m_wstrb = (arbiter_allow_lsu) ? m_axi_pmem_lsu_wstrb :
-                    (arbiter_allow_ifu) ? 4'b0 : 4'b0;
+    assign m_wstrb = (arbiter_allow_lsu) ? m_axi_lsu_mem_wstrb :
+                     (arbiter_allow_ifu) ? 4'b0 : 4'b0;
 
-    assign s_axi_pmem_lsu_bvalid = (arbiter_allow_lsu) ? s_bvalid : 1'b0;
+    assign s_axi_lsu_mem_bvalid = (arbiter_allow_lsu) ? s_bvalid : 1'b0;
 
-    assign m_bready = (arbiter_allow_lsu) ? m_axi_pmem_lsu_bready :
-                    (arbiter_allow_ifu) ? 1'b0 : 1'b0;
+    assign m_bready = (arbiter_allow_lsu) ? m_axi_lsu_mem_bready :
+                      (arbiter_allow_ifu) ? 1'b0 : 1'b0;
 
-    assign s_axi_pmem_lsu_bresp = (arbiter_allow_lsu) ? s_bresp : 2'b0;
+    assign s_axi_lsu_mem_bresp = (arbiter_allow_lsu) ? s_bresp : 2'b0;
 
     // 读通道信号驱动
-    assign m_arvalid = (arbiter_allow_lsu) ? m_axi_pmem_lsu_arvalid :
-                    (arbiter_allow_ifu) ? m_axi_pmem_ifu_arvalid : 1'b0;
+    assign m_arvalid = (arbiter_allow_lsu) ? m_axi_lsu_mem_arvalid :
+                       (arbiter_allow_ifu) ? m_axi_ifu_mem_arvalid : 1'b0;
 
-    assign s_axi_pmem_lsu_arready = (arbiter_allow_lsu) ? s_arready : 1'b0;
-    assign s_axi_pmem_ifu_arready = (arbiter_allow_ifu) ? s_arready : 1'b0;
+    assign s_axi_lsu_mem_arready = (arbiter_allow_lsu) ? s_arready : 1'b0;
+    assign s_axi_ifu_mem_arready = (arbiter_allow_ifu) ? s_arready : 1'b0;
 
-    assign m_araddr = (arbiter_allow_lsu) ? m_axi_pmem_lsu_araddr :
-                    (arbiter_allow_ifu) ? m_axi_pmem_ifu_araddr : {MEM_WIDTH{1'b0}};
+    assign m_araddr = (arbiter_allow_lsu) ? m_axi_lsu_mem_araddr :
+                      (arbiter_allow_ifu) ? m_axi_ifu_mem_araddr : {MEM_WIDTH{1'b0}};
 
-    assign m_arprot = (arbiter_allow_lsu) ? m_axi_pmem_lsu_arprot :
-                    (arbiter_allow_ifu) ? m_axi_pmem_ifu_arprot : 3'b0;
+    assign m_arprot = (arbiter_allow_lsu) ? m_axi_lsu_mem_arprot :
+                      (arbiter_allow_ifu) ? m_axi_ifu_mem_arprot : 3'b0;
 
-    assign s_axi_pmem_lsu_rvalid = (arbiter_allow_lsu) ? s_rvalid : 1'b0;
-    assign s_axi_pmem_ifu_rvalid = (arbiter_allow_ifu) ? s_rvalid : 1'b0;
+    assign s_axi_lsu_mem_rvalid = (arbiter_allow_lsu) ? s_rvalid : 1'b0;
+    assign s_axi_ifu_mem_rvalid = (arbiter_allow_ifu) ? s_rvalid : 1'b0;
 
-    assign m_rready = (arbiter_allow_lsu) ? m_axi_pmem_lsu_rready :
-                    (arbiter_allow_ifu) ? m_axi_pmem_ifu_rready : 1'b0;
+    assign m_rready = (arbiter_allow_lsu) ? m_axi_lsu_mem_rready :
+                      (arbiter_allow_ifu) ? m_axi_ifu_mem_rready : 1'b0;
 
-    assign s_axi_pmem_lsu_rdata = (arbiter_allow_lsu) ? s_rdata : {DATA_WIDTH{1'b0}};
-    assign s_axi_pmem_ifu_rdata = (arbiter_allow_ifu) ? s_rdata : {DATA_WIDTH{1'b0}};
+    assign s_axi_lsu_mem_rdata = (arbiter_allow_lsu) ? s_rdata : {DATA_WIDTH{1'b0}};
+    assign s_axi_ifu_mem_rdata = (arbiter_allow_ifu) ? s_rdata : {DATA_WIDTH{1'b0}};
 
-    assign s_axi_pmem_lsu_rresp = (arbiter_allow_lsu) ? s_rresp : 2'b0;
-    assign s_axi_pmem_ifu_rresp = (arbiter_allow_ifu) ? s_rresp : 2'b0;
+    assign s_axi_lsu_mem_rresp = (arbiter_allow_lsu) ? s_rresp : 2'b0;
+    assign s_axi_ifu_mem_rresp = (arbiter_allow_ifu) ? s_rresp : 2'b0;
 
     /* 中间信号的考虑内存映射分发 */
-    wire xbar_device_pmem;
-    wire xbar_device_uart;
+    wire xbar_device_soc;
     wire xbar_device_clint;
 
-    reg xbar_pmem_buff;
-    reg xbar_uart_buff;
-    reg xbar_clint_buff;
+    reg  xbar_soc_buff;
+    reg  xbar_clint_buff;
 
-    wire xbar_slave_pmem;
-    wire xbar_slave_uart;
+    wire xbar_slave_soc;
     wire xbar_slave_clint;
 
-    assign xbar_device_pmem = (m_awvalid) ? (m_awaddr >= PMEM_BASE && 
-                                             m_awaddr < PMEM_BASE + PMEM_SIZE) :
-                              (m_arvalid) ? (m_araddr >= PMEM_BASE && 
-                                             m_araddr < PMEM_BASE + PMEM_SIZE) : 1'b0;
+    // SoC 设备选通逻辑：PMEM 范围 OR UART 范围
+    assign xbar_device_soc = (m_awvalid) ? (
+                                (m_awaddr >= PMEM_BASE && m_awaddr < PMEM_BASE + PMEM_SIZE) || 
+                                (m_awaddr >= UART_MMIO_BASE && m_awaddr < UART_MMIO_BASE + UART_MMIO_SIZE)
+                             ) :
+                             (m_arvalid) ? (
+                                (m_araddr >= PMEM_BASE && m_araddr < PMEM_BASE + PMEM_SIZE) || 
+                                (m_araddr >= UART_MMIO_BASE && m_araddr < UART_MMIO_BASE + UART_MMIO_SIZE)
+                             ) : 1'b0;
 
-    assign xbar_device_uart = (m_awvalid) ? (m_awaddr >= UART_MMIO_BASE && 
-                                             m_awaddr < UART_MMIO_BASE + UART_MMIO_SIZE) :
-                              (m_arvalid) ? (m_araddr >= UART_MMIO_BASE && 
-                                             m_araddr < UART_MMIO_BASE + UART_MMIO_SIZE) : 1'b0;
+    // CLINT 设备选通逻辑：保持独立
+    assign xbar_device_clint = (m_awvalid) ? (m_awaddr >= CLINT_MMIO_BASE && m_awaddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) :
+                               (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
 
-    assign xbar_device_clint = (m_awvalid) ? (m_awaddr >= CLINT_MMIO_BASE && 
-                                              m_awaddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) :
-                               (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && 
-                                              m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
-
-    // 抛出仿存错误停止仿真进行，保存现场
-    // TODO: 更优雅的实现？
-    always @(*) begin
-        if(m_arvalid) begin
-            if(~xbar_device_pmem & ~xbar_device_uart & ~xbar_device_clint) begin
-                sim_hardware_fault_handle(1, m_araddr);
-            end
+    // 用于处理 AXI 握手过程中的地址阶段后的数据/响应阶段选通
+    always @(posedge aclk) begin
+        if (areset) begin
+            xbar_soc_buff <= 1'b0;
+        end else if ((io_master_bvalid && io_master_bready) || (io_master_rvalid && io_master_rready)) begin
+            xbar_soc_buff <= 1'b0;
+        end else if (xbar_device_soc) begin
+            xbar_soc_buff <= 1'b1;
         end
     end
 
     always @(posedge aclk) begin
-        if(areset) begin
-            xbar_pmem_buff <= 1'b0;
-        end else if((s_bvalid & m_bready) | (s_rvalid & m_rready)) begin
-            xbar_pmem_buff <= 1'b0;
-        end else if(xbar_device_pmem) begin
-            xbar_pmem_buff <= 1'b1;
-        end
-    end
-
-    always @(posedge aclk) begin
-        if(areset) begin
-            xbar_uart_buff <= 1'b0;
-        end else if((s_bvalid & m_bready) | (s_rvalid & m_rready)) begin
-            xbar_uart_buff <= 1'b0;
-        end else if(xbar_device_uart) begin
-            xbar_uart_buff <= 1'b1;
-        end
-    end
-
-    always @(posedge aclk) begin
-        if(areset) begin
+        if (areset) begin
             xbar_clint_buff <= 1'b0;
-        end else if((s_bvalid & m_bready) | (s_rvalid & m_rready)) begin
+        end else if ((s_axi_clint_rvalid && m_axi_clint_rready)) begin // CLINT 仅读，故只判断 R 通道
             xbar_clint_buff <= 1'b0;
-        end else if(xbar_device_clint) begin
+        end else if (xbar_device_clint) begin
             xbar_clint_buff <= 1'b1;
         end
     end
 
     // TODO: 处理访存越界异常
-    assign xbar_slave_pmem = xbar_device_pmem | xbar_pmem_buff;
-    assign xbar_slave_uart = xbar_device_uart | xbar_uart_buff;
+    assign xbar_slave_soc   = xbar_device_soc   | xbar_soc_buff;
     assign xbar_slave_clint = xbar_device_clint | xbar_clint_buff;
 
+    assign io_master_awvalid  = xbar_slave_soc   ? m_awvalid : 1'b0;
+    assign io_master_awaddr   = xbar_slave_soc   ? m_awaddr  : {MEM_WIDTH{1'b0}};
+    assign io_master_awprot   = xbar_slave_soc   ? m_awprot  : 3'b0;
+    assign s_awready          = xbar_slave_soc   ? io_master_awready : 1'b0;
 
-    // slave 1 (pmem)
-    assign m_axi_pmem_awvalid = (xbar_slave_pmem) ? m_awvalid : 1'b0;
-    assign m_axi_pmem_awaddr  = (xbar_slave_pmem) ? m_awaddr  : {MEM_WIDTH{1'b0}};
-    assign m_axi_pmem_awprot  = (xbar_slave_pmem) ? m_awprot  : 3'b0;
+    assign io_master_wvalid   = xbar_slave_soc   ? m_wvalid  : 1'b0;
+    assign io_master_wdata    = xbar_slave_soc   ? m_wdata   : {DATA_WIDTH{1'b0}};
+    assign io_master_wstrb    = xbar_slave_soc   ? m_wstrb   : 4'b0;
+    assign s_wready           = xbar_slave_soc   ? io_master_wready  : 1'b0;
 
-    assign m_axi_pmem_wvalid  = (xbar_slave_pmem) ? m_wvalid  : 1'b0;
-    assign m_axi_pmem_wdata   = (xbar_slave_pmem) ? m_wdata   : {DATA_WIDTH{1'b0}};
-    assign m_axi_pmem_wstrb   = (xbar_slave_pmem) ? m_wstrb   : 4'b0;
+    assign io_master_bready   = xbar_slave_soc   ? m_bready  : 1'b0;
+    assign s_bvalid           = xbar_slave_soc   ? io_master_bvalid  : 1'b0;
+    assign s_bresp            = xbar_slave_soc   ? io_master_bresp   : 2'b0;
 
-    assign m_axi_pmem_bready  = (xbar_slave_pmem) ? m_bready  : 1'b0;
+    assign io_master_arvalid  = xbar_slave_soc   ? m_arvalid : 1'b0;
+    assign io_master_araddr   = xbar_slave_soc   ? m_araddr  : {MEM_WIDTH{1'b0}};
+    assign io_master_arprot   = xbar_slave_soc   ? m_arprot  : 3'b0;
 
-    assign m_axi_pmem_arvalid = (xbar_slave_pmem) ? m_arvalid : 1'b0;
-    assign m_axi_pmem_araddr  = (xbar_slave_pmem) ? m_araddr  : {MEM_WIDTH{1'b0}};
-    assign m_axi_pmem_arprot  = (xbar_slave_pmem) ? m_arprot  : 3'b0;
+    assign m_axi_clint_arvalid = xbar_slave_clint ? m_arvalid : 1'b0;
+    assign m_axi_clint_araddr  = xbar_slave_clint ? m_araddr  : {MEM_WIDTH{1'b0}};
+    assign m_axi_clint_arprot  = xbar_slave_clint ? m_arprot  : 3'b0;
+    assign s_arready          = xbar_slave_soc   ? io_master_arready :
+                                xbar_slave_clint ? s_axi_clint_arready : 1'b0;
 
-    assign m_axi_pmem_rready  = (xbar_slave_pmem) ? m_rready  : 1'b0;
+    assign io_master_rready   = xbar_slave_soc   ? m_rready  : 1'b0;
+    assign m_axi_clint_rready  = xbar_slave_clint ? m_rready  : 1'b0;
+    assign s_rvalid           = xbar_slave_soc   ? io_master_rvalid :
+                                xbar_slave_clint ? s_axi_clint_rvalid : 1'b0;
 
-    // slave 2 (uart)
-    assign m_axi_uart_awvalid = (xbar_slave_uart) ? m_awvalid : 1'b0;
-    assign m_axi_uart_awaddr  = (xbar_slave_uart) ? m_awaddr  : {MEM_WIDTH{1'b0}};
-    assign m_axi_uart_awprot  = (xbar_slave_uart) ? m_awprot  : 3'b0;
+    assign s_rdata            = xbar_slave_soc   ? io_master_rdata :
+                                xbar_slave_clint ? s_axi_clint_rdata : {DATA_WIDTH{1'b0}};
 
-    assign m_axi_uart_wvalid  = (xbar_slave_uart) ? m_wvalid  : 1'b0;
-    assign m_axi_uart_wdata   = (xbar_slave_uart) ? m_wdata   : {DATA_WIDTH{1'b0}};
-    assign m_axi_uart_wstrb   = (xbar_slave_uart) ? m_wstrb   : 4'b0;
-
-    assign m_axi_uart_bready  = (xbar_slave_uart) ? m_bready  : 1'b0;
-
-    // slave 3 (clint)
-    assign m_axi_clint_arvalid = (xbar_slave_clint) ? m_arvalid : 1'b0;
-    assign m_axi_clint_araddr  = (xbar_slave_clint) ? m_araddr  : {MEM_WIDTH{1'b0}};
-    assign m_axi_clint_arprot  = (xbar_slave_clint) ? m_arprot  : 3'b0;
-
-    assign m_axi_clint_rready  = (xbar_slave_clint) ? m_rready  : 1'b0;
-
-    // slave 相关信号分配
-    assign s_awready = (xbar_slave_pmem) ? s_axi_pmem_awready :
-                    (xbar_slave_uart) ? s_axi_uart_awready : 1'b0;
-
-    assign s_wready  = (xbar_slave_pmem) ? s_axi_pmem_wready :
-                    (xbar_slave_uart) ? s_axi_uart_wready : 1'b0;
-
-    assign s_bvalid  = (xbar_slave_pmem) ? s_axi_pmem_bvalid :
-                    (xbar_slave_uart) ? s_axi_uart_bvalid : 1'b0;
-
-    assign s_bresp   = (xbar_slave_pmem) ? s_axi_pmem_bresp :
-                    (xbar_slave_uart) ? s_axi_uart_bresp : 2'b0;
-
-    assign s_arready = (xbar_slave_pmem) ? s_axi_pmem_arready :
-                    (xbar_slave_uart) ? 1'b0 :
-                    (xbar_slave_clint) ? s_axi_clint_arready : 1'b0;
-
-    assign s_rvalid  = (xbar_slave_pmem) ? s_axi_pmem_rvalid :
-                    (xbar_slave_uart) ? 1'b0 :
-                    (xbar_slave_clint) ? s_axi_clint_rvalid : 1'b0;
-
-    assign s_rdata   = (xbar_slave_pmem) ? s_axi_pmem_rdata :
-                    (xbar_slave_uart) ? {DATA_WIDTH{1'b0}} :
-                    (xbar_slave_clint) ? s_axi_clint_rdata : {DATA_WIDTH{1'b0}};
-
-    assign s_rresp   = (xbar_slave_pmem) ? s_axi_pmem_rresp :
-                    (xbar_slave_uart) ? 2'b0 :
-                    (xbar_slave_clint) ? s_axi_clint_rresp : 2'b0;
+    assign s_rresp            = xbar_slave_soc   ? io_master_rresp :
+                                xbar_slave_clint ? s_axi_clint_rresp : 2'b0;
 
 endmodule

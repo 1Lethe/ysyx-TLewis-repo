@@ -17,29 +17,20 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     output wire mem_rvalid,
     output wire mem_access_flag,
 
-    output reg m_axi_pmem_awvalid,
-    input wire s_axi_pmem_awready,
-    output reg [MEM_WIDTH-1:0] m_axi_pmem_awaddr,
-    output reg [2:0] m_axi_pmem_awprot,
+    output wire simplebus_lsu_mem_wr_req,
+    output wire [MEM_WIDTH-1:0] simplebus_lsu_mem_wr_addr,
+    output wire [DATA_WIDTH-1:0] simplebus_lsu_mem_wr_data,
+    output wire [3:0] simplebus_lsu_mem_wr_mask,
+    output wire [2:0] simplebus_lsu_mem_wr_prot,
+    input [1:0]  simplebus_lsu_mem_wr_resp,
+    input simplebus_lsu_mem_wr_complete,
 
-    output reg m_axi_pmem_wvalid,
-    input wire s_axi_pmem_wready,
-    output reg [DATA_WIDTH-1:0] m_axi_pmem_wdata,
-    output reg [3:0] m_axi_pmem_wstrb,
-
-    input wire s_axi_pmem_bvalid,
-    output reg m_axi_pmem_bready,
-    input wire [1:0] s_axi_pmem_bresp,
-
-    output reg m_axi_pmem_arvalid,
-    input wire s_axi_pmem_arready,
-    output reg [MEM_WIDTH-1:0] m_axi_pmem_araddr,
-    output reg [2:0] m_axi_pmem_arprot,
-
-    input wire s_axi_pmem_rvalid,
-    output reg m_axi_pmem_rready,
-    input wire [DATA_WIDTH-1:0] s_axi_pmem_rdata,
-    input wire [1:0] s_axi_pmem_rresp
+    output wire simplebus_lsu_mem_rd_req,
+    output wire [MEM_WIDTH-1:0] simplebus_lsu_mem_rd_addr,
+    output wire [2:0] simplebus_lsu_mem_rd_prot,
+    input [DATA_WIDTH-1:0] simplebus_lsu_mem_rd_data,
+    input [1:0]  simplebus_lsu_mem_rd_resp,
+    input simplebus_lsu_mem_rd_complete
     );
 
     wire [DATA_WIDTH-1:0] mem_rdata;
@@ -158,102 +149,17 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
 
     assign mem_access_flag = mem_wen_pos | mem_ren_pos;
 
-    wire awshakehand;
-    wire wshakehand;
-    wire bshakehand;
+    assign simplebus_lsu_mem_wr_req = mem_wen_pos;
+    assign simplebus_lsu_mem_wr_addr = mem_waddr;
+    assign simplebus_lsu_mem_wr_data = mem_wdata_align;
+    assign simplebus_lsu_mem_wr_mask = mem_wmask;
+    assign simplebus_lsu_mem_wr_prot = 3'b000;
+    assign mem_wcomplete = simplebus_lsu_mem_wr_complete;
 
-    assign awshakehand = m_axi_pmem_awvalid & s_axi_pmem_awready;
-    assign wshakehand  = m_axi_pmem_wvalid  & s_axi_pmem_wready;
-    assign bshakehand  = s_axi_pmem_bvalid  & m_axi_pmem_bready;
-
-    always @(posedge clk) begin
-        if(rst) begin
-            m_axi_pmem_awvalid <= 1'b0;
-            m_axi_pmem_awaddr  <= {MEM_WIDTH{1'b0}};
-            m_axi_pmem_awprot  <= 3'b0;
-        end else if(mem_wen_pos) begin
-            m_axi_pmem_awvalid <= 1'b1;
-            m_axi_pmem_awaddr  <= mem_waddr;
-            m_axi_pmem_awprot  <= 3'b000;
-        end else if(awshakehand) begin
-            m_axi_pmem_awvalid <= 1'b0;
-            m_axi_pmem_awaddr  <= {MEM_WIDTH{1'b0}};
-            m_axi_pmem_awprot  <= 3'b0;
-        end
-    end
-
-    always @(posedge clk) begin
-        if(rst) begin
-            m_axi_pmem_wvalid <= 1'b0;
-            m_axi_pmem_wdata  <= {DATA_WIDTH{1'b0}};
-            m_axi_pmem_wstrb  <= 4'b0;
-        end else if(awshakehand) begin
-            m_axi_pmem_wvalid <= 1'b1;
-            m_axi_pmem_wdata  <= mem_wdata_align;
-            m_axi_pmem_wstrb  <= mem_wmask;
-        end else if(wshakehand) begin
-            m_axi_pmem_wvalid <= 1'b0;
-            m_axi_pmem_wdata  <= {DATA_WIDTH{1'b0}};
-            m_axi_pmem_wstrb  <= 4'b0;
-        end
-    end
-
-    always @(posedge clk) begin
-        if(rst) begin
-            m_axi_pmem_bready <= 1'b0;
-        end else if(bshakehand) begin
-            m_axi_pmem_bready <= 1'b0;
-        end else if(s_axi_pmem_bvalid) begin
-            m_axi_pmem_bready <= 1'b1;
-        end
-    end
-
-    assign mem_wcomplete = bshakehand;
-
-    wire arshakehand;
-    reg arcomplete;
-    wire rshakehand;
-
-    assign arshakehand = m_axi_pmem_arvalid & s_axi_pmem_arready;
-    assign rshakehand  = s_axi_pmem_rvalid  & m_axi_pmem_rready;
-
-    always @(posedge clk) begin
-        if(rst) begin
-            arcomplete <= 1'b0;
-        end else if(arshakehand) begin
-            arcomplete <= 1'b1;
-        end else if(rshakehand) begin
-            arcomplete <= 1'b0;
-        end
-    end
-
-    always @(posedge clk) begin
-        if(rst) begin
-            m_axi_pmem_arvalid <= 1'b0;
-            m_axi_pmem_araddr  <= {MEM_WIDTH{1'b0}};
-            m_axi_pmem_arprot  <= 3'b0;
-        end else if(mem_ren_pos) begin
-            m_axi_pmem_arvalid <= 1'b1;
-            m_axi_pmem_araddr  <= mem_raddr;
-            m_axi_pmem_arprot  <= 3'b0;
-        end else if(arshakehand) begin
-            m_axi_pmem_arvalid <= 1'b0;
-            m_axi_pmem_araddr  <= {MEM_WIDTH{1'b0}};
-            m_axi_pmem_arprot  <= 3'b0;
-        end
-    end
-
-    always @(posedge clk) begin
-        if(rst) begin
-            m_axi_pmem_rready <= 1'b0;
-        end else if(rshakehand) begin
-            m_axi_pmem_rready <= 1'b0;
-        end else if(s_axi_pmem_rvalid) begin
-            m_axi_pmem_rready <= 1'b1;
-        end
-    end
-
-    assign mem_rdata  = (rshakehand) ? s_axi_pmem_rdata : {DATA_WIDTH{1'b0}};
-    assign mem_rvalid = rshakehand;
+    assign simplebus_lsu_mem_rd_req = mem_ren_pos;
+    assign simplebus_lsu_mem_rd_addr = mem_raddr;
+    assign simplebus_lsu_mem_rd_prot = 3'b000;
+    assign mem_rdata = simplebus_lsu_mem_rd_data;
+    assign mem_rvalid = simplebus_lsu_mem_rd_complete;
 
 endmodule

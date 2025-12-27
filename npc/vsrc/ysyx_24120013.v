@@ -51,17 +51,17 @@ ysyx_24120013_PC #(
 wire [DATA_WIDTH-1:0]inst;
 wire inst_is_valid;
 
-wire        m_axi_pmem_ifu_arvalid;
-wire        s_axi_pmem_ifu_arready;
-wire [MEM_WIDTH-1:0] m_axi_pmem_ifu_araddr;
-wire [2:0]  m_axi_pmem_ifu_arprot;
+wire        simplebus_ifu_mem_rd_req;
+wire [MEM_WIDTH-1:0] simplebus_ifu_mem_rd_addr;
+wire [2:0]  simplebus_ifu_mem_rd_prot;
+wire [DATA_WIDTH-1:0] simplebus_ifu_mem_rd_data;
+wire [1:0]  simplebus_ifu_mem_rd_resp;
+wire        simplebus_ifu_mem_rd_complete;
 
-wire        s_axi_pmem_ifu_rvalid;
-wire        m_axi_pmem_ifu_rready;
-wire [DATA_WIDTH-1:0] s_axi_pmem_ifu_rdata;
-wire [1:0]  s_axi_pmem_ifu_rresp;
-
-ysyx_24120023_IFU u_ysyx_24120023_IFU(
+ysyx_24120023_IFU #(
+    .MEM_WIDTH  (MEM_WIDTH ),
+    .DATA_WIDTH (DATA_WIDTH)
+) u_ysyx_24120023_IFU(
     .clk      	             (clock                       ),
     .rst      	             (reset                       ),
     .pc                      (pc                        ),
@@ -69,15 +69,73 @@ ysyx_24120023_IFU u_ysyx_24120023_IFU(
     .id_is_ready             (id_is_ready               ),
     .inst_is_valid           (inst_is_valid             ),
     .IFU_inst                (inst                      ),
-    .m_axi_pmem_ifu_arvalid  (m_axi_pmem_ifu_arvalid    ),
-    .s_axi_pmem_ifu_arready  (s_axi_pmem_ifu_arready    ),
-    .m_axi_pmem_ifu_araddr   (m_axi_pmem_ifu_araddr     ),
-    .m_axi_pmem_ifu_arprot   (m_axi_pmem_ifu_arprot     ),
-    .s_axi_pmem_ifu_rvalid   (s_axi_pmem_ifu_rvalid     ),
-    .m_axi_pmem_ifu_rready   (m_axi_pmem_ifu_rready     ),
-    .s_axi_pmem_ifu_rdata    (s_axi_pmem_ifu_rdata      ),
-    .s_axi_pmem_ifu_rresp    (s_axi_pmem_ifu_rresp      )
+
+    .simplebus_ifu_mem_rd_req      (simplebus_ifu_mem_rd_req),
+    .simplebus_ifu_mem_rd_addr     (simplebus_ifu_mem_rd_addr),
+    .simplebus_ifu_mem_rd_prot     (simplebus_ifu_mem_rd_prot),
+    .simplebus_ifu_mem_rd_data     (simplebus_ifu_mem_rd_data),
+    .simplebus_ifu_mem_rd_resp     (simplebus_ifu_mem_rd_resp),
+    .simplebus_ifu_mem_rd_complete (simplebus_ifu_mem_rd_complete)
 );
+
+// output declaration of module ysyx_24120013_simplebus2axi4lite
+wire        m_axi_ifu_mem_arvalid;
+wire        s_axi_ifu_mem_arready; 
+wire [MEM_WIDTH-1:0] m_axi_ifu_mem_araddr;
+wire [2:0]  m_axi_ifu_mem_arprot;
+
+wire        s_axi_ifu_mem_rvalid;
+wire        m_axi_ifu_mem_rready;
+wire [DATA_WIDTH-1:0] s_axi_ifu_mem_rdata;
+wire [1:0]  s_axi_ifu_mem_rresp;
+
+ysyx_24120013_simplebus2axi4lite #(
+    .MEM_WIDTH  (MEM_WIDTH ),
+    .DATA_WIDTH (DATA_WIDTH)
+) u_ysyx_24120013_simplebus2axi4lite_ifu2axibridge(
+    .clk                    (clock),
+    .rst                    (reset),
+
+    .simplebus_wr_req       (1'b0),
+    .simplebus_wr_addr      ({MEM_WIDTH{1'b0}}),
+    .simplebus_wr_data      ({DATA_WIDTH{1'b0}}),
+    .simplebus_wr_mask      (4'b0000),
+    .simplebus_wr_prot      (3'b000),
+    .simplebus_wr_resp      (),
+    .simplebus_wr_complete  (),
+
+    .simplebus_rd_req       (simplebus_ifu_mem_rd_req),
+    .simplebus_rd_addr      (simplebus_ifu_mem_rd_addr),
+    .simplebus_rd_prot      (simplebus_ifu_mem_rd_prot),
+    .simplebus_rd_data      (simplebus_ifu_mem_rd_data),
+    .simplebus_rd_resp      (simplebus_ifu_mem_rd_resp),
+    .simplebus_rd_complete  (simplebus_ifu_mem_rd_complete),
+
+    .m_axi_awvalid          (),
+    .s_axi_awready          (1'b0),
+    .m_axi_awaddr           (),
+    .m_axi_awprot           (),
+
+    .m_axi_wvalid           (),
+    .s_axi_wready           (1'b0),
+    .m_axi_wdata            (),
+    .m_axi_wstrb            (),
+
+    .s_axi_bvalid           (1'b0),
+    .m_axi_bready           (),
+    .s_axi_bresp            (2'b00),
+
+    .m_axi_arvalid          (m_axi_ifu_mem_arvalid),
+    .s_axi_arready          (s_axi_ifu_mem_arready),
+    .m_axi_araddr           (m_axi_ifu_mem_araddr),
+    .m_axi_arprot           (m_axi_ifu_mem_arprot),
+
+    .s_axi_rvalid           (s_axi_ifu_mem_rvalid),
+    .m_axi_rready           (m_axi_ifu_mem_rready),
+    .s_axi_rdata            (s_axi_ifu_mem_rdata),
+    .s_axi_rresp            (s_axi_ifu_mem_rresp)
+);
+
 
 // output declaration of module ysyx_24120013_IDU
 wire [ADDR_WIDTH-1:0] reg_raddr1;
@@ -212,29 +270,20 @@ wire ex_is_ready;
 wire ex_is_valid;
 wire mem_access_flag;
 
-wire        m_axi_pmem_lsu_awvalid;
-wire        s_axi_pmem_lsu_awready;
-wire [MEM_WIDTH-1:0] m_axi_pmem_lsu_awaddr;
-wire [2:0]  m_axi_pmem_lsu_awprot;
+wire        simplebus_lsu_mem_wr_req;
+wire [MEM_WIDTH-1:0] simplebus_lsu_mem_wr_addr;
+wire [DATA_WIDTH-1:0] simplebus_lsu_mem_wr_data;
+wire [3:0]  simplebus_lsu_mem_wr_mask;
+wire [2:0]  simplebus_lsu_mem_wr_prot;
+wire [1:0]  simplebus_lsu_mem_wr_resp;
+wire        simplebus_lsu_mem_wr_complete;
 
-wire        m_axi_pmem_lsu_wvalid;
-wire        s_axi_pmem_lsu_wready;
-wire [DATA_WIDTH-1:0] m_axi_pmem_lsu_wdata;
-wire [3:0]  m_axi_pmem_lsu_wstrb;
-
-wire        s_axi_pmem_lsu_bvalid;
-wire        m_axi_pmem_lsu_bready;
-wire [1:0]  s_axi_pmem_lsu_bresp;
-
-wire        m_axi_pmem_lsu_arvalid;
-wire        s_axi_pmem_lsu_arready;
-wire [MEM_WIDTH-1:0] m_axi_pmem_lsu_araddr;
-wire [2:0]  m_axi_pmem_lsu_arprot;
-
-wire        s_axi_pmem_lsu_rvalid;
-wire        m_axi_pmem_lsu_rready;
-wire [DATA_WIDTH-1:0] s_axi_pmem_lsu_rdata;
-wire [1:0]  s_axi_pmem_lsu_rresp;
+wire        simplebus_lsu_mem_rd_req;
+wire [MEM_WIDTH-1:0] simplebus_lsu_mem_rd_addr;
+wire [2:0]  simplebus_lsu_mem_rd_prot;
+wire [DATA_WIDTH-1:0] simplebus_lsu_mem_rd_data;
+wire [1:0]  simplebus_lsu_mem_rd_resp;
+wire        simplebus_lsu_mem_rd_complete;
 
 ysyx_24120013_EXU #(
     .MEM_WIDTH (MEM_WIDTH),
@@ -283,116 +332,91 @@ ysyx_24120013_EXU #(
     .wb_is_ready     (wb_is_ready  ),
     .ex_is_valid      (ex_is_valid  ),
 
-    .m_axi_pmem_lsu_awvalid  (m_axi_pmem_lsu_awvalid),
-    .s_axi_pmem_lsu_awready  (s_axi_pmem_lsu_awready),
-    .m_axi_pmem_lsu_awaddr   (m_axi_pmem_lsu_awaddr),
-    .m_axi_pmem_lsu_awprot   (m_axi_pmem_lsu_awprot),
+    .simplebus_lsu_mem_wr_req (simplebus_lsu_mem_wr_req),
+    .simplebus_lsu_mem_wr_addr(simplebus_lsu_mem_wr_addr),
+    .simplebus_lsu_mem_wr_data(simplebus_lsu_mem_wr_data),
+    .simplebus_lsu_mem_wr_mask(simplebus_lsu_mem_wr_mask),
+    .simplebus_lsu_mem_wr_prot(simplebus_lsu_mem_wr_prot),
+    .simplebus_lsu_mem_wr_resp(simplebus_lsu_mem_wr_resp),
+    .simplebus_lsu_mem_wr_complete(simplebus_lsu_mem_wr_complete),
 
-    .m_axi_pmem_lsu_wvalid   (m_axi_pmem_lsu_wvalid),
-    .s_axi_pmem_lsu_wready   (s_axi_pmem_lsu_wready),
-    .m_axi_pmem_lsu_wdata    (m_axi_pmem_lsu_wdata),
-    .m_axi_pmem_lsu_wstrb    (m_axi_pmem_lsu_wstrb),
-
-    .s_axi_pmem_lsu_bvalid   (s_axi_pmem_lsu_bvalid),
-    .m_axi_pmem_lsu_bready   (m_axi_pmem_lsu_bready),
-    .s_axi_pmem_lsu_bresp    (s_axi_pmem_lsu_bresp),
-
-    .m_axi_pmem_lsu_arvalid  (m_axi_pmem_lsu_arvalid),
-    .s_axi_pmem_lsu_arready  (s_axi_pmem_lsu_arready),
-    .m_axi_pmem_lsu_araddr   (m_axi_pmem_lsu_araddr),
-    .m_axi_pmem_lsu_arprot   (m_axi_pmem_lsu_arprot),
-
-    .s_axi_pmem_lsu_rvalid   (s_axi_pmem_lsu_rvalid),
-    .m_axi_pmem_lsu_rready   (m_axi_pmem_lsu_rready),
-    .s_axi_pmem_lsu_rdata    (s_axi_pmem_lsu_rdata),
-    .s_axi_pmem_lsu_rresp    (s_axi_pmem_lsu_rresp)
+    .simplebus_lsu_mem_rd_req(simplebus_lsu_mem_rd_req),
+    .simplebus_lsu_mem_rd_addr(simplebus_lsu_mem_rd_addr),
+    .simplebus_lsu_mem_rd_prot(simplebus_lsu_mem_rd_prot),
+    .simplebus_lsu_mem_rd_data(simplebus_lsu_mem_rd_data),
+    .simplebus_lsu_mem_rd_resp(simplebus_lsu_mem_rd_resp),
+    .simplebus_lsu_mem_rd_complete(simplebus_lsu_mem_rd_complete)
 );
 
-// output declaration of module pmem_sim
-wire        m_axi_pmem_awvalid;
-wire        s_axi_pmem_awready;
-wire [MEM_WIDTH-1:0] m_axi_pmem_awaddr;
-wire [2:0]  m_axi_pmem_awprot;
+// output declaration of module ysyx_24120013_simplebus2axi4lite
+wire        m_axi_lsu_mem_awvalid;
+wire        s_axi_lsu_mem_awready;
+wire [MEM_WIDTH-1:0] m_axi_lsu_mem_awaddr;
+wire [2:0]  m_axi_lsu_mem_awprot;
 
-wire        m_axi_pmem_wvalid;
-wire        s_axi_pmem_wready;
-wire [DATA_WIDTH-1:0] m_axi_pmem_wdata;
-wire [3:0]  m_axi_pmem_wstrb;
+wire        m_axi_lsu_mem_wvalid;
+wire        s_axi_lsu_mem_wready;
+wire [DATA_WIDTH-1:0] m_axi_lsu_mem_wdata;
+wire [3:0]  m_axi_lsu_mem_wstrb;
 
-wire        s_axi_pmem_bvalid;
-wire        m_axi_pmem_bready;
-wire [1:0]  s_axi_pmem_bresp;
+wire        s_axi_lsu_mem_bvalid;
+wire        m_axi_lsu_mem_bready;
+wire [1:0]  s_axi_lsu_mem_bresp;
 
-wire        m_axi_pmem_arvalid;
-wire        s_axi_pmem_arready;
-wire [MEM_WIDTH-1:0] m_axi_pmem_araddr;
-wire [2:0]  m_axi_pmem_arprot;
+wire        m_axi_lsu_mem_arvalid;
+wire        s_axi_lsu_mem_arready;
+wire [MEM_WIDTH-1:0] m_axi_lsu_mem_araddr;
+wire [2:0]  m_axi_lsu_mem_arprot;
 
-wire        s_axi_pmem_rvalid;
-wire        m_axi_pmem_rready;
-wire [DATA_WIDTH-1:0] s_axi_pmem_rdata;
-wire [1:0]  s_axi_pmem_rresp;
+wire        s_axi_lsu_mem_rvalid;
+wire        m_axi_lsu_mem_rready;
+wire [DATA_WIDTH-1:0] s_axi_lsu_mem_rdata;
+wire [1:0]  s_axi_lsu_mem_rresp;
 
-pmem_sim #(
+ysyx_24120013_simplebus2axi4lite #(
     .MEM_WIDTH (MEM_WIDTH),
     .DATA_WIDTH (DATA_WIDTH)
-)u_pmem_sim(
-    .aclk       (clock               ),
-    .areset_n   (reset               ),
-    .m_awvalid  (m_axi_pmem_awvalid),
-    .s_awready  (s_axi_pmem_awready),
-    .m_awaddr   (m_axi_pmem_awaddr ),
-    .m_awprot   (m_axi_pmem_awprot ),
-    .m_wvalid   (m_axi_pmem_wvalid ),
-    .s_wready   (s_axi_pmem_wready ),
-    .m_wdata    (m_axi_pmem_wdata  ),
-    .m_wstrb    (m_axi_pmem_wstrb  ),
-    .s_bvalid   (s_axi_pmem_bvalid ),
-    .m_bready   (m_axi_pmem_bready ),
-    .s_bresp    (s_axi_pmem_bresp  ),
-    .m_arvalid  (m_axi_pmem_arvalid),
-    .s_arready  (s_axi_pmem_arready),
-    .m_araddr   (m_axi_pmem_araddr ),
-    .m_arprot   (m_axi_pmem_arprot ),
-    .s_rvalid   (s_axi_pmem_rvalid ),
-    .m_rready   (m_axi_pmem_rready ),
-    .s_rdata    (s_axi_pmem_rdata  ),
-    .s_rresp    (s_axi_pmem_rresp  )
-);
+) u_ysyx_24120013_simplebus2axi4lite_lsu2axibridge(
+    .clk                   	(clock                    ),
+    .rst                   	(reset                    ),
+    .simplebus_wr_req       (simplebus_lsu_mem_wr_req),
+    .simplebus_wr_addr      (simplebus_lsu_mem_wr_addr),
+    .simplebus_wr_data      (simplebus_lsu_mem_wr_data),
+    .simplebus_wr_mask      (simplebus_lsu_mem_wr_mask),
+    .simplebus_wr_prot      (simplebus_lsu_mem_wr_prot),
+    .simplebus_wr_resp      (simplebus_lsu_mem_wr_resp),
+    .simplebus_wr_complete  (simplebus_lsu_mem_wr_complete),
 
+    .simplebus_rd_req       (simplebus_lsu_mem_rd_req),
+    .simplebus_rd_addr      (simplebus_lsu_mem_rd_addr),
+    .simplebus_rd_prot      (simplebus_lsu_mem_rd_prot),
+    .simplebus_rd_data      (simplebus_lsu_mem_rd_data),
+    .simplebus_rd_resp      (simplebus_lsu_mem_rd_resp),
+    .simplebus_rd_complete  (simplebus_lsu_mem_rd_complete),
 
-// output declaration of module ysyx_24120013_pmem_arbiter
-wire        m_axi_uart_awvalid;
-wire        s_axi_uart_awready;
-wire [MEM_WIDTH-1:0] m_axi_uart_awaddr;
-wire [2:0]  m_axi_uart_awprot;
+    .m_axi_awvalid          (m_axi_lsu_mem_awvalid),
+    .s_axi_awready          (s_axi_lsu_mem_awready),
+    .m_axi_awaddr           (m_axi_lsu_mem_awaddr),
+    .m_axi_awprot           (m_axi_lsu_mem_awprot),
 
-wire        m_axi_uart_wvalid;
-wire        s_axi_uart_wready;
-wire [DATA_WIDTH-1:0] m_axi_uart_wdata;
-wire [3:0]  m_axi_uart_wstrb;
+    .m_axi_wvalid           (m_axi_lsu_mem_wvalid),
+    .s_axi_wready           (s_axi_lsu_mem_wready),
+    .m_axi_wdata            (m_axi_lsu_mem_wdata),
+    .m_axi_wstrb            (m_axi_lsu_mem_wstrb),
 
-wire        s_axi_uart_bvalid;
-wire        m_axi_uart_bready;
-wire [1:0]  s_axi_uart_bresp;
+    .s_axi_bvalid           (s_axi_lsu_mem_bvalid),
+    .m_axi_bready           (m_axi_lsu_mem_bready),
+    .s_axi_bresp            (s_axi_lsu_mem_bresp),
 
-uart_sim #(
-    .MEM_WIDTH(MEM_WIDTH),
-    .DATA_WIDTH(DATA_WIDTH)
-) u_uart_sim (
-    .aclk        (clock               ),
-    .areset_n    (reset               ),
-    .m_awvalid   (m_axi_uart_awvalid),
-    .s_awready   (s_axi_uart_awready),
-    .m_awaddr    (m_axi_uart_awaddr ),
-    .m_awprot    (m_axi_uart_awprot ),
-    .m_wvalid    (m_axi_uart_wvalid ),
-    .s_wready    (s_axi_uart_wready ),
-    .m_wdata     (m_axi_uart_wdata  ),
-    .m_wstrb     (m_axi_uart_wstrb  ),
-    .s_bvalid    (s_axi_uart_bvalid ),
-    .m_bready    (m_axi_uart_bready ),
-    .s_bresp     (s_axi_uart_bresp  )
+    .m_axi_arvalid          (m_axi_lsu_mem_arvalid),
+    .s_axi_arready          (s_axi_lsu_mem_arready),
+    .m_axi_araddr           (m_axi_lsu_mem_araddr),
+    .m_axi_arprot           (m_axi_lsu_mem_arprot),
+
+    .s_axi_rvalid           (s_axi_lsu_mem_rvalid),
+    .m_axi_rready           (m_axi_lsu_mem_rready),
+    .s_axi_rdata            (s_axi_lsu_mem_rdata),
+    .s_axi_rresp            (s_axi_lsu_mem_rresp)
 );
 
 // output declaration of module ysyx_24120013_clint
@@ -424,6 +448,24 @@ ysyx_24120013_CLINT #(
     .s_rresp            (s_axi_clint_rresp   )
 );
 
+wire                     io_master_awvalid, io_master_awready;
+wire [MEM_WIDTH-1:0]     io_master_awaddr;
+wire [2:0]               io_master_awprot;
+
+wire                     io_master_wvalid,  io_master_wready;
+wire [DATA_WIDTH-1:0]    io_master_wdata;
+wire [3:0] io_master_wstrb;
+
+wire                     io_master_bvalid,  io_master_bready;
+wire [1:0]               io_master_bresp;
+
+wire                     io_master_arvalid, io_master_arready;
+wire [MEM_WIDTH-1:0]     io_master_araddr;
+wire [2:0]               io_master_arprot;
+
+wire                     io_master_rvalid,  io_master_rready;
+wire [DATA_WIDTH-1:0]    io_master_rdata;
+wire [1:0]               io_master_rresp;
 
 ysyx_24120013_axi_bridge #(
     .MEM_WIDTH        (MEM_WIDTH),
@@ -438,66 +480,59 @@ ysyx_24120013_axi_bridge #(
     .aclk                   	(clock                     ),
     .areset               	    (reset                     ),
 
-    .m_axi_pmem_lsu_awvalid 	(m_axi_pmem_lsu_awvalid  ),
-    .s_axi_pmem_lsu_awready 	(s_axi_pmem_lsu_awready  ),
-    .m_axi_pmem_lsu_awaddr  	(m_axi_pmem_lsu_awaddr   ),
-    .m_axi_pmem_lsu_awprot  	(m_axi_pmem_lsu_awprot   ),
-    .m_axi_pmem_lsu_wvalid  	(m_axi_pmem_lsu_wvalid   ),
-    .s_axi_pmem_lsu_wready  	(s_axi_pmem_lsu_wready   ),
-    .m_axi_pmem_lsu_wdata   	(m_axi_pmem_lsu_wdata    ),
-    .m_axi_pmem_lsu_wstrb   	(m_axi_pmem_lsu_wstrb    ),
-    .s_axi_pmem_lsu_bvalid  	(s_axi_pmem_lsu_bvalid   ),
-    .m_axi_pmem_lsu_bready  	(m_axi_pmem_lsu_bready   ),
-    .s_axi_pmem_lsu_bresp   	(s_axi_pmem_lsu_bresp    ),
-    .m_axi_pmem_lsu_arvalid 	(m_axi_pmem_lsu_arvalid  ),
-    .s_axi_pmem_lsu_arready 	(s_axi_pmem_lsu_arready  ),
-    .m_axi_pmem_lsu_araddr  	(m_axi_pmem_lsu_araddr   ),
-    .m_axi_pmem_lsu_arprot  	(m_axi_pmem_lsu_arprot   ),
-    .s_axi_pmem_lsu_rvalid  	(s_axi_pmem_lsu_rvalid   ),
-    .m_axi_pmem_lsu_rready  	(m_axi_pmem_lsu_rready   ),
-    .s_axi_pmem_lsu_rdata   	(s_axi_pmem_lsu_rdata    ),
-    .s_axi_pmem_lsu_rresp   	(s_axi_pmem_lsu_rresp    ),
+    .m_axi_lsu_mem_awvalid  (m_axi_lsu_mem_awvalid),
+    .s_axi_lsu_mem_awready  (s_axi_lsu_mem_awready),
+    .m_axi_lsu_mem_awaddr   (m_axi_lsu_mem_awaddr),
+    .m_axi_lsu_mem_awprot   (m_axi_lsu_mem_awprot),
 
-    .m_axi_pmem_ifu_arvalid 	(m_axi_pmem_ifu_arvalid  ),
-    .s_axi_pmem_ifu_arready 	(s_axi_pmem_ifu_arready  ),
-    .m_axi_pmem_ifu_araddr  	(m_axi_pmem_ifu_araddr   ),
-    .m_axi_pmem_ifu_arprot  	(m_axi_pmem_ifu_arprot   ),
-    .s_axi_pmem_ifu_rvalid  	(s_axi_pmem_ifu_rvalid   ),
-    .m_axi_pmem_ifu_rready  	(m_axi_pmem_ifu_rready   ),
-    .s_axi_pmem_ifu_rdata   	(s_axi_pmem_ifu_rdata    ),
-    .s_axi_pmem_ifu_rresp   	(s_axi_pmem_ifu_rresp    ),
+    .m_axi_lsu_mem_wvalid   (m_axi_lsu_mem_wvalid),
+    .s_axi_lsu_mem_wready   (s_axi_lsu_mem_wready),
+    .m_axi_lsu_mem_wdata    (m_axi_lsu_mem_wdata),
+    .m_axi_lsu_mem_wstrb    (m_axi_lsu_mem_wstrb),
 
-    .m_axi_pmem_awvalid     	(m_axi_pmem_awvalid      ),
-    .s_axi_pmem_awready     	(s_axi_pmem_awready      ),
-    .m_axi_pmem_awaddr      	(m_axi_pmem_awaddr       ),
-    .m_axi_pmem_awprot      	(m_axi_pmem_awprot       ),
-    .m_axi_pmem_wvalid      	(m_axi_pmem_wvalid       ),
-    .s_axi_pmem_wready      	(s_axi_pmem_wready       ),
-    .m_axi_pmem_wdata       	(m_axi_pmem_wdata        ),
-    .m_axi_pmem_wstrb       	(m_axi_pmem_wstrb        ),
-    .s_axi_pmem_bvalid      	(s_axi_pmem_bvalid       ),
-    .m_axi_pmem_bready      	(m_axi_pmem_bready       ),
-    .s_axi_pmem_bresp       	(s_axi_pmem_bresp        ),
-    .m_axi_pmem_arvalid     	(m_axi_pmem_arvalid      ),
-    .s_axi_pmem_arready     	(s_axi_pmem_arready      ),
-    .m_axi_pmem_araddr      	(m_axi_pmem_araddr       ),
-    .m_axi_pmem_arprot      	(m_axi_pmem_arprot       ),
-    .s_axi_pmem_rvalid      	(s_axi_pmem_rvalid       ),
-    .m_axi_pmem_rready      	(m_axi_pmem_rready       ),
-    .s_axi_pmem_rdata       	(s_axi_pmem_rdata        ),
-    .s_axi_pmem_rresp       	(s_axi_pmem_rresp        ),
+    .s_axi_lsu_mem_bvalid   (s_axi_lsu_mem_bvalid),
+    .m_axi_lsu_mem_bready   (m_axi_lsu_mem_bready),
+    .s_axi_lsu_mem_bresp    (s_axi_lsu_mem_bresp),
 
-    .m_axi_uart_awvalid     	(m_axi_uart_awvalid      ),
-    .s_axi_uart_awready     	(s_axi_uart_awready      ),
-    .m_axi_uart_awaddr      	(m_axi_uart_awaddr       ),
-    .m_axi_uart_awprot      	(m_axi_uart_awprot       ),
-    .m_axi_uart_wvalid      	(m_axi_uart_wvalid       ),
-    .s_axi_uart_wready      	(s_axi_uart_wready       ),
-    .m_axi_uart_wdata       	(m_axi_uart_wdata        ),
-    .m_axi_uart_wstrb       	(m_axi_uart_wstrb        ),
-    .s_axi_uart_bvalid      	(s_axi_uart_bvalid       ),
-    .m_axi_uart_bready      	(m_axi_uart_bready       ),
-    .s_axi_uart_bresp       	(s_axi_uart_bresp        ),
+    .m_axi_lsu_mem_arvalid  (m_axi_lsu_mem_arvalid),
+    .s_axi_lsu_mem_arready  (s_axi_lsu_mem_arready),
+    .m_axi_lsu_mem_araddr   (m_axi_lsu_mem_araddr),
+    .m_axi_lsu_mem_arprot   (m_axi_lsu_mem_arprot),
+
+    .s_axi_lsu_mem_rvalid   (s_axi_lsu_mem_rvalid),
+    .m_axi_lsu_mem_rready   (m_axi_lsu_mem_rready),
+    .s_axi_lsu_mem_rdata    (s_axi_lsu_mem_rdata),
+    .s_axi_lsu_mem_rresp    (s_axi_lsu_mem_rresp),
+
+    .m_axi_ifu_mem_arvalid  (m_axi_ifu_mem_arvalid),
+    .s_axi_ifu_mem_arready  (s_axi_ifu_mem_arready),
+    .m_axi_ifu_mem_araddr   (m_axi_ifu_mem_araddr),
+    .m_axi_ifu_mem_arprot   (m_axi_ifu_mem_arprot),
+
+    .s_axi_ifu_mem_rvalid   (s_axi_ifu_mem_rvalid),
+    .m_axi_ifu_mem_rready   (m_axi_ifu_mem_rready),
+    .s_axi_ifu_mem_rdata    (s_axi_ifu_mem_rdata),
+    .s_axi_ifu_mem_rresp    (s_axi_ifu_mem_rresp),
+
+    .io_master_awvalid       (io_master_awvalid),
+    .io_master_awready       (io_master_awready),
+    .io_master_awaddr        (io_master_awaddr),
+    .io_master_awprot        (io_master_awprot),
+    .io_master_wvalid        (io_master_wvalid),
+    .io_master_wready        (io_master_wready),
+    .io_master_wdata         (io_master_wdata),
+    .io_master_wstrb         (io_master_wstrb),
+    .io_master_bvalid        (io_master_bvalid),
+    .io_master_bready        (io_master_bready),
+    .io_master_bresp         (io_master_bresp),
+    .io_master_arvalid       (io_master_arvalid),
+    .io_master_arready       (io_master_arready),
+    .io_master_araddr        (io_master_araddr),
+    .io_master_arprot        (io_master_arprot),
+    .io_master_rvalid        (io_master_rvalid),
+    .io_master_rready        (io_master_rready),
+    .io_master_rdata         (io_master_rdata),
+    .io_master_rresp         (io_master_rresp),
 
     .m_axi_clint_arvalid        (m_axi_clint_arvalid    ),
     .s_axi_clint_arready        (s_axi_clint_arready    ),
@@ -510,6 +545,153 @@ ysyx_24120013_axi_bridge #(
 
     .inst_fetch_flag            (next_inst_flag         ),
     .mem_access_flag            (mem_access_flag        )
+);
+
+// NOTE:以下代码仅用于测试SOC,接入SOC时需要把SOC信号放在顶层并移除
+
+wire                     m_axi_pmem_awvalid, s_axi_pmem_awready;
+wire [MEM_WIDTH-1:0]     m_axi_pmem_awaddr;
+wire [2:0]               m_axi_pmem_awprot;
+
+wire                     m_axi_pmem_wvalid,  s_axi_pmem_wready;
+wire [DATA_WIDTH-1:0]    m_axi_pmem_wdata;
+wire [3:0]               m_axi_pmem_wstrb;
+
+wire                     s_axi_pmem_bvalid,  m_axi_pmem_bready;
+wire [1:0]               s_axi_pmem_bresp;
+
+wire                     m_axi_pmem_arvalid, s_axi_pmem_arready;
+wire [MEM_WIDTH-1:0]     m_axi_pmem_araddr;
+wire [2:0]               m_axi_pmem_arprot;
+
+wire                     s_axi_pmem_rvalid,  m_axi_pmem_rready;
+wire [DATA_WIDTH-1:0]    s_axi_pmem_rdata;
+wire [1:0]               s_axi_pmem_rresp;
+
+wire                     m_axi_uart_awvalid, s_axi_uart_awready;
+wire [MEM_WIDTH-1:0]     m_axi_uart_awaddr;
+wire [2:0]               m_axi_uart_awprot;
+
+wire                     m_axi_uart_wvalid,  s_axi_uart_wready;
+wire [DATA_WIDTH-1:0]    m_axi_uart_wdata;
+wire [3:0]               m_axi_uart_wstrb;
+
+wire                     s_axi_uart_bvalid,  m_axi_uart_bready;
+wire [1:0]               s_axi_uart_bresp;
+
+SoC_sim #(
+    .MEM_WIDTH        (MEM_WIDTH),
+    .DATA_WIDTH       (DATA_WIDTH),
+    .PMEM_BASE        (PMEM_BASE),
+    .PMEM_SIZE        (PMEM_SIZE),
+    .UART_MMIO_BASE   (UART_MMIO_BASE),
+    .UART_MMIO_SIZE   (UART_MMIO_SIZE)
+) u_soc_sim (
+    .clk                     (clock),
+    .rst                     (reset),
+
+    // 对接 axi_bridge 的 io_master
+    .io_slave_awvalid        (io_master_awvalid),
+    .io_slave_awready        (io_master_awready),
+    .io_slave_awaddr         (io_master_awaddr),
+    .io_slave_awprot         (io_master_awprot),
+    .io_slave_wvalid         (io_master_wvalid),
+    .io_slave_wready         (io_master_wready),
+    .io_slave_wdata          (io_master_wdata),
+    .io_slave_wstrb          (io_master_wstrb),
+    .io_slave_bvalid         (io_master_bvalid),
+    .io_slave_bready         (io_master_bready),
+    .io_slave_bresp          (io_master_bresp),
+    .io_slave_arvalid        (io_master_arvalid),
+    .io_slave_arready        (io_master_arready),
+    .io_slave_araddr         (io_master_araddr),
+    .io_slave_arprot         (io_master_arprot),
+    .io_slave_rvalid         (io_master_rvalid),
+    .io_slave_rready         (io_master_rready),
+    .io_slave_rdata          (io_master_rdata),
+    .io_slave_rresp          (io_master_rresp),
+
+    // PMEM 内部连线
+    .m_axi_pmem_awvalid      (m_axi_pmem_awvalid),
+    .s_axi_pmem_awready      (s_axi_pmem_awready),
+    .m_axi_pmem_awaddr       (m_axi_pmem_awaddr),
+    .m_axi_pmem_awprot       (m_axi_pmem_awprot),
+    .m_axi_pmem_wvalid       (m_axi_pmem_wvalid),
+    .s_axi_pmem_wready       (s_axi_pmem_wready),
+    .m_axi_pmem_wdata        (m_axi_pmem_wdata),
+    .m_axi_pmem_wstrb        (m_axi_pmem_wstrb),
+    .s_axi_pmem_bvalid       (s_axi_pmem_bvalid),
+    .m_axi_pmem_bready       (m_axi_pmem_bready),
+    .s_axi_pmem_bresp        (s_axi_pmem_bresp),
+    .m_axi_pmem_arvalid      (m_axi_pmem_arvalid),
+    .s_axi_pmem_arready      (s_axi_pmem_arready),
+    .m_axi_pmem_araddr       (m_axi_pmem_araddr),
+    .m_axi_pmem_arprot       (m_axi_pmem_arprot),
+    .s_axi_pmem_rvalid       (s_axi_pmem_rvalid),
+    .m_axi_pmem_rready       (m_axi_pmem_rready),
+    .s_axi_pmem_rdata        (s_axi_pmem_rdata),
+    .s_axi_pmem_rresp        (s_axi_pmem_rresp),
+
+    // UART 内部连线
+    .m_axi_uart_awvalid      (m_axi_uart_awvalid),
+    .s_axi_uart_awready      (s_axi_uart_awready),
+    .m_axi_uart_awaddr       (m_axi_uart_awaddr),
+    .m_axi_uart_awprot       (m_axi_uart_awprot),
+    .m_axi_uart_wvalid       (m_axi_uart_wvalid),
+    .s_axi_uart_wready       (s_axi_uart_wready),
+    .m_axi_uart_wdata        (m_axi_uart_wdata),
+    .m_axi_uart_wstrb        (m_axi_uart_wstrb),
+    .s_axi_uart_bvalid       (s_axi_uart_bvalid),
+    .m_axi_uart_bready       (m_axi_uart_bready),
+    .s_axi_uart_bresp        (s_axi_uart_bresp)
+);
+
+pmem_sim #(
+    .MEM_WIDTH(MEM_WIDTH),
+    .DATA_WIDTH(DATA_WIDTH)
+) u_pmem_sim (
+    .aclk                    (clock),
+    .areset_n                (reset), 
+
+    .m_awvalid               (m_axi_pmem_awvalid),
+    .s_awready               (s_axi_pmem_awready),
+    .m_awaddr                (m_axi_pmem_awaddr),
+    .m_awprot                (m_axi_pmem_awprot),
+    .m_wvalid                (m_axi_pmem_wvalid),
+    .s_wready                (s_axi_pmem_wready),
+    .m_wdata                 (m_axi_pmem_wdata),
+    .m_wstrb                 (m_axi_pmem_wstrb),
+    .s_bvalid                (s_axi_pmem_bvalid),
+    .m_bready                (m_axi_pmem_bready),
+    .s_bresp                 (s_axi_pmem_bresp),
+    .m_arvalid               (m_axi_pmem_arvalid),
+    .s_arready               (s_axi_pmem_arready),
+    .m_araddr                (m_axi_pmem_araddr),
+    .m_arprot                (m_axi_pmem_arprot),
+    .s_rvalid                (s_axi_pmem_rvalid),
+    .m_rready                (m_axi_pmem_rready),
+    .s_rdata                 (s_axi_pmem_rdata),
+    .s_rresp                 (s_axi_pmem_rresp)
+);
+
+uart_sim #(
+    .MEM_WIDTH(MEM_WIDTH),
+    .DATA_WIDTH(DATA_WIDTH)
+) u_uart_sim (
+    .aclk                    (clock),
+    .areset_n                (reset),
+
+    .m_awvalid               (m_axi_uart_awvalid),
+    .s_awready               (s_axi_uart_awready),
+    .m_awaddr                (m_axi_uart_awaddr),
+    .m_awprot                (m_axi_uart_awprot),
+    .m_wvalid                (m_axi_uart_wvalid),
+    .s_wready                (s_axi_uart_wready),
+    .m_wdata                 (m_axi_uart_wdata),
+    .m_wstrb                 (m_axi_uart_wstrb),
+    .s_bvalid                (s_axi_uart_bvalid),
+    .m_bready                (m_axi_uart_bready),
+    .s_bresp                 (s_axi_uart_bresp)
 );
 
 endmodule
