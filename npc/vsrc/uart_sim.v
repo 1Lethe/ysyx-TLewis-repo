@@ -1,4 +1,4 @@
-// NOTE: 仅用于测试，现不使用
+// NOTE: 接入SoC后不再使用
 module uart_sim #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
         input aclk,
         input areset_n,

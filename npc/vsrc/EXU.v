@@ -152,19 +152,19 @@ ysyx_24120013_lsu #(
     .mem_rvalid     (mem_rvalid      ),
     .mem_access_flag(mem_access_flag ),
 
-    .simplebus_lsu_mem_wr_req (simplebus_lsu_mem_wr_req),
-    .simplebus_lsu_mem_wr_addr(simplebus_lsu_mem_wr_addr),
-    .simplebus_lsu_mem_wr_data(simplebus_lsu_mem_wr_data),
-    .simplebus_lsu_mem_wr_mask(simplebus_lsu_mem_wr_mask),
-    .simplebus_lsu_mem_wr_prot(simplebus_lsu_mem_wr_prot),
-    .simplebus_lsu_mem_wr_resp(simplebus_lsu_mem_wr_resp),
+    .simplebus_lsu_mem_wr_req     (simplebus_lsu_mem_wr_req     ),
+    .simplebus_lsu_mem_wr_addr    (simplebus_lsu_mem_wr_addr    ),
+    .simplebus_lsu_mem_wr_data    (simplebus_lsu_mem_wr_data    ),
+    .simplebus_lsu_mem_wr_mask    (simplebus_lsu_mem_wr_mask    ),
+    .simplebus_lsu_mem_wr_prot    (simplebus_lsu_mem_wr_prot    ),
+    .simplebus_lsu_mem_wr_resp    (simplebus_lsu_mem_wr_resp    ),
     .simplebus_lsu_mem_wr_complete(simplebus_lsu_mem_wr_complete),
 
-    .simplebus_lsu_mem_rd_req(simplebus_lsu_mem_rd_req),
-    .simplebus_lsu_mem_rd_addr(simplebus_lsu_mem_rd_addr),
-    .simplebus_lsu_mem_rd_prot(simplebus_lsu_mem_rd_prot),
-    .simplebus_lsu_mem_rd_data(simplebus_lsu_mem_rd_data),
-    .simplebus_lsu_mem_rd_resp(simplebus_lsu_mem_rd_resp),
+    .simplebus_lsu_mem_rd_req     (simplebus_lsu_mem_rd_req     ),
+    .simplebus_lsu_mem_rd_addr    (simplebus_lsu_mem_rd_addr    ),
+    .simplebus_lsu_mem_rd_prot    (simplebus_lsu_mem_rd_prot    ),
+    .simplebus_lsu_mem_rd_data    (simplebus_lsu_mem_rd_data    ),
+    .simplebus_lsu_mem_rd_resp    (simplebus_lsu_mem_rd_resp    ),
     .simplebus_lsu_mem_rd_complete(simplebus_lsu_mem_rd_complete)
 );
 

@@ -1,3 +1,4 @@
+// NOTE: 接入SoC后不再使用
 module SoC_sim #(
         MEM_WIDTH = 32, 
         DATA_WIDTH = 32,

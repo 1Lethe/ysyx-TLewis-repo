@@ -13,7 +13,6 @@ module ysyx_24120013_axi_bridge
         input aclk,
         input areset,
 
-        // TODO: 修改这里的端口命名
         /* master 1 (lsu) AXI4-Lite bus interface */
         input  wire        m_axi_lsu_mem_awvalid,
         output wire        s_axi_lsu_mem_awready,
@@ -50,37 +49,32 @@ module ysyx_24120013_axi_bridge
         output wire [DATA_WIDTH-1:0] s_axi_ifu_mem_rdata,
         output wire [1:0]  s_axi_ifu_mem_rresp,
 
-        /* SoC AXI4-Lite bus interface */
-        // --- Write Address Channel ---
+        /* slave 1 (SoC) AXI4-Lite bus interface */
         output wire                     io_master_awvalid,
         input  wire                     io_master_awready,
         output wire [MEM_WIDTH-1:0]     io_master_awaddr,
         output wire [2:0]               io_master_awprot,
 
-        // --- Write Data Channel ---
         output wire                     io_master_wvalid,
         input  wire                     io_master_wready,
         output wire [DATA_WIDTH-1:0]    io_master_wdata,
         output wire [3:0] io_master_wstrb,
 
-        // --- Write Response Channel ---
         input  wire                     io_master_bvalid,
         output wire                     io_master_bready,
         input  wire [1:0]               io_master_bresp,
 
-        // --- Read Address Channel ---
         output wire                     io_master_arvalid,
         input  wire                     io_master_arready,
         output wire [MEM_WIDTH-1:0]     io_master_araddr,
         output wire [2:0]               io_master_arprot,
 
-        // --- Read Data Channel ---
         input  wire                     io_master_rvalid,
         output wire                     io_master_rready,
         input  wire [DATA_WIDTH-1:0]    io_master_rdata,
         input  wire [1:0]               io_master_rresp,
 
-        /* slave 2 (CLINT) AXI4-lite bus */
+        /* slave 2 (CLINT) AXI4-lite bus interface */
         output wire   m_axi_clint_arvalid,
         input         s_axi_clint_arready,
         output wire [MEM_WIDTH-1:0] m_axi_clint_araddr,
