@@ -61,7 +61,7 @@ module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         output  m_axi_pmem_lsu_wvalid,
         input wire s_axi_pmem_lsu_wready,
         output  [DATA_WIDTH-1:0] m_axi_pmem_lsu_wdata,
-        output  [7:0] m_axi_pmem_lsu_wstrb,
+        output  [3:0] m_axi_pmem_lsu_wstrb,
 
         input wire s_axi_pmem_lsu_bvalid,
         output  m_axi_pmem_lsu_bready,

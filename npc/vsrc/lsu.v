@@ -25,7 +25,7 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     output reg m_axi_pmem_wvalid,
     input wire s_axi_pmem_wready,
     output reg [DATA_WIDTH-1:0] m_axi_pmem_wdata,
-    output reg [7:0] m_axi_pmem_wstrb,
+    output reg [3:0] m_axi_pmem_wstrb,
 
     input wire s_axi_pmem_bvalid,
     output reg m_axi_pmem_bready,
@@ -120,14 +120,20 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
                       ({DATA_WIDTH{mem_zero_flag}} & mem_zero_res) |
                       ({DATA_WIDTH{mem_not_ex   }} & mem_rdata);
 
-    wire [7:0] mem_wmask;
-    assign mem_wmask = (is_sw_align_mem) ? 8'b00001111 : 
-                       (is_sh_align_mem) ? 8'b00000011 << mem_waddr[1:0] : 
-                       (is_sb_mem) ? 8'b00000001 << mem_waddr[1:0] : 8'b0;
-    wire [7:0] mem_rmask;
-    assign mem_rmask = (mem_rtype[2] == 1'b1) ? 8'b00001111 : 
-                       (mem_rtype[1] == 1'b1) ? 8'b00000011 << mem_raddr[1:0] : 
-                       (mem_rtype[0] == 1'b1) ? 8'b00000001 << mem_raddr[1:0] : 8'b0;
+    wire [7:0] mem_wmask_8bit;
+    assign mem_wmask_8bit = (is_sw_align_mem) ? 8'b00001111 : 
+                            (is_sh_align_mem) ? 8'b00000011 << mem_waddr[1:0] : 
+                            (is_sb_mem) ? 8'b00000001 << mem_waddr[1:0] : 8'b0;
+    wire [7:0] mem_rmask_8bit;
+    assign mem_rmask_8bit = (mem_rtype[2] == 1'b1) ? 8'b00001111 : 
+                            (mem_rtype[1] == 1'b1) ? 8'b00000011 << mem_raddr[1:0] : 
+                            (mem_rtype[0] == 1'b1) ? 8'b00000001 << mem_raddr[1:0] : 8'b0;
+
+    wire [3:0] mem_wmask;
+    assign mem_wmask = mem_wmask_8bit[3:0];
+
+    wire [3:0] mem_rmask;
+    assign mem_rmask = mem_rmask_8bit[3:0];
 
     reg mem_wen_r1;
     reg mem_ren_r1;
@@ -180,7 +186,7 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
         if(rst) begin
             m_axi_pmem_wvalid <= 1'b0;
             m_axi_pmem_wdata  <= {DATA_WIDTH{1'b0}};
-            m_axi_pmem_wstrb  <= 8'b0;
+            m_axi_pmem_wstrb  <= 4'b0;
         end else if(awshakehand) begin
             m_axi_pmem_wvalid <= 1'b1;
             m_axi_pmem_wdata  <= mem_wdata_align;
@@ -188,7 +194,7 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
         end else if(wshakehand) begin
             m_axi_pmem_wvalid <= 1'b0;
             m_axi_pmem_wdata  <= {DATA_WIDTH{1'b0}};
-            m_axi_pmem_wstrb  <= 8'b0;
+            m_axi_pmem_wstrb  <= 4'b0;
         end
     end
 

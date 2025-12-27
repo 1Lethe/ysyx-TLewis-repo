@@ -220,7 +220,7 @@ wire [2:0]  m_axi_pmem_lsu_awprot;
 wire        m_axi_pmem_lsu_wvalid;
 wire        s_axi_pmem_lsu_wready;
 wire [DATA_WIDTH-1:0] m_axi_pmem_lsu_wdata;
-wire [7:0]  m_axi_pmem_lsu_wstrb;
+wire [3:0]  m_axi_pmem_lsu_wstrb;
 
 wire        s_axi_pmem_lsu_bvalid;
 wire        m_axi_pmem_lsu_bready;
@@ -317,7 +317,7 @@ wire [2:0]  m_axi_pmem_awprot;
 wire        m_axi_pmem_wvalid;
 wire        s_axi_pmem_wready;
 wire [DATA_WIDTH-1:0] m_axi_pmem_wdata;
-wire [7:0]  m_axi_pmem_wstrb;
+wire [3:0]  m_axi_pmem_wstrb;
 
 wire        s_axi_pmem_bvalid;
 wire        m_axi_pmem_bready;
@@ -370,7 +370,7 @@ wire [2:0]  m_axi_uart_awprot;
 wire        m_axi_uart_wvalid;
 wire        s_axi_uart_wready;
 wire [DATA_WIDTH-1:0] m_axi_uart_wdata;
-wire [7:0]  m_axi_uart_wstrb;
+wire [3:0]  m_axi_uart_wstrb;
 
 wire        s_axi_uart_bvalid;
 wire        m_axi_uart_bready;

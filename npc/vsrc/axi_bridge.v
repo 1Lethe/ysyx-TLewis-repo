@@ -23,7 +23,7 @@ module ysyx_24120013_axi_bridge
         input  m_axi_pmem_lsu_wvalid,
         output wire s_axi_pmem_lsu_wready,
         input  [DATA_WIDTH-1:0] m_axi_pmem_lsu_wdata,
-        input  [7:0] m_axi_pmem_lsu_wstrb,
+        input  [3:0] m_axi_pmem_lsu_wstrb,
 
         output wire s_axi_pmem_lsu_bvalid,
         input  m_axi_pmem_lsu_bready,
@@ -59,7 +59,7 @@ module ysyx_24120013_axi_bridge
         output wire m_axi_pmem_wvalid,
         input  s_axi_pmem_wready,
         output wire [DATA_WIDTH-1:0] m_axi_pmem_wdata,
-        output wire [7:0] m_axi_pmem_wstrb,
+        output wire [3:0] m_axi_pmem_wstrb,
 
         input  s_axi_pmem_bvalid,
         output wire m_axi_pmem_bready,
@@ -75,6 +75,7 @@ module ysyx_24120013_axi_bridge
         input  [DATA_WIDTH-1:0] s_axi_pmem_rdata,
         input  [1:0] s_axi_pmem_rresp,
 
+        // TODO: 整合这里的SOC信号
         /* slave 2 (uart) AXI4-lite bus */
         output wire m_axi_uart_awvalid,
         input  s_axi_uart_awready,
@@ -84,7 +85,7 @@ module ysyx_24120013_axi_bridge
         output wire m_axi_uart_wvalid,
         input  s_axi_uart_wready,
         output wire [DATA_WIDTH-1:0] m_axi_uart_wdata,
-        output wire [7:0] m_axi_uart_wstrb,
+        output wire [3:0] m_axi_uart_wstrb,
 
         input  s_axi_uart_bvalid,
         output wire m_axi_uart_bready,
@@ -157,7 +158,7 @@ module ysyx_24120013_axi_bridge
     wire m_wvalid;
     wire s_wready;
     wire [DATA_WIDTH-1:0] m_wdata;
-    wire [7:0] m_wstrb;
+    wire [3:0] m_wstrb;
 
     wire s_bvalid;
     wire m_bready;
@@ -194,7 +195,7 @@ module ysyx_24120013_axi_bridge
                     (arbiter_allow_ifu) ? {DATA_WIDTH{1'b0}} : {DATA_WIDTH{1'b0}};
 
     assign m_wstrb = (arbiter_allow_lsu) ? m_axi_pmem_lsu_wstrb :
-                    (arbiter_allow_ifu) ? 8'b0 : 8'b0;
+                    (arbiter_allow_ifu) ? 4'b0 : 4'b0;
 
     assign s_axi_pmem_lsu_bvalid = (arbiter_allow_lsu) ? s_bvalid : 1'b0;
 
@@ -309,7 +310,7 @@ module ysyx_24120013_axi_bridge
 
     assign m_axi_pmem_wvalid  = (xbar_slave_pmem) ? m_wvalid  : 1'b0;
     assign m_axi_pmem_wdata   = (xbar_slave_pmem) ? m_wdata   : {DATA_WIDTH{1'b0}};
-    assign m_axi_pmem_wstrb   = (xbar_slave_pmem) ? m_wstrb   : 8'b0;
+    assign m_axi_pmem_wstrb   = (xbar_slave_pmem) ? m_wstrb   : 4'b0;
 
     assign m_axi_pmem_bready  = (xbar_slave_pmem) ? m_bready  : 1'b0;
 
@@ -326,7 +327,7 @@ module ysyx_24120013_axi_bridge
 
     assign m_axi_uart_wvalid  = (xbar_slave_uart) ? m_wvalid  : 1'b0;
     assign m_axi_uart_wdata   = (xbar_slave_uart) ? m_wdata   : {DATA_WIDTH{1'b0}};
-    assign m_axi_uart_wstrb   = (xbar_slave_uart) ? m_wstrb   : 8'b0;
+    assign m_axi_uart_wstrb   = (xbar_slave_uart) ? m_wstrb   : 4'b0;
 
     assign m_axi_uart_bready  = (xbar_slave_uart) ? m_bready  : 1'b0;
 

@@ -10,7 +10,7 @@ module pmem_sim #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
         input m_wvalid,
         output reg s_wready,
         input [DATA_WIDTH-1:0] m_wdata,
-        input [7:0] m_wstrb,
+        input [3:0] m_wstrb,
 
         output reg s_bvalid,
         input wire m_bready,
@@ -91,7 +91,7 @@ module pmem_sim #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
 
     // TODO: AXI4-lite一次仅传输一个数据，当拓展到AXI4时，我们需要修改这里
     reg [DATA_WIDTH-1:0] wdata_buffer;
-    reg [7:0] wstrb_buffer;
+    reg [3:0] wstrb_buffer;
 
     always @(posedge aclk) begin
         if(areset_n) begin
@@ -106,32 +106,32 @@ module pmem_sim #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
     always @(posedge aclk) begin
         if(areset_n) begin
             wdata_buffer <= {DATA_WIDTH{1'b0}};
-            wstrb_buffer <= 8'b0;
+            wstrb_buffer <= 4'b0;
         end else if(wshakehand) begin
             wdata_buffer <= m_wdata;
             wstrb_buffer <= m_wstrb;
         end else if(bshakehand) begin
             wdata_buffer <= {DATA_WIDTH{1'b0}};
-            wstrb_buffer <= 8'b0;
+            wstrb_buffer <= 4'b0;
         end
     end
 
     wire mem_wready;
     wire [MEM_WIDTH-1:0] mem_waddr;
     wire [DATA_WIDTH-1:0] mem_wdata;
-    wire [7:0] mem_wstrb;
+    wire [3:0] mem_wstrb;
 
     assign mem_wready = (awcomplete & wshakehand) | (awshakehand & wcomplete);
     assign mem_waddr = (~mem_wready) ? {MEM_WIDTH{1'b0}} : 
                         (awshakehand) ? (m_awaddr) : (awaddr_buffer);
     assign mem_wdata = (~mem_wready) ? {DATA_WIDTH{1'b0}} :
                         (wshakehand)  ? (m_wdata) :  (wdata_buffer); 
-    assign mem_wstrb = (~mem_wready) ? 8'b0 :
+    assign mem_wstrb = (~mem_wready) ? 4'b0 :
                         (wshakehand)  ? (m_wstrb) :  (wstrb_buffer); 
 
     always @(posedge aclk) begin
         if(mem_wready) begin
-            sim_pmem_write(mem_waddr, mem_wdata, mem_wstrb);
+            sim_pmem_write(mem_waddr, mem_wdata,{4'b0000, mem_wstrb});
         end
     end
 
