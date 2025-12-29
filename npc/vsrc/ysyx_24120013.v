@@ -5,12 +5,12 @@ import "DPI-C" function void sim_hardware_fault_handle(input int NO,input int ar
 
 import "DPI-C" function void halt ();
 
-`include "define/exu_command.v"
+`include "cpu_defines.v"
 
 module ysyx_24120013 (
     input clock,
     input reset,
-    output wire                     io_interrupt,
+    input io_interrupt,
 
     input  wire                     io_master_awready,
     output wire                     io_master_awvalid,
@@ -44,8 +44,42 @@ module ysyx_24120013 (
     input  wire [1:0]               io_master_rresp,
     input  wire [DATA_WIDTH-1:0]    io_master_rdata,
     input  wire                     io_master_rlast,
-    input  wire [3:0]               io_master_rid
-);
+    input  wire [3:0]               io_master_rid,
+
+    output wire                     io_slave_awready,
+    input  wire                     io_slave_awvalid,
+    input  wire [MEM_WIDTH-1:0]     io_slave_awaddr,
+    input  wire [3:0]               io_slave_awid,
+    input  wire [7:0]               io_slave_awlen,
+    input  wire [2:0]               io_slave_awsize,
+    input  wire [1:0]               io_slave_awburst,
+
+    output wire                     io_slave_wready,
+    input  wire                     io_slave_wvalid,
+    input  wire [DATA_WIDTH-1:0]    io_slave_wdata,
+    input  wire [3:0]               io_slave_wstrb,
+    input  wire                     io_slave_wlast,
+
+    input  wire                     io_slave_bready,
+    output wire                     io_slave_bvalid,
+    output wire [1:0]               io_slave_bresp,
+    output wire [3:0]               io_slave_bid,
+
+    output wire                     io_slave_arready,
+    input  wire                     io_slave_arvalid,
+    input  wire [MEM_WIDTH-1:0]     io_slave_araddr,
+    input  wire [3:0]               io_slave_arid,
+    input  wire [7:0]               io_slave_arlen,
+    input  wire [2:0]               io_slave_arsize,
+    input  wire [1:0]               io_slave_arburst,
+
+    input  wire                     io_slave_rready,
+    output wire                     io_slave_rvalid,
+    output wire [1:0]               io_slave_rresp,
+    output wire [DATA_WIDTH-1:0]    io_slave_rdata,
+    output wire                     io_slave_rlast,
+    output wire [3:0]               io_slave_rid
+    );
 
 parameter MEM_WIDTH = 32;
 parameter ADDR_WIDTH = 5;
@@ -58,6 +92,56 @@ parameter UART_MMIO_BASE = 32'ha00003f8;
 parameter UART_MMIO_SIZE = 32'h8;
 parameter CLINT_MMIO_BASE = 32'ha0000048;
 parameter CLINT_MMIO_SIZE = 32'h8;
+
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
+/* For C++ SIM ENV */
+wire [DATA_WIDTH-1:0] rf_difftest [2**ADDR_WIDTH-1:0];
+wire [DATA_WIDTH-1:0] mstatus_difftest;
+wire [DATA_WIDTH-1:0] mtvec_difftest;
+wire [DATA_WIDTH-1:0] mepc_difftest;
+wire [DATA_WIDTH-1:0] mcause_difftest;
+wire [DATA_WIDTH-1:0] pc_difftest;
+
+wire [DATA_WIDTH-1:0] csr_difftest [3:0];
+
+reg difftest_check_flag;
+
+assign csr_difftest[0] = mstatus_difftest;
+assign csr_difftest[1] = mtvec_difftest;
+assign csr_difftest[2] = mepc_difftest;
+assign csr_difftest[3] = mcause_difftest;
+
+assign pc_difftest = pc;
+
+always @(posedge clock) begin
+    if(reset)
+        difftest_check_flag <= 1'b0;
+    else
+        difftest_check_flag <= next_inst_flag;
+end
+
+export "DPI-C" function get_rf_value;
+export "DPI-C" function get_csr_value;
+export "DPI-C" function get_pc_value;
+export "DPI-C" function is_check_difftest;
+
+function int get_rf_value(int idx);
+    return rf_difftest[idx];
+endfunction
+
+function int get_csr_value(int idx);
+    return csr_difftest[idx];
+endfunction
+
+function int get_pc_value();
+    return pc_difftest;
+endfunction
+
+function logic is_check_difftest();
+    return difftest_check_flag;
+endfunction
+
+`endif
 
 wire pc_jmp_en;
 wire [DATA_WIDTH-1:0] pc;
@@ -251,27 +335,34 @@ ysyx_24120013_RegisterFile #(
     .ADDR_WIDTH (ADDR_WIDTH),
     .DATA_WIDTH (DATA_WIDTH)
 )u_ysyx_24120013_RegisterFile(
-    .clk    	     (clock            ),
-    .rst    	     (reset            ),
-    .wdata  	     (reg_wdata        ),
-    .waddr  	     (reg_waddr        ),
-    .wen    	     (reg_wen          ),
-    .raddr1 	     (reg_raddr1       ),
-    .raddr2 	     (reg_raddr2       ),
-    .rdata1 	     (reg_rdata1       ),
-    .rdata2 	     (reg_rdata2       ),
-    .csr_waddr1      (csr_waddr1       ),
-    .csr_wdata1      (csr_wdata1       ),
-    .csr_waddr2      (csr_waddr2       ),
-    .csr_wdata2      (csr_wdata2       ),
-    .csr_waddr3      (csr_waddr3       ),
-    .csr_wdata3      (csr_wdata3       ),
-    .csr_wen         (csr_wen          ), 
-    .csr_raddr       (csr_raddr        ),
-    .csr_rdata       (csr_rdata        ),
-    .ex_is_valid     (ex_is_valid      ),
-    .wb_is_ready     (wb_is_ready      ),
-    .next_inst_flag  (next_inst_flag   )
+    .clk    	     (clock           ),
+    .rst    	     (reset           ),
+    .wdata           (reg_wdata       ),
+    .waddr  	     (reg_waddr       ),
+    .wen             (reg_wen         ),
+    .raddr1 	     (reg_raddr1      ),
+    .raddr2 	     (reg_raddr2      ),
+    .rdata1          (reg_rdata1      ),
+    .rdata2 	     (reg_rdata2      ),
+    .csr_waddr1      (csr_waddr1      ),
+    .csr_wdata1      (csr_wdata1      ),
+    .csr_waddr2      (csr_waddr2      ),
+    .csr_wdata2      (csr_wdata2      ),
+    .csr_waddr3      (csr_waddr3      ),
+    .csr_wdata3      (csr_wdata3      ),
+    .csr_wen         (csr_wen         ), 
+    .csr_raddr       (csr_raddr       ),
+    .csr_rdata       (csr_rdata       ),
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
+    .rf_difftest     (rf_difftest     ),
+    .mstatus_difftest(mstatus_difftest),
+    .mtvec_difftest  (mtvec_difftest  ),
+    .mepc_difftest   (mepc_difftest   ),
+    .mcause_difftest (mcause_difftest ),
+`endif
+    .ex_is_valid     (ex_is_valid     ),
+    .wb_is_ready     (wb_is_ready     ),
+    .next_inst_flag  (next_inst_flag  )
 );
 
 // output declaration of module ysyx_24120013_EXU

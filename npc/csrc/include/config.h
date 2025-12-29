@@ -8,10 +8,12 @@
 //#define EN_MTRACE 1
 //#define EN_FTRACE 1
 //#define EN_DTRACE 1
-#define EN_DIFFTEST 1
+//#define EN_DIFFTEST 1
 #define EN_DEVICE 1
 #define EN_DUMP_WAVE 1
 #define CONFIG_MEM_RANDOM 1
+
+#define USE_SOC 1
 
 // 启用硬件的内存映射，关闭仿真环境的sim_pmem_write映射
 #define EN_MMIO_HARDWARE

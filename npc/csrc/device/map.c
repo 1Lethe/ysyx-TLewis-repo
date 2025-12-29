@@ -32,12 +32,15 @@ uint8_t* new_space(int size) {
 }
 
 static void check_bound(IOMap *map, paddr_t addr) {
+  //printf("Fixme in check_bound\n");
   if (map == NULL) {
-    Assert(map != NULL, "address (" FMT_PADDR ") is out of bound at pc = " FMT_WORD, addr, SIM_MODULE_NAME->pc);
+    //Assert(map != NULL, "address (" FMT_PADDR ") is out of bound at pc = " FMT_WORD, addr, SIM_MODULE_NAME->pc);
   } else {
+    /*
     Assert(addr <= map->high && addr >= map->low,
         "address (" FMT_PADDR ") is out of bound {%s} [" FMT_PADDR ", " FMT_PADDR "] at pc = " FMT_WORD,
         addr, map->name, map->low, map->high, SIM_MODULE_NAME->pc);
+    */
   }
 }
 

@@ -1,5 +1,3 @@
-`include "define/exu_command.v"
-
 module ysyx_24120013_bru #(DATA_WIDTH = 32)(
     input clk,
     input rst,

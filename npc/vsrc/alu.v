@@ -1,5 +1,3 @@
-`include "define/exu_command.v"
-
 module ysyx_24120013_alu #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     input [DATA_WIDTH-1:0] src1,
     input [DATA_WIDTH-1:0] src2,

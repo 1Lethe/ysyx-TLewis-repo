@@ -19,16 +19,17 @@ void cycle(SIM_MODULE* top, uint64_t n){
     for(int i = 0; (i < n) && (is_sim_continue()); i++){
         single_cycle(top);
         cycle_time++;
+        update_simenv_cpu_state();
 #ifdef EN_DIFFTEST
-        if(top->difftest_check_flag){
-            if(!difftest_step(top, top->pc, top->pc)){
+        if(is_check_difftest()){
+            if(!difftest_step(cpu.pc, cpu.pc)){
                 assert_fail_msg();
                 halt();
             }
         }
 #endif
-        IFDEF(EN_ITRACE, iring(top->pc, pmem_read(top->pc, 4)));
-        IFDEF(EN_FTRACE, ftrace(top->pc));
+        IFDEF(EN_ITRACE, iring(cpu.pc, pmem_read(cpu.pc, 4)));
+        IFDEF(EN_FTRACE, ftrace(cpu.pc));
         device_update();
     }
 }

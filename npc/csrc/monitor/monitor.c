@@ -52,8 +52,10 @@ static int parse_args(int argc, char *argv[]) {
 
 long load_img() {
     if(img_file == NULL){
+      #ifndef USE_SOC
         Log("No image is given.Use the default build-in image.");
         cpy_buildin_img();
+      #endif
         return 4096;
     }
 
@@ -124,10 +126,13 @@ void monitor_init(int argc, char *argv[]){
     img_size = load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
     init_log(log_file);
+  
+    extern void init_scope();
+    init_scope();
     IFDEF(EN_ITRACE, init_disasm());
     IFDEF(EN_ITRACE, iring_init());
     IFDEF(EN_FTRACE, ftrace_init());
     IFDEF(EN_DEVICE, init_device());
-    IFDEF(EN_DIFFTEST, init_difftest(top, diff_so_file, MEMORY_SIZE, difftest_port));
+    IFDEF(EN_DIFFTEST, init_difftest(diff_so_file, MEMORY_SIZE, difftest_port));
     Log("Welcome to riscv32e-NPC-Tlewis!");
 }

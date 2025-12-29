@@ -3,6 +3,9 @@
 #include "device/map.h"
 #include "device/mmio.h"
 
+extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+extern "C" void mrom_read(int32_t addr, int32_t *data) { assert(0); }
+
 extern char *img_file;
 
 static uint8_t pmem[MEMORY_SIZE] __attribute((aligned(4096))) = {};

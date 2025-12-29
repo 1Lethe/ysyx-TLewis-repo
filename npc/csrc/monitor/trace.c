@@ -16,11 +16,14 @@ extern Elf32_Shdr shdr_strtab;
 extern Elf32_Shdr shdr_symtab;
 
 void assert_fail_msg(void){
+  /*
     printf("PC = 0x%x\n", SIM_MODULE_NAME->pc);
     reg_display(SIM_MODULE_NAME);
     IFDEF(EN_ITRACE, iring_display());
     IFDEF(EN_ITEACE, iring_free());
     IFDEF(EN_DUMP_WAVE, tfp_close());
+  */
+    printf("fix me in assert_fail_msg");
     return ;
 }
 

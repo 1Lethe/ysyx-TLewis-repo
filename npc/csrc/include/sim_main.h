@@ -1,11 +1,13 @@
 #ifndef __SIM_MAIN_H
 #define __SIM_MAIN_H
 
-#include "Vysyx_24120013.h"
+#include "VysyxSoCFull.h"
 #include "verilated.h"
 
-#define SIM_MODULE Vysyx_24120013
-#define SIM_MODULE_NAME top
+#define SIM_MODULE VysyxSoCFull
+#define SIM_MODULE_NAME ysyxSoCfull
+#define CPU_MODULE VysyxSoCFull_ysyx_24120013
+#define CPU_MODULE_NAME ysyx_24120013
 
 extern SIM_MODULE* SIM_MODULE_NAME;
 

@@ -1,5 +1,3 @@
-`include "define/exu_command.v"
-
 module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     input clk,
     input rst,

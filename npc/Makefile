@@ -1,12 +1,21 @@
 .PHONY = all run sim clean clean_wave clean_all syn fix-fanout sta clean_sta
 
-TOPNAME = ysyx_24120013
+TOPNAME = ysyxSoCFull
 NXDC_FILES = constr/top.nxdc
 INC_PATH ?=
 
+SOC_PERIP_PATH = $(YSYX_HOME)/ysyxSoC/perip
+SOC_BUILD_PATH = $(YSYX_HOME)/ysyxSoC/build
+
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc  --trace-fst \
-				-O3 --x-assign fast --x-initial fast --noassert --timing -I./vsrc
+VERILATOR_CFLAGS += -MMD --build -cc --trace-fst \
+					-O3 --x-assign fast --x-initial fast --noassert --no-timing --timescale "1ns/1ns" \
+					-I./vsrc -I./vsrc/define -I$(YSYX_HOME)/ysyxSoC/perip/uart16550/rtl -I$(YSYX_HOME)/ysyxSoC/perip/spi/rtl \
+					--verilate-jobs 8
+
+INC_PATH += $(NPC_HOME)/csrc/include
+INC_PATH += $(NPC_HOME)/capstone/repo/include
+LDFLAGS += -lreadline -ldl
 
 BUILD_DIR = ./build
 OBJ_DIR = $(BUILD_DIR)/obj_dir
@@ -22,7 +31,9 @@ $(SRC_AUTO_BIND): $(NXDC_FILES)
 	python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
 # project source
-VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
+VSRCS = $(shell find $(abspath ./vsrc) -name "*.v") \
+		$(shell find $(abspath $(SOC_PERIP_PATH)) -name "*.v") \
+		$(SOC_BUILD_PATH)/ysyxSoCFull.v
 CSRCS = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "sim_main.cpp" )
 CSRCS += $(SRC_AUTO_BIND)
 
@@ -43,9 +54,6 @@ include csrc/utils/filelist.mk
 
 VER_SIM_C_PATH = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp" )
 
-INC_PATH += /home/tonglewis/ysyx-workbench/npc/csrc/include
-INC_PATH += /home/tonglewis/ysyx-workbench/npc/capstone/repo/include
-LDFLAGS += -lreadline -ldl
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))

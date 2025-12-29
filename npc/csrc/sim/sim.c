@@ -1,6 +1,7 @@
 #include "common.h"
 #include "sim.h"
 #include "cpu-exec.h"
+#include "svdpi.h"
 
 static bool sim_stop_flag = false;
 
@@ -8,11 +9,13 @@ VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
 SIM_MODULE* SIM_MODULE_NAME;
 
+CPU_state cpu;
+
 void halt(void){
-    if(SIM_MODULE_NAME->trap_flag == 0){
-        Log("NPC: %s PC = 0x%x", ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN), SIM_MODULE_NAME->pc);
+    if(cpu.gpr[10] == 0){
+        Log("NPC: %s PC = 0x%x", ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN), cpu.pc);
     }else{
-        Log("NPC: %s PC = 0x%x", ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED), SIM_MODULE_NAME->pc);
+        Log("NPC: %s PC = 0x%x", ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED), cpu.pc);
     }
     sim_stop_flag = true;
 }
@@ -46,6 +49,22 @@ bool is_sim_continue(void){
 
 void tfp_close(void){
     tfp->close();
+}
+
+void init_scope(void) {
+    svScope scope = svGetScopeFromName("TOP.ysyxSoCFull.asic.cpu.cpu");
+    svSetScope(scope);
+}
+
+void update_simenv_cpu_state(void) {
+    for(int i = 0; i < RISCV_GPR_NUM; i++) {
+        cpu.gpr[i] = get_rf_value(i);
+    }
+    cpu.mstatus = get_csr_value(CSR_MSTATUS);
+    cpu.mtvec = get_csr_value(CSR_MTVEC);
+    cpu.mepc = get_csr_value(CSR_MEPC);
+    cpu.mcause = get_csr_value(CSR_MCAUSE);
+    cpu.pc = get_pc_value();
 }
 
 extern "C" void sim_hardware_fault_handle(int NO, int arg0) {

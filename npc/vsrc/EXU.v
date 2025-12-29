@@ -1,4 +1,4 @@
-`include "define/exu_command.v"
+`include "cpu_defines.v"
 
 module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,

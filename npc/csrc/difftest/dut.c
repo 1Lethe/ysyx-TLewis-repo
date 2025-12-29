@@ -21,10 +21,10 @@ void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
 void (*ref_difftest_raise_intr)(uint64_t NO) = NULL;
 
+#ifdef EN_DIFFTEST
+
 static bool is_skip_ref = false;
 static int skip_dut_nr_inst = 0;
-
-CPU_state cpu;
 
 extern const char *regs[];
 
@@ -72,17 +72,6 @@ bool isa_difftest_checkregs(CPU_state *ref_r, uint32_t pc) {
   return diff_status;
 }
 
-static void state_struct_cpy(SIM_MODULE* top){
-  for (size_t i = 0; i < RISCV_GPR_NUM; i++){
-    cpu.gpr[i] = top->rf_dis[i];
-  }
-  cpu.pc = top->pc;
-  cpu.mstatus = top->csr_mstatus_dis;
-  cpu.mtvec = top->csr_mtvec_dis;
-  cpu.mepc = top->csr_mepc_dis;
-  cpu.mcause = top->csr_mcause_dis;
-}
-
 // this is used to let ref skip instructions which
 // can not produce consistent behavior with NEMU
 void difftest_skip_ref() {
@@ -111,7 +100,7 @@ void difftest_skip_dut(int nr_ref, int nr_dut) {
   }
 }
 
-void init_difftest(SIM_MODULE* top, char *ref_so_file, long img_size, int port) {
+void init_difftest(char *ref_so_file, long img_size, int port) {
   assert(ref_so_file != NULL);
 
   void *handle;
@@ -140,7 +129,6 @@ void init_difftest(SIM_MODULE* top, char *ref_so_file, long img_size, int port) 
 
   ref_difftest_init(port);
   ref_difftest_memcpy(RESET_VECTOR, guest_to_host(RESET_VECTOR), img_size, DIFFTEST_TO_REF);
-  state_struct_cpy(top);
   ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
@@ -152,9 +140,8 @@ static bool checkregs(CPU_state *ref, uint32_t pc) {
   return true;
 }
 
-bool difftest_step(SIM_MODULE* top, uint32_t pc, uint32_t npc) {
+bool difftest_step(uint32_t pc, uint32_t npc) {
   CPU_state ref_r;
-  state_struct_cpy(top);
 
   if (skip_dut_nr_inst > 0) {
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
@@ -180,3 +167,7 @@ bool difftest_step(SIM_MODULE* top, uint32_t pc, uint32_t npc) {
 
   return checkregs(&ref_r, pc);
 }
+#else
+void difftest_skip_ref() {
+}
+#endif

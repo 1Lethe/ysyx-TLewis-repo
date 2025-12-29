@@ -1,5 +1,5 @@
-`ifndef ysyx_24120013__EXU_COMMAND
-`define ysyx_24120013__EXU_COMMAND
+`ifndef ysyx_24120013__CPU_DEFINES
+`define ysyx_24120013__CPU_DEFINES
 
 `define ysyx_24120013_ALUOP_WIDTH 15
 `define ysyx_24120013_BRANCH_WIDTH 8
@@ -12,5 +12,7 @@
 `define ysyx_24120013_MTVEC   12'h305
 `define ysyx_24120013_MEPC    12'h341
 `define ysyx_24120013_MCAUSE  12'h342
+
+`define ysyx_24120013_USE_CPP_SIM_ENV
 
 `endif
