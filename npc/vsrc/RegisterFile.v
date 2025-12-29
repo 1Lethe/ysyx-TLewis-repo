@@ -21,13 +21,6 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         input [`ysyx_24120013_CSR_ADDR_WIDTH-1:0] csr_raddr,
         output wire [DATA_WIDTH-1:0] csr_rdata,
 
-        output wire [DATA_WIDTH-1:0] rf_dis [2**ADDR_WIDTH-1:0],
-        output wire [DATA_WIDTH-1:0] csr_mstatus_dis,
-        output wire [DATA_WIDTH-1:0] csr_mtvec_dis,
-        output wire [DATA_WIDTH-1:0] csr_mepc_dis,
-        output wire [DATA_WIDTH-1:0] csr_mcause_dis,
-        output wire [DATA_WIDTH-1:0] trap_flag,
-
         input ex_is_valid,
         output wire wb_is_ready,
 
@@ -98,12 +91,5 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
                        ({DATA_WIDTH{is_mtvec_r}}   & mtvec   ) |
                        ({DATA_WIDTH{is_mepc_r}}    & mepc    ) |
                        ({DATA_WIDTH{is_mcause_r}}  & mcause  );
-
-    assign rf_dis = rf;
-    assign csr_mstatus_dis = mstatus;
-    assign csr_mtvec_dis = mtvec;
-    assign csr_mepc_dis = mepc;
-    assign csr_mcause_dis = mcause;
-    assign trap_flag = rf[10];
 
 endmodule

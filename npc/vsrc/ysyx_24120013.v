@@ -10,16 +10,41 @@ import "DPI-C" function void halt ();
 module ysyx_24120013 (
     input clock,
     input reset,
-    output reg [DATA_WIDTH-1:0] pc,
+    output wire                     io_interrupt,
 
-    /* display to C++ interface */
-    output wire [DATA_WIDTH-1:0] rf_dis [2**ADDR_WIDTH-1:0],
-    output wire [DATA_WIDTH-1:0] csr_mstatus_dis,
-    output wire [DATA_WIDTH-1:0] csr_mtvec_dis,
-    output wire [DATA_WIDTH-1:0] csr_mepc_dis,
-    output wire [DATA_WIDTH-1:0] csr_mcause_dis,
-    output reg difftest_check_flag,
-    output wire [DATA_WIDTH-1:0] trap_flag
+    input  wire                     io_master_awready,
+    output wire                     io_master_awvalid,
+    output wire [MEM_WIDTH-1:0]     io_master_awaddr,
+    output wire [3:0]               io_master_awid,
+    output wire [7:0]               io_master_awlen,
+    output wire [2:0]               io_master_awsize,
+    output wire [1:0]               io_master_awburst,
+
+    input  wire                     io_master_wready,
+    output wire                     io_master_wvalid,
+    output wire [DATA_WIDTH-1:0]    io_master_wdata,
+    output wire [3:0]               io_master_wstrb,
+    output wire                     io_master_wlast,
+
+    output wire                     io_master_bready,
+    input  wire                     io_master_bvalid,
+    input  wire [1:0]               io_master_bresp,
+    input  wire [3:0]               io_master_bid,
+
+    input  wire                     io_master_arready,
+    output wire                     io_master_arvalid,
+    output wire [MEM_WIDTH-1:0]     io_master_araddr,
+    output wire [3:0]               io_master_arid,
+    output wire [7:0]               io_master_arlen,
+    output wire [2:0]               io_master_arsize,
+    output wire [1:0]               io_master_arburst,
+
+    output wire                     io_master_rready,
+    input  wire                     io_master_rvalid,
+    input  wire [1:0]               io_master_rresp,
+    input  wire [DATA_WIDTH-1:0]    io_master_rdata,
+    input  wire                     io_master_rlast,
+    input  wire [3:0]               io_master_rid
 );
 
 parameter MEM_WIDTH = 32;
@@ -35,6 +60,7 @@ parameter CLINT_MMIO_BASE = 32'ha0000048;
 parameter CLINT_MMIO_SIZE = 32'h8;
 
 wire pc_jmp_en;
+wire [DATA_WIDTH-1:0] pc;
 wire [DATA_WIDTH-1:0] branch_jmp_pc;
 
 ysyx_24120013_PC #(
@@ -221,13 +247,6 @@ wire [DATA_WIDTH-1:0] csr_wdata3;
 wire wb_is_ready;
 wire next_inst_flag;
 
-always @(posedge clock) begin
-    if(reset)
-        difftest_check_flag <= 1'b0;
-    else
-        difftest_check_flag <= next_inst_flag;
-end
-
 ysyx_24120013_RegisterFile #(
     .ADDR_WIDTH (ADDR_WIDTH),
     .DATA_WIDTH (DATA_WIDTH)
@@ -250,13 +269,6 @@ ysyx_24120013_RegisterFile #(
     .csr_wen         (csr_wen          ), 
     .csr_raddr       (csr_raddr        ),
     .csr_rdata       (csr_rdata        ),
-    .rf_dis          (rf_dis           ),
-    .csr_mstatus_dis (csr_mstatus_dis  ),
-    .csr_mtvec_dis   (csr_mtvec_dis    ),
-    .csr_mepc_dis    (csr_mepc_dis     ),
-    .csr_mcause_dis  (csr_mcause_dis   ),
-    .trap_flag       (trap_flag        ),
-
     .ex_is_valid     (ex_is_valid      ),
     .wb_is_ready     (wb_is_ready      ),
     .next_inst_flag  (next_inst_flag   )
@@ -449,25 +461,6 @@ ysyx_24120013_CLINT #(
     .s_rresp  (s_axi_clint_rresp  )
 );
 
-wire                     io_master_awvalid, io_master_awready;
-wire [MEM_WIDTH-1:0]     io_master_awaddr;
-wire [2:0]               io_master_awprot;
-
-wire                     io_master_wvalid,  io_master_wready;
-wire [DATA_WIDTH-1:0]    io_master_wdata;
-wire [3:0] io_master_wstrb;
-
-wire                     io_master_bvalid,  io_master_bready;
-wire [1:0]               io_master_bresp;
-
-wire                     io_master_arvalid, io_master_arready;
-wire [MEM_WIDTH-1:0]     io_master_araddr;
-wire [2:0]               io_master_arprot;
-
-wire                     io_master_rvalid,  io_master_rready;
-wire [DATA_WIDTH-1:0]    io_master_rdata;
-wire [1:0]               io_master_rresp;
-
 ysyx_24120013_axi_bridge #(
     .MEM_WIDTH      (MEM_WIDTH      ),
     .DATA_WIDTH     (DATA_WIDTH     ),
@@ -477,75 +470,96 @@ ysyx_24120013_axi_bridge #(
     .UART_MMIO_SIZE (UART_MMIO_SIZE ),
     .CLINT_MMIO_BASE(CLINT_MMIO_BASE),
     .CLINT_MMIO_SIZE(CLINT_MMIO_SIZE)
-)u_ysyx_24120013_axi_bridge( 
-    .aclk                 (clock                ),
-    .areset               (reset                ),
+)u_ysyx_24120013_axi_bridge(
+    .aclk                 (clock                  ),
+    .areset               (reset                  ),
 
-    .m_axi_lsu_mem_awvalid(m_axi_lsu_mem_awvalid),
-    .s_axi_lsu_mem_awready(s_axi_lsu_mem_awready),
-    .m_axi_lsu_mem_awaddr (m_axi_lsu_mem_awaddr ),
-    .m_axi_lsu_mem_awprot (m_axi_lsu_mem_awprot ),
+    /* master 1 (lsu) AXI4-Lite bus interface */
+    .m_axi_lsu_mem_awvalid(m_axi_lsu_mem_awvalid  ),
+    .s_axi_lsu_mem_awready(s_axi_lsu_mem_awready  ),
+    .m_axi_lsu_mem_awaddr (m_axi_lsu_mem_awaddr   ),
+    .m_axi_lsu_mem_awprot (m_axi_lsu_mem_awprot   ),
 
-    .m_axi_lsu_mem_wvalid (m_axi_lsu_mem_wvalid ),
-    .s_axi_lsu_mem_wready (s_axi_lsu_mem_wready ),
-    .m_axi_lsu_mem_wdata  (m_axi_lsu_mem_wdata  ),
-    .m_axi_lsu_mem_wstrb  (m_axi_lsu_mem_wstrb  ),
+    .m_axi_lsu_mem_wvalid (m_axi_lsu_mem_wvalid   ),
+    .s_axi_lsu_mem_wready (s_axi_lsu_mem_wready   ),
+    .m_axi_lsu_mem_wdata  (m_axi_lsu_mem_wdata    ),
+    .m_axi_lsu_mem_wstrb  (m_axi_lsu_mem_wstrb    ),
 
-    .s_axi_lsu_mem_bvalid (s_axi_lsu_mem_bvalid ),
-    .m_axi_lsu_mem_bready (m_axi_lsu_mem_bready ),
-    .s_axi_lsu_mem_bresp  (s_axi_lsu_mem_bresp  ),
+    .s_axi_lsu_mem_bvalid (s_axi_lsu_mem_bvalid   ),
+    .m_axi_lsu_mem_bready (m_axi_lsu_mem_bready   ),
+    .s_axi_lsu_mem_bresp  (s_axi_lsu_mem_bresp    ),
 
-    .m_axi_lsu_mem_arvalid(m_axi_lsu_mem_arvalid),
-    .s_axi_lsu_mem_arready(s_axi_lsu_mem_arready),
-    .m_axi_lsu_mem_araddr (m_axi_lsu_mem_araddr ),
-    .m_axi_lsu_mem_arprot (m_axi_lsu_mem_arprot ),
+    .m_axi_lsu_mem_arvalid(m_axi_lsu_mem_arvalid  ),
+    .s_axi_lsu_mem_arready(s_axi_lsu_mem_arready  ),
+    .m_axi_lsu_mem_araddr (m_axi_lsu_mem_araddr   ),
+    .m_axi_lsu_mem_arprot (m_axi_lsu_mem_arprot   ),
 
-    .s_axi_lsu_mem_rvalid (s_axi_lsu_mem_rvalid ),
-    .m_axi_lsu_mem_rready (m_axi_lsu_mem_rready ),
-    .s_axi_lsu_mem_rdata  (s_axi_lsu_mem_rdata  ),
-    .s_axi_lsu_mem_rresp  (s_axi_lsu_mem_rresp  ),
+    .s_axi_lsu_mem_rvalid (s_axi_lsu_mem_rvalid   ),
+    .m_axi_lsu_mem_rready (m_axi_lsu_mem_rready   ),
+    .s_axi_lsu_mem_rdata  (s_axi_lsu_mem_rdata    ),
+    .s_axi_lsu_mem_rresp  (s_axi_lsu_mem_rresp    ),
 
-    .m_axi_ifu_mem_arvalid(m_axi_ifu_mem_arvalid),
-    .s_axi_ifu_mem_arready(s_axi_ifu_mem_arready),
-    .m_axi_ifu_mem_araddr (m_axi_ifu_mem_araddr ),
-    .m_axi_ifu_mem_arprot (m_axi_ifu_mem_arprot ),
+    /* master 2 (ifu) AXI4-Lite bus interface */
+    .m_axi_ifu_mem_arvalid(m_axi_ifu_mem_arvalid  ),
+    .s_axi_ifu_mem_arready(s_axi_ifu_mem_arready  ),
+    .m_axi_ifu_mem_araddr (m_axi_ifu_mem_araddr   ),
+    .m_axi_ifu_mem_arprot (m_axi_ifu_mem_arprot   ),
 
-    .s_axi_ifu_mem_rvalid (s_axi_ifu_mem_rvalid ),
-    .m_axi_ifu_mem_rready (m_axi_ifu_mem_rready ),
-    .s_axi_ifu_mem_rdata  (s_axi_ifu_mem_rdata  ),
-    .s_axi_ifu_mem_rresp  (s_axi_ifu_mem_rresp  ),
+    .s_axi_ifu_mem_rvalid (s_axi_ifu_mem_rvalid   ),
+    .m_axi_ifu_mem_rready (m_axi_ifu_mem_rready   ),
+    .s_axi_ifu_mem_rdata  (s_axi_ifu_mem_rdata    ),
+    .s_axi_ifu_mem_rresp  (s_axi_ifu_mem_rresp    ),
 
-    .io_master_awvalid    (io_master_awvalid    ),
-    .io_master_awready    (io_master_awready    ),
-    .io_master_awaddr     (io_master_awaddr     ),
-    .io_master_awprot     (io_master_awprot     ),
-    .io_master_wvalid     (io_master_wvalid     ),
-    .io_master_wready     (io_master_wready     ),
-    .io_master_wdata      (io_master_wdata      ),
-    .io_master_wstrb      (io_master_wstrb      ),
-    .io_master_bvalid     (io_master_bvalid     ),
-    .io_master_bready     (io_master_bready     ),
-    .io_master_bresp      (io_master_bresp      ),
-    .io_master_arvalid    (io_master_arvalid    ),
-    .io_master_arready    (io_master_arready    ),
-    .io_master_araddr     (io_master_araddr     ),
-    .io_master_arprot     (io_master_arprot     ),
-    .io_master_rvalid     (io_master_rvalid     ),
-    .io_master_rready     (io_master_rready     ),
-    .io_master_rdata      (io_master_rdata      ),
-    .io_master_rresp      (io_master_rresp      ),
+    /* slave 1 (ysyxSoC) AXI4 bus interface */
+    .io_master_awvalid    (io_master_awvalid      ),
+    .io_master_awready    (io_master_awready      ),
+    .io_master_awaddr     (io_master_awaddr       ),
+    .io_master_awid       (io_master_awid         ),
+    .io_master_awlen      (io_master_awlen        ),
+    .io_master_awsize     (io_master_awsize       ),
+    .io_master_awburst    (io_master_awburst      ),
+    .io_master_awprot     (/* UNUSED in ysyxSoC */), 
 
-    .m_axi_clint_arvalid  (m_axi_clint_arvalid  ),
-    .s_axi_clint_arready  (s_axi_clint_arready  ),
-    .m_axi_clint_araddr   (m_axi_clint_araddr   ),
-    .m_axi_clint_arprot   (m_axi_clint_arprot   ),
-    .s_axi_clint_rvalid   (s_axi_clint_rvalid   ),
-    .m_axi_clint_rready   (m_axi_clint_rready   ),
-    .s_axi_clint_rdata    (s_axi_clint_rdata    ),
-    .s_axi_clint_rresp    (s_axi_clint_rresp    ),
+    .io_master_wready     (io_master_wready       ),
+    .io_master_wvalid     (io_master_wvalid       ),
+    .io_master_wdata      (io_master_wdata        ),
+    .io_master_wstrb      (io_master_wstrb        ),
+    .io_master_wlast      (io_master_wlast        ),
 
-    .inst_fetch_flag      (next_inst_flag       ),
-    .mem_access_flag      (mem_access_flag      )
+    .io_master_bready     (io_master_bready       ),
+    .io_master_bvalid     (io_master_bvalid       ),
+    .io_master_bresp      (io_master_bresp        ),
+    .io_master_bid        (io_master_bid          ),
+
+    .io_master_arready    (io_master_arready      ),
+    .io_master_arvalid    (io_master_arvalid      ),
+    .io_master_araddr     (io_master_araddr       ),
+    .io_master_arid       (io_master_arid         ),
+    .io_master_arlen      (io_master_arlen        ),
+    .io_master_arsize     (io_master_arsize       ),
+    .io_master_arburst    (io_master_arburst      ),
+    .io_master_arprot     (/* UNUSED in ysyxSoC */),
+
+    .io_master_rready     (io_master_rready       ),
+    .io_master_rvalid     (io_master_rvalid       ),
+    .io_master_rresp      (io_master_rresp        ),
+    .io_master_rdata      (io_master_rdata        ),
+    .io_master_rlast      (io_master_rlast        ),
+    .io_master_rid        (io_master_rid          ),
+
+    /* slave 2 (CLINT) AXI4-lite bus interface */
+    .m_axi_clint_arvalid  (m_axi_clint_arvalid    ),
+    .s_axi_clint_arready  (s_axi_clint_arready    ),
+    .m_axi_clint_araddr   (m_axi_clint_araddr     ),
+    .m_axi_clint_arprot   (m_axi_clint_arprot     ),
+
+    .s_axi_clint_rvalid   (s_axi_clint_rvalid     ),
+    .m_axi_clint_rready   (m_axi_clint_rready     ),
+    .s_axi_clint_rdata    (s_axi_clint_rdata      ),
+    .s_axi_clint_rresp    (s_axi_clint_rresp      ),
+
+    .inst_fetch_flag      (next_inst_flag         ),
+    .mem_access_flag      (mem_access_flag        )
 );
 
 endmodule

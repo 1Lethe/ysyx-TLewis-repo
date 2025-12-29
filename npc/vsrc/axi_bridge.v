@@ -49,30 +49,42 @@ module ysyx_24120013_axi_bridge
         output wire [DATA_WIDTH-1:0] s_axi_ifu_mem_rdata,
         output wire [1:0]  s_axi_ifu_mem_rresp,
 
-        /* slave 1 (SoC) AXI4-Lite bus interface */
-        output wire                     io_master_awvalid,
+        /* slave 1 (ysyxSoC) AXI4 bus interface */
         input  wire                     io_master_awready,
+        output wire                     io_master_awvalid,
         output wire [MEM_WIDTH-1:0]     io_master_awaddr,
-        output wire [2:0]               io_master_awprot,
+        output wire [3:0]               io_master_awid,
+        output wire [7:0]               io_master_awlen,
+        output wire [2:0]               io_master_awsize,
+        output wire [1:0]               io_master_awburst,
+        output wire [2:0]               io_master_awprot,/* UNUSED in ysyxSoC */
 
-        output wire                     io_master_wvalid,
         input  wire                     io_master_wready,
+        output wire                     io_master_wvalid,
         output wire [DATA_WIDTH-1:0]    io_master_wdata,
-        output wire [3:0] io_master_wstrb,
+        output wire [3:0]               io_master_wstrb,
+        output wire                     io_master_wlast,
 
-        input  wire                     io_master_bvalid,
         output wire                     io_master_bready,
+        input  wire                     io_master_bvalid,
         input  wire [1:0]               io_master_bresp,
+        input  wire [3:0]               io_master_bid,
 
-        output wire                     io_master_arvalid,
         input  wire                     io_master_arready,
+        output wire                     io_master_arvalid,
         output wire [MEM_WIDTH-1:0]     io_master_araddr,
-        output wire [2:0]               io_master_arprot,
+        output wire [3:0]               io_master_arid,
+        output wire [7:0]               io_master_arlen,
+        output wire [2:0]               io_master_arsize,
+        output wire [1:0]               io_master_arburst,
+        output wire [2:0]               io_master_arprot,/* UNUSED in ysyxSoC */
 
-        input  wire                     io_master_rvalid,
         output wire                     io_master_rready,
-        input  wire [DATA_WIDTH-1:0]    io_master_rdata,
+        input  wire                     io_master_rvalid,
         input  wire [1:0]               io_master_rresp,
+        input  wire [DATA_WIDTH-1:0]    io_master_rdata,
+        input  wire                     io_master_rlast,
+        input  wire [3:0]               io_master_rid,
 
         /* slave 2 (CLINT) AXI4-lite bus interface */
         output wire   m_axi_clint_arvalid,
@@ -261,6 +273,7 @@ module ysyx_24120013_axi_bridge
     assign xbar_slave_soc   = xbar_device_soc   | xbar_soc_buff;
     assign xbar_slave_clint = xbar_device_clint | xbar_clint_buff;
 
+    /* 通过内存映射关系分发信号到总线上 */
     assign io_master_awvalid  = xbar_slave_soc   ? m_awvalid : 1'b0;
     assign io_master_awaddr   = xbar_slave_soc   ? m_awaddr  : {MEM_WIDTH{1'b0}};
     assign io_master_awprot   = xbar_slave_soc   ? m_awprot  : 3'b0;
@@ -295,5 +308,20 @@ module ysyx_24120013_axi_bridge
 
     assign s_rresp            = xbar_slave_soc   ? io_master_rresp :
                                 xbar_slave_clint ? s_axi_clint_rresp : 2'b0;
+
+
+    // 目前我们不支持猝发/乱序读写操作，在这里我们将AXI4相关的信号都置为相应状态
+    // TODO: 支持burst/out of order
+    assign io_master_awid    = 4'b0000;  // ID = 0
+    assign io_master_awlen   = 8'b0;     // len = 0 + 1 = 1(do not support burst)
+    assign io_master_awsize  = 3'b010;   // 32-bit data
+    assign io_master_awburst = 2'b01;    // INCR burst mode
+
+    assign io_master_wlast   = io_master_wvalid;
+
+    assign io_master_arid    = 4'b0000;
+    assign io_master_arlen   = 8'b0;     // len = 0 + 1 = 1(do not support burst)
+    assign io_master_arsize  = 3'b010;   // 32-bit data
+    assign io_master_arburst = 2'b01;    // INCR burst mode
 
 endmodule
