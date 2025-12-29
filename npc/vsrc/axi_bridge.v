@@ -3,12 +3,10 @@ module ysyx_24120013_axi_bridge
         MEM_WIDTH = 32, 
         DATA_WIDTH = 32,
 
-        PMEM_BASE = 32'h80000000,
-        PMEM_SIZE =  32'h8000000,
-        UART_MMIO_BASE = 32'ha00003f8,
-        UART_MMIO_SIZE = 32'h8,
-        CLINT_MMIO_BASE = 32'ha0000048,
-        CLINT_MMIO_SIZE = 32'h8
+        MROM_MMIO_BASE,
+        MROM_MMIO_SIZE,
+        CLINT_MMIO_BASE,
+        CLINT_MMIO_SIZE
       )(
         input aclk,
         input areset,
@@ -234,19 +232,20 @@ module ysyx_24120013_axi_bridge
     wire xbar_slave_soc;
     wire xbar_slave_clint;
 
-    // SoC 设备选通逻辑：PMEM 范围 OR UART 范围
-    assign xbar_device_soc = (m_awvalid) ? (
-                                (m_awaddr >= PMEM_BASE && m_awaddr < PMEM_BASE + PMEM_SIZE) || 
-                                (m_awaddr >= UART_MMIO_BASE && m_awaddr < UART_MMIO_BASE + UART_MMIO_SIZE)
-                             ) :
-                             (m_arvalid) ? (
-                                (m_araddr >= PMEM_BASE && m_araddr < PMEM_BASE + PMEM_SIZE) || 
-                                (m_araddr >= UART_MMIO_BASE && m_araddr < UART_MMIO_BASE + UART_MMIO_SIZE)
-                             ) : 1'b0;
+    wire xbar_device_rd_mmom;
 
-    // CLINT 设备选通逻辑：保持独立
-    assign xbar_device_clint = (m_awvalid) ? (m_awaddr >= CLINT_MMIO_BASE && m_awaddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) :
-                               (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
+    wire xbar_device_rd_clint;
+
+    assign xbar_device_rd_mmom = (m_arvalid) ? (m_araddr >= MROM_MMIO_BASE && 
+                                  m_araddr < MROM_MMIO_BASE + MROM_MMIO_SIZE) : 1'b0;
+
+    assign xbar_device_rd_clint = (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && 
+                                  m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
+
+    // TODO: 增加访存越界异常
+    assign xbar_device_soc = xbar_device_rd_mmom ;
+
+    assign xbar_device_clint = xbar_device_rd_clint;
 
     // 用于处理 AXI 握手过程中的地址阶段后的数据/响应阶段选通
     always @(posedge aclk) begin
@@ -269,7 +268,6 @@ module ysyx_24120013_axi_bridge
         end
     end
 
-    // TODO: 处理访存越界异常
     assign xbar_slave_soc   = xbar_device_soc   | xbar_soc_buff;
     assign xbar_slave_clint = xbar_device_clint | xbar_clint_buff;
 

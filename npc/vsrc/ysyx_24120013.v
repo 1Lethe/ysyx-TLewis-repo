@@ -86,12 +86,10 @@ parameter ADDR_WIDTH = 5;
 parameter DATA_WIDTH = 32;
 
 /* DEVICE MMIO CONFIG */
-parameter PMEM_BASE = 32'h80000000;
-parameter PMEM_SIZE =  32'h8000000;
-parameter UART_MMIO_BASE = 32'ha00003f8;
-parameter UART_MMIO_SIZE = 32'h8;
-parameter CLINT_MMIO_BASE = 32'ha0000048;
-parameter CLINT_MMIO_SIZE = 32'h8;
+parameter MROM_MMIO_BASE  = 32'h2000_0000;
+parameter MROM_MMIO_SIZE  = 32'h0000_0fff;
+parameter CLINT_MMIO_BASE = 32'ha000_0048;
+parameter CLINT_MMIO_SIZE = 32'h0000_0008;
 
 `ifdef ysyx_24120013_USE_CPP_SIM_ENV
 /* For C++ SIM ENV */
@@ -555,10 +553,8 @@ ysyx_24120013_CLINT #(
 ysyx_24120013_axi_bridge #(
     .MEM_WIDTH      (MEM_WIDTH      ),
     .DATA_WIDTH     (DATA_WIDTH     ),
-    .PMEM_BASE      (PMEM_BASE      ),
-    .PMEM_SIZE      (PMEM_SIZE      ),
-    .UART_MMIO_BASE (UART_MMIO_BASE ),
-    .UART_MMIO_SIZE (UART_MMIO_SIZE ),
+    .MROM_MMIO_BASE (MROM_MMIO_BASE ),
+    .MROM_MMIO_SIZE (MROM_MMIO_SIZE ),
     .CLINT_MMIO_BASE(CLINT_MMIO_BASE),
     .CLINT_MMIO_SIZE(CLINT_MMIO_SIZE)
 )u_ysyx_24120013_axi_bridge(
