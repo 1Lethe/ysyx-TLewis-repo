@@ -19,12 +19,14 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     output wire [MEM_WIDTH-1:0] simplebus_lsu_mem_wr_addr,
     output wire [DATA_WIDTH-1:0] simplebus_lsu_mem_wr_data,
     output wire [3:0] simplebus_lsu_mem_wr_mask,
+    output wire [2:0] simplebus_lsu_mem_wr_size,
     output wire [2:0] simplebus_lsu_mem_wr_prot,
     input [1:0]  simplebus_lsu_mem_wr_resp,
     input simplebus_lsu_mem_wr_complete,
 
     output wire simplebus_lsu_mem_rd_req,
     output wire [MEM_WIDTH-1:0] simplebus_lsu_mem_rd_addr,
+    output wire [2:0] simplebus_lsu_mem_rd_size,
     output wire [2:0] simplebus_lsu_mem_rd_prot,
     input [DATA_WIDTH-1:0] simplebus_lsu_mem_rd_data,
     input [1:0]  simplebus_lsu_mem_rd_resp,
@@ -151,11 +153,17 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     assign simplebus_lsu_mem_wr_addr = mem_waddr;
     assign simplebus_lsu_mem_wr_data = mem_wdata_align;
     assign simplebus_lsu_mem_wr_mask = mem_wmask;
+    assign simplebus_lsu_mem_wr_size = (mem_wtype[0]) ? 3'b000 :
+                                       (mem_wtype[1]) ? 3'b001 :
+                                       (mem_wtype[2]) ? 3'b010 : 3'b111; // same as AXI4 axsize
     assign simplebus_lsu_mem_wr_prot = 3'b000;
     assign mem_wcomplete = simplebus_lsu_mem_wr_complete;
 
     assign simplebus_lsu_mem_rd_req = mem_ren_pos;
     assign simplebus_lsu_mem_rd_addr = mem_raddr;
+    assign simplebus_lsu_mem_rd_size = (mem_rtype[0]) ? 3'b000 :
+                                       (mem_rtype[1]) ? 3'b001 :
+                                       (mem_rtype[2]) ? 3'b010 : 3'b111; // same as AXI4 axsize
     assign simplebus_lsu_mem_rd_prot = 3'b000;
     assign mem_rdata = simplebus_lsu_mem_rd_data;
     assign mem_rvalid = simplebus_lsu_mem_rd_complete;

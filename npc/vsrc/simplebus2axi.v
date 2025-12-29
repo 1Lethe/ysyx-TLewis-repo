@@ -1,4 +1,4 @@
-module ysyx_24120013_simplebus2axi4lite #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
+module ysyx_24120013_simplebus2axi4 #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
     input clk,
     input rst,
 
@@ -6,12 +6,14 @@ module ysyx_24120013_simplebus2axi4lite #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
     input wire [MEM_WIDTH-1:0] simplebus_wr_addr,
     input wire [DATA_WIDTH-1:0] simplebus_wr_data,
     input wire [3:0] simplebus_wr_mask,
+    input wire [2:0] simplebus_wr_size,
     input wire [2:0] simplebus_wr_prot,
     output wire [1:0]  simplebus_wr_resp,
     output wire simplebus_wr_complete,
 
     input wire  simplebus_rd_req,
     input wire  [MEM_WIDTH-1:0] simplebus_rd_addr,
+    input wire [2:0] simplebus_rd_size,
     input wire [2:0] simplebus_rd_prot,
     output wire [DATA_WIDTH-1:0] simplebus_rd_data,
     output wire [1:0]  simplebus_rd_resp,
@@ -20,6 +22,7 @@ module ysyx_24120013_simplebus2axi4lite #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
     output reg m_axi_awvalid,
     input wire s_axi_awready,
     output reg [MEM_WIDTH-1:0] m_axi_awaddr,
+    output reg [2:0] m_axi_awsize,
     output reg [2:0] m_axi_awprot,
 
     output reg m_axi_wvalid,
@@ -34,6 +37,7 @@ module ysyx_24120013_simplebus2axi4lite #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
     output reg m_axi_arvalid,
     input wire s_axi_arready,
     output reg [MEM_WIDTH-1:0] m_axi_araddr,
+    output reg [2:0] m_axi_arsize,
     output reg [2:0] m_axi_arprot,
 
     input wire s_axi_rvalid,
@@ -54,14 +58,17 @@ module ysyx_24120013_simplebus2axi4lite #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
         if(rst) begin
             m_axi_awvalid <= 1'b0;
             m_axi_awaddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_awsize  <= 3'b0;
             m_axi_awprot  <= 3'b0;
         end else if(simplebus_wr_req) begin
             m_axi_awvalid <= 1'b1;
             m_axi_awaddr  <= simplebus_wr_addr;
+            m_axi_awsize  <= simplebus_wr_size;
             m_axi_awprot  <= simplebus_wr_prot;
         end else if(awshakehand) begin
             m_axi_awvalid <= 1'b0;
             m_axi_awaddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_awsize  <= 3'b0;
             m_axi_awprot  <= 3'b0;
         end
     end
@@ -117,14 +124,17 @@ module ysyx_24120013_simplebus2axi4lite #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
         if(rst) begin
             m_axi_arvalid <= 1'b0;
             m_axi_araddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_arsize  <= 3'b0;
             m_axi_arprot  <= 3'b0;
         end else if(simplebus_rd_req) begin
             m_axi_arvalid <= 1'b1;
             m_axi_araddr  <= simplebus_rd_addr;
+            m_axi_arsize  <= simplebus_rd_size;
             m_axi_arprot  <= simplebus_rd_prot;
         end else if(arshakehand) begin
             m_axi_arvalid <= 1'b0;
             m_axi_araddr  <= {MEM_WIDTH{1'b0}};
+            m_axi_arsize  <= 3'b0;
             m_axi_arprot  <= 3'b0;
         end
     end

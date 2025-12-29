@@ -11,10 +11,11 @@ module ysyx_24120013_axi_bridge
         input aclk,
         input areset,
 
-        /* master 1 (lsu) AXI4-Lite bus interface */
+        /* master 1 (lsu) AXI4 bus interface */
         input  wire        m_axi_lsu_mem_awvalid,
         output wire        s_axi_lsu_mem_awready,
         input  wire [MEM_WIDTH-1:0] m_axi_lsu_mem_awaddr,
+        input  wire [2:0]  m_axi_lsu_mem_awsize,
         input  wire [2:0]  m_axi_lsu_mem_awprot,
 
         input  wire        m_axi_lsu_mem_wvalid,
@@ -29,6 +30,7 @@ module ysyx_24120013_axi_bridge
         input  wire        m_axi_lsu_mem_arvalid,
         output wire        s_axi_lsu_mem_arready,
         input  wire [MEM_WIDTH-1:0] m_axi_lsu_mem_araddr,
+        input  wire [2:0]  m_axi_lsu_mem_arsize,
         input  wire [2:0]  m_axi_lsu_mem_arprot,
 
         output wire        s_axi_lsu_mem_rvalid,
@@ -36,10 +38,11 @@ module ysyx_24120013_axi_bridge
         output wire [DATA_WIDTH-1:0] s_axi_lsu_mem_rdata,
         output wire [1:0]  s_axi_lsu_mem_rresp,
 
-        /* master 2 (ifu) AXI4-Lite bus interface */
+        /* master 2 (ifu) AXI4 bus interface */
         input  wire        m_axi_ifu_mem_arvalid,
         output wire        s_axi_ifu_mem_arready,
         input  wire [MEM_WIDTH-1:0] m_axi_ifu_mem_araddr,
+        input  wire [2:0]  m_axi_ifu_mem_arsize,
         input  wire [2:0]  m_axi_ifu_mem_arprot,
 
         output wire        s_axi_ifu_mem_rvalid,
@@ -142,10 +145,11 @@ module ysyx_24120013_axi_bridge
     assign arbiter_allow_lsu = (arbiter_pmem_state == ARBITER_PMEM_MEM);
     assign arbiter_allow_ifu = (arbiter_pmem_state == ARBITER_PMEM_INST);
 
-    /* AXI4-Lite bus 中间信号 */
+    /* AXI4 bus 中间信号 */
     wire m_awvalid;
     wire s_awready;
     wire [MEM_WIDTH-1:0] m_awaddr;
+    wire [2:0] m_awsize;
     wire [2:0] m_awprot;
 
     wire m_wvalid;
@@ -160,6 +164,7 @@ module ysyx_24120013_axi_bridge
     wire m_arvalid;
     wire s_arready;
     wire [MEM_WIDTH-1:0] m_araddr;
+    wire [2:0] m_arsize;
     wire [2:0] m_arprot;
 
     wire s_rvalid;
@@ -175,6 +180,9 @@ module ysyx_24120013_axi_bridge
 
     assign m_awaddr = (arbiter_allow_lsu) ? m_axi_lsu_mem_awaddr :
                       (arbiter_allow_ifu) ? {MEM_WIDTH{1'b0}} : {MEM_WIDTH{1'b0}};
+
+    assign m_awsize = (arbiter_allow_lsu) ? m_axi_lsu_mem_awsize :
+                      (arbiter_allow_ifu) ? 3'b0 : 3'b0;
 
     assign m_awprot = (arbiter_allow_lsu) ? m_axi_lsu_mem_awprot :
                       (arbiter_allow_ifu) ? 3'b0 : 3'b0;
@@ -206,6 +214,9 @@ module ysyx_24120013_axi_bridge
 
     assign m_araddr = (arbiter_allow_lsu) ? m_axi_lsu_mem_araddr :
                       (arbiter_allow_ifu) ? m_axi_ifu_mem_araddr : {MEM_WIDTH{1'b0}};
+
+    assign m_arsize = (arbiter_allow_lsu) ? m_axi_lsu_mem_arsize :
+                      (arbiter_allow_ifu) ? m_axi_ifu_mem_arsize : 3'b0;
 
     assign m_arprot = (arbiter_allow_lsu) ? m_axi_lsu_mem_arprot :
                       (arbiter_allow_ifu) ? m_axi_ifu_mem_arprot : 3'b0;
@@ -274,6 +285,7 @@ module ysyx_24120013_axi_bridge
     /* 通过内存映射关系分发信号到总线上 */
     assign io_master_awvalid  = xbar_slave_soc   ? m_awvalid : 1'b0;
     assign io_master_awaddr   = xbar_slave_soc   ? m_awaddr  : {MEM_WIDTH{1'b0}};
+    assign io_master_awsize   = xbar_slave_soc   ? m_awsize  : 3'b0;
     assign io_master_awprot   = xbar_slave_soc   ? m_awprot  : 3'b0;
     assign s_awready          = xbar_slave_soc   ? io_master_awready : 1'b0;
 
@@ -288,6 +300,7 @@ module ysyx_24120013_axi_bridge
 
     assign io_master_arvalid  = xbar_slave_soc   ? m_arvalid : 1'b0;
     assign io_master_araddr   = xbar_slave_soc   ? m_araddr  : {MEM_WIDTH{1'b0}};
+    assign io_master_arsize   = xbar_slave_soc   ? m_arsize  : 3'b0;
     assign io_master_arprot   = xbar_slave_soc   ? m_arprot  : 3'b0;
 
     assign m_axi_clint_arvalid = xbar_slave_clint ? m_arvalid : 1'b0;
@@ -312,14 +325,12 @@ module ysyx_24120013_axi_bridge
     // TODO: 支持burst/out of order
     assign io_master_awid    = 4'b0000;  // ID = 0
     assign io_master_awlen   = 8'b0;     // len = 0 + 1 = 1(do not support burst)
-    assign io_master_awsize  = 3'b010;   // 32-bit data
     assign io_master_awburst = 2'b01;    // INCR burst mode
 
     assign io_master_wlast   = io_master_wvalid;
 
     assign io_master_arid    = 4'b0000;
     assign io_master_arlen   = 8'b0;     // len = 0 + 1 = 1(do not support burst)
-    assign io_master_arsize  = 3'b010;   // 32-bit data
     assign io_master_arburst = 2'b01;    // INCR burst mode
 
 endmodule

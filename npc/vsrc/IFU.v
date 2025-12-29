@@ -11,6 +11,7 @@ module ysyx_24120013_IFU #(MEM_WIDTH = 32,DATA_WIDTH = 32)(
 
     output wire simplebus_ifu_mem_rd_req,
     output wire [MEM_WIDTH-1:0] simplebus_ifu_mem_rd_addr,
+    output wire [2:0] simplebus_ifu_mem_rd_size,
     output wire [2:0] simplebus_ifu_mem_rd_prot,
     input [DATA_WIDTH-1:0] simplebus_ifu_mem_rd_data,
     input [1:0]  simplebus_ifu_mem_rd_resp,
