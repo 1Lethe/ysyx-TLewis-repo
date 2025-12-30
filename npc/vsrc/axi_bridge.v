@@ -5,6 +5,8 @@ module ysyx_24120013_axi_bridge
 
         MROM_MMIO_BASE,
         MROM_MMIO_SIZE,
+        UART16550_MMIO_BASE,
+        UART16550_MMIO_SIZE,
         CLINT_MMIO_BASE,
         CLINT_MMIO_SIZE
       )(
@@ -125,7 +127,7 @@ module ysyx_24120013_axi_bridge
                     if(mem_access_flag) begin
                         arbiter_pmem_state <= ARBITER_PMEM_MEM;
                     end else if(inst_fetch_flag) begin
-                        arbiter_pmem_state <= ARBITER_PMEM_IDLE;
+                        arbiter_pmem_state <= ARBITER_PMEM_INST;
                     end
                 ARBITER_PMEM_MEM :
                     if(inst_fetch_flag) begin
@@ -243,20 +245,33 @@ module ysyx_24120013_axi_bridge
     wire xbar_slave_soc;
     wire xbar_slave_clint;
 
-    wire xbar_device_rd_mmom;
+    wire xbar_device_rd_soc_mmom;
+
+    wire xbar_device_wr_soc_uart16550;
 
     wire xbar_device_rd_clint;
 
-    assign xbar_device_rd_mmom = (m_arvalid) ? (m_araddr >= MROM_MMIO_BASE && 
+    assign xbar_device_rd_soc_mmom = (m_arvalid) ? (m_araddr >= MROM_MMIO_BASE && 
                                   m_araddr < MROM_MMIO_BASE + MROM_MMIO_SIZE) : 1'b0;
+
+    assign xbar_device_wr_soc_uart16550 = (m_awvalid) ? (m_awaddr >= UART16550_MMIO_BASE && 
+                                           m_awaddr < UART16550_MMIO_BASE + UART16550_MMIO_SIZE) : 1'b0;
 
     assign xbar_device_rd_clint = (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && 
                                   m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
 
-    // TODO: 增加访存越界异常
-    assign xbar_device_soc = xbar_device_rd_mmom ;
+    assign xbar_device_soc = xbar_device_rd_soc_mmom | xbar_device_wr_soc_uart16550 ;
 
     assign xbar_device_clint = xbar_device_rd_clint;
+
+    // 处理访存越界异常
+    always @(posedge aclk) begin
+        if(m_awvalid | m_arvalid) begin
+            if(~xbar_device_soc & ~xbar_device_clint) begin
+                sim_hardware_fault_handle(1, (m_awvalid) ? m_awaddr : (m_arvalid) ? m_araddr : {MEM_WIDTH{1'b0}});
+            end
+        end
+    end
 
     // 用于处理 AXI 握手过程中的地址阶段后的数据/响应阶段选通
     always @(posedge aclk) begin

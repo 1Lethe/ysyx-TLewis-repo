@@ -68,7 +68,12 @@ long load_img() {
     printf("The image is %s, size = %ld.\n", img_file, size);
 
     fseek(fp, 0, SEEK_SET);
+#ifndef USE_SOC
     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+#else
+    int ret = fread(wr_mrom_addr(0x0), size, 1, fp);
+#endif
+
     assert(ret == 1);
 
     fclose(fp);
@@ -122,7 +127,7 @@ void init_disasm();
 
 void monitor_init(int argc, char *argv[]){
     parse_args(argc, argv);
-    init_mem();
+    init_mrom();
     img_size = load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
     init_log(log_file);

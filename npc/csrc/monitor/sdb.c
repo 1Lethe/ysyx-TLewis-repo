@@ -49,7 +49,7 @@ static int cmd_info(char *args){
     printf("Command need args.r: regs\n");
   }else{
     if(*arg == 'r'){
-      reg_display(SIM_MODULE_NAME);
+      reg_display();
     }else{
       printf("Invalid info command input.\n");
     }
@@ -57,7 +57,7 @@ static int cmd_info(char *args){
   return 0;
 }
 
-static int cmd_x(char *args){
+static int cmd_x_mrom(char *args){
   uint8_t *pmem_scan = NULL;
   uint32_t scan_num;
   uint32_t mem_start_place;
@@ -71,7 +71,7 @@ static int cmd_x(char *args){
       printf("Invalid scan_num input.This arg should > 0.\n");
       return 0;
     }
-    if(mem_out_of_bound(mem_start_place) || mem_out_of_bound(mem_start_place + scan_num)){
+    if(!(host_in_mrom(mem_start_place) & host_in_mrom(mem_start_place + scan_num))){
       printf("input out of bound.\n");
       return 0;
     }
@@ -88,7 +88,7 @@ static int cmd_x(char *args){
           base_add += 0x4;
         }
       }
-      pmem_scan = guest_to_host(base_add + 3 - offset);
+      pmem_scan = rd_mrom_addr(base_add + 3 - offset + MROM_BASE);
       printf("%02x", *pmem_scan);
     }
     printf("\n");
@@ -111,7 +111,7 @@ static struct {
 
   {"si", "Step to the pointed instruction.usage: si [stepNum]" , cmd_si},
   {"info", "Display the value of regs.usage: info <r>", cmd_info},
-  {"x", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x},
+  {"x_mrom", "Scan memory.usage: x <scan_num> <mem_start_place>", cmd_x_mrom},
 };
 
 void sdb_mainloop() {

@@ -8,7 +8,7 @@ SOC_PERIP_PATH = $(YSYX_HOME)/ysyxSoC/perip
 SOC_BUILD_PATH = $(YSYX_HOME)/ysyxSoC/build
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc --trace-fst \
+VERILATOR_CFLAGS += -MMD --build -cc --trace-fst --autoflush\
 					-O3 --x-assign fast --x-initial fast --noassert --no-timing --timescale "1ns/1ns" \
 					-I./vsrc -I./vsrc/define -I$(YSYX_HOME)/ysyxSoC/perip/uart16550/rtl -I$(YSYX_HOME)/ysyxSoC/perip/spi/rtl \
 					--verilate-jobs 8

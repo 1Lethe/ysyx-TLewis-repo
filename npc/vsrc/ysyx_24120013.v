@@ -83,10 +83,12 @@ parameter ADDR_WIDTH = 5;
 parameter DATA_WIDTH = 32;
 
 /* DEVICE MMIO CONFIG */
-parameter MROM_MMIO_BASE  = 32'h2000_0000;
-parameter MROM_MMIO_SIZE  = 32'h0000_0fff;
-parameter CLINT_MMIO_BASE = 32'ha000_0048;
-parameter CLINT_MMIO_SIZE = 32'h0000_0008;
+parameter MROM_MMIO_BASE      = 32'h2000_0000;
+parameter MROM_MMIO_SIZE      = 32'h0000_0fff;
+parameter UART16550_MMIO_BASE = 32'h1000_0000;
+parameter UART16550_MMIO_SIZE = 32'h0000_0fff;
+parameter CLINT_MMIO_BASE     = 32'ha000_0048;
+parameter CLINT_MMIO_SIZE     = 32'h0000_0008;
 
 `ifdef ysyx_24120013_USE_CPP_SIM_ENV
 /* For C++ SIM ENV */
@@ -511,7 +513,7 @@ ysyx_24120013_simplebus2axi4 #(
     .m_axi_awvalid        (m_axi_lsu_mem_awvalid        ),
     .s_axi_awready        (s_axi_lsu_mem_awready        ),
     .m_axi_awaddr         (m_axi_lsu_mem_awaddr         ),
-    .m_axi_awsize         (m_axi_lsu_mem_awsize),
+    .m_axi_awsize         (m_axi_lsu_mem_awsize         ),
     .m_axi_awprot         (m_axi_lsu_mem_awprot         ),
 
     .m_axi_wvalid         (m_axi_lsu_mem_wvalid         ),
@@ -525,7 +527,7 @@ ysyx_24120013_simplebus2axi4 #(
 
     .m_axi_arvalid        (m_axi_lsu_mem_arvalid        ),
     .s_axi_arready        (s_axi_lsu_mem_arready        ),
-    .m_axi_arsize         (m_axi_lsu_mem_arsize),
+    .m_axi_arsize         (m_axi_lsu_mem_arsize         ),
     .m_axi_araddr         (m_axi_lsu_mem_araddr         ),
     .m_axi_arprot         (m_axi_lsu_mem_arprot         ),
 
@@ -547,10 +549,10 @@ wire [DATA_WIDTH-1:0] s_axi_clint_rdata;
 wire [1:0]  s_axi_clint_rresp;
 
 ysyx_24120013_CLINT #(
-    .MEM_WIDTH 	(MEM_WIDTH),
-    .DATA_WIDTH (DATA_WIDTH),
-    .CLINT_MMIO_BASE   (CLINT_MMIO_BASE),
-    .CLINT_MMIO_SIZE   (CLINT_MMIO_SIZE)
+    .MEM_WIDTH 	    (MEM_WIDTH      ),
+    .DATA_WIDTH     (DATA_WIDTH     ),
+    .CLINT_MMIO_BASE(CLINT_MMIO_BASE),
+    .CLINT_MMIO_SIZE(CLINT_MMIO_SIZE)
 )u_ysyx_24120013_CLINT(
     .aclk     (clock              ),
     .areset_n (reset              ),
@@ -565,17 +567,19 @@ ysyx_24120013_CLINT #(
 );
 
 ysyx_24120013_axi_bridge #(
-    .MEM_WIDTH      (MEM_WIDTH      ),
-    .DATA_WIDTH     (DATA_WIDTH     ),
-    .MROM_MMIO_BASE (MROM_MMIO_BASE ),
-    .MROM_MMIO_SIZE (MROM_MMIO_SIZE ),
-    .CLINT_MMIO_BASE(CLINT_MMIO_BASE),
-    .CLINT_MMIO_SIZE(CLINT_MMIO_SIZE)
+    .MEM_WIDTH          (MEM_WIDTH          ),
+    .DATA_WIDTH         (DATA_WIDTH         ),
+    .MROM_MMIO_BASE     (MROM_MMIO_BASE     ),
+    .MROM_MMIO_SIZE     (MROM_MMIO_SIZE     ),
+    .UART16550_MMIO_BASE(UART16550_MMIO_BASE),
+    .UART16550_MMIO_SIZE(UART16550_MMIO_SIZE),
+    .CLINT_MMIO_BASE    (CLINT_MMIO_BASE    ),
+    .CLINT_MMIO_SIZE    (CLINT_MMIO_SIZE    )
 )u_ysyx_24120013_axi_bridge(
     .aclk                 (clock                  ),
     .areset               (reset                  ),
 
-    /* master 1 (lsu) AXI4-Lite bus interface */
+    /* master 1 (lsu) AXI4 bus interface */
     .m_axi_lsu_mem_awvalid(m_axi_lsu_mem_awvalid  ),
     .s_axi_lsu_mem_awready(s_axi_lsu_mem_awready  ),
     .m_axi_lsu_mem_awaddr (m_axi_lsu_mem_awaddr   ),
@@ -602,7 +606,7 @@ ysyx_24120013_axi_bridge #(
     .s_axi_lsu_mem_rdata  (s_axi_lsu_mem_rdata    ),
     .s_axi_lsu_mem_rresp  (s_axi_lsu_mem_rresp    ),
 
-    /* master 2 (ifu) AXI4-Lite bus interface */
+    /* master 2 (ifu) AXI4 bus interface */
     .m_axi_ifu_mem_arvalid(m_axi_ifu_mem_arvalid  ),
     .s_axi_ifu_mem_arready(s_axi_ifu_mem_arready  ),
     .m_axi_ifu_mem_araddr (m_axi_ifu_mem_araddr   ),

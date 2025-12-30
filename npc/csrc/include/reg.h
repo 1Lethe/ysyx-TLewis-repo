@@ -3,6 +3,6 @@
 
 #include "sim.h"
 
-void reg_display(SIM_MODULE* top);
+void reg_display(void);
 
 #endif

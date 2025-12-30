@@ -1,4 +1,5 @@
 #include "common.h"
+#include "cpu-exec.h"
 #include "reg.h"
 
 const char *regs[] = {
@@ -8,9 +9,8 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
-void reg_display(SIM_MODULE *top){
-    for(int i = 0; i < 32; i++){
-        //printf("x%d %s = 0x%x\n", i, regs[i], top->rf_dis[i]);
-        panic("Fixme in reg_display");
+void reg_display(void){
+    for(int i = 0; i < RISCV_GPR_NUM; i++){
+        printf("x%d %s = 0x%x\n", i, regs[i], cpu.gpr[i]);
     }
 }

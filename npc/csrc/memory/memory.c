@@ -3,28 +3,8 @@
 #include "device/map.h"
 #include "device/mmio.h"
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
-
-extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-    *data = 0x00100073;
-}
-
 extern char *img_file;
 
-static uint8_t pmem[MEMORY_SIZE] __attribute((aligned(4096))) = {};
-
-static const uint32_t buildin_img[] = {
-    0x00000297,  // auipc t0,0
-    0x00028823,  // sb  zero,16(t0)
-    0x0102c503,  // lbu a0,16(t0)
-    0x00100073,  // ebreak (used as nemu_trap)
-    0xdeadbeef,  // some data
-};
-
-// TODO: expand word_t paddr_t ...
-
-uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - RESET_VECTOR; }
-uint32_t host_to_guest(uint8_t *haddr) { return haddr - pmem + RESET_VECTOR; }
 
 uint32_t host_read(void *addr, int len){
     switch(len){
@@ -43,6 +23,32 @@ void host_write(void *addr, int len, uint32_t data) {
         default: Assert(0, "not support");
     }
 }
+
+#if defined(EN_DEVICE) && defined(EN_MMIO_HARDWARE)
+extern "C" int sim_read_RTC(int raddr) {
+    // 用于使用AM环境读RTC外设的函数
+    Assert(raddr == RTC_MMIO || raddr == RTC_MMIO + 4,"Invalid read RTC addr 0x%x.ABORT", raddr);
+    return mmio_read(raddr, 4);
+}
+#endif
+
+#ifndef USE_SOC
+
+static uint8_t pmem[MEMORY_SIZE] __attribute((aligned(4096))) = {};
+
+// TODO: expand word_t paddr_t ...
+
+static const uint32_t buildin_img[] = {
+    0x00000297,  // auipc t0,0
+    0x00028823,  // sb  zero,16(t0)
+    0x0102c503,  // lbu a0,16(t0)
+    0x00100073,  // ebreak (used as nemu_trap)
+    0xdeadbeef,  // some data
+};
+
+uint8_t* guest_to_host(uint32_t paddr) { return pmem + paddr - RESET_VECTOR; }
+uint32_t host_to_guest(uint8_t *haddr) { return haddr - pmem + RESET_VECTOR; }
+
 
 void pmem_write(uint32_t addr, int len, uint32_t data) {
 #if defined(EN_DEVICE) && !defined(EN_MMIO_HARDWARE)
@@ -105,10 +111,38 @@ extern "C" void sim_pmem_write(int waddr, int wdata, char wmask) {
     }
 }
 
-#if defined(EN_DEVICE) && defined(EN_MMIO_HARDWARE)
-extern "C" int sim_read_RTC(int raddr) {
-    // 用于使用AM环境读RTC外设的函数
-    Assert(raddr == RTC_MMIO || raddr == RTC_MMIO + 4,"Invalid read RTC addr 0x%x.ABORT", raddr);
-    return mmio_read(raddr, 4);
+#else
+
+static uint8_t mrom_memory[MROM_SIZE] __attribute((aligned(4096))) = {};
+
+void init_mrom() {
+  IFDEF(CONFIG_MEM_RANDOM, memset(mrom_memory, rand(), MROM_SIZE));
+  Log("NPC MROM init.");
 }
+
+// 从0x0处开始写MROM
+uint8_t* wr_mrom_addr(uint32_t addr) { return mrom_memory + addr; } 
+// input addr = MROM_BASE + X，需要减去基地址
+uint8_t* rd_mrom_addr(uint32_t addr) { return mrom_memory + addr - MROM_BASE;} 
+
+/* We use this function to "make a mask" and store our program in MROM */
+void mrom_write(uint32_t addr, int len, uint32_t data) {
+    assert((addr >= MROM_BASE && addr + len < MROM_BASE + MROM_SIZE));
+    IFDEF(EN_MTRACE,printf("MROM write addr 0x%x len %d value 0x%x\n", addr, len, data));
+    host_write(wr_mrom_addr(addr), len, data);
+}
+
+uint32_t mrom_read(uint32_t addr,uint32_t len) {
+    assert((addr >= MROM_BASE && addr + len < MROM_BASE + MROM_SIZE));
+    uint32_t ret = host_read(rd_mrom_addr(addr), len);
+    IFDEF(EN_MTRACE, printf("MROM read addr 0x%x value 0x%08x\n", addr, ret));
+    return ret;
+}
+
+extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+
+extern "C" void mrom_read(int32_t addr, int32_t *data) { 
+    *data = mrom_read(addr, sizeof(uint32_t));
+}
+
 #endif

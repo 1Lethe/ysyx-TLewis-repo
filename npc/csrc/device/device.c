@@ -1,4 +1,4 @@
-/***************************************************************************************
+/**************************************************************************************
 * Copyright (c) 2014-2024 Zihao Yu, Nanjing University
 *
 * NEMU is licensed under Mulan PSL v2.
@@ -34,6 +34,6 @@ void device_update() {
 void init_device() {
   init_map();
 
-  init_serial();
+  IFNDEF(USE_SOC,init_serial());
   init_timer();
 }

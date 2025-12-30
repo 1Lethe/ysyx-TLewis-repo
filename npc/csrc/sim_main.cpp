@@ -11,8 +11,6 @@
 
 #include <stdio.h>
 
-extern SIM_MODULE* SIM_MODULE_NAME;
-
 int main(int argc, char** argv) {
 
     sim_init(argc, argv);
