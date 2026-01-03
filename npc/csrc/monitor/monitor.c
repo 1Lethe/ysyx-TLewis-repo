@@ -63,15 +63,16 @@ long load_img() {
     assert(fp != NULL);
 
     fseek(fp, 0, SEEK_END);
-    long size = ftell(fp);
+    // TODO: 实现分段加载
+    long size = ftell(fp) - MROM_BASE;
 
     printf("The image is %s, size = %ld.\n", img_file, size);
 
-    fseek(fp, 0, SEEK_SET);
+    fseek(fp, MROM_BASE, SEEK_SET);
 #ifndef USE_SOC
     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
 #else
-    int ret = fread(wr_mrom_addr(0x0), size, 1, fp);
+    int ret = fread(wr_mrom_addr(0), size, 1, fp);
 #endif
 
     assert(ret == 1);
@@ -138,6 +139,6 @@ void monitor_init(int argc, char *argv[]){
     IFDEF(EN_ITRACE, iring_init());
     IFDEF(EN_FTRACE, ftrace_init());
     IFDEF(EN_DEVICE, init_device());
-    IFDEF(EN_DIFFTEST, init_difftest(diff_so_file, MEMORY_SIZE, difftest_port));
+    IFDEF(EN_DIFFTEST, init_difftest(diff_so_file, MROM_SIZE, difftest_port));
     Log("Welcome to riscv32e-NPC-Tlewis!");
 }

@@ -7,6 +7,8 @@ module ysyx_24120013_axi_bridge
         MROM_MMIO_SIZE,
         UART16550_MMIO_BASE,
         UART16550_MMIO_SIZE,
+        SDRAM_MMIO_BASE,
+        SDRAM_MMIO_SIZE,
         CLINT_MMIO_BASE,
         CLINT_MMIO_SIZE
       )(
@@ -249,6 +251,9 @@ module ysyx_24120013_axi_bridge
 
     wire xbar_device_wr_soc_uart16550;
 
+    wire xbar_device_wr_soc_sdram;
+    wire xbar_device_rd_soc_sdram;
+
     wire xbar_device_rd_clint;
 
     assign xbar_device_rd_soc_mmom = (m_arvalid) ? (m_araddr >= MROM_MMIO_BASE && 
@@ -257,10 +262,17 @@ module ysyx_24120013_axi_bridge
     assign xbar_device_wr_soc_uart16550 = (m_awvalid) ? (m_awaddr >= UART16550_MMIO_BASE && 
                                            m_awaddr < UART16550_MMIO_BASE + UART16550_MMIO_SIZE) : 1'b0;
 
+    assign xbar_device_wr_soc_sdram = (m_awvalid) ? (m_awaddr >= SDRAM_MMIO_BASE && 
+                                        m_awaddr < SDRAM_MMIO_BASE + SDRAM_MMIO_SIZE) : 1'b0;
+
+    assign xbar_device_rd_soc_sdram = (m_arvalid) ? (m_araddr >= SDRAM_MMIO_BASE && 
+                                        m_araddr < SDRAM_MMIO_BASE + SDRAM_MMIO_SIZE) : 1'b0;
+
     assign xbar_device_rd_clint = (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && 
                                   m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
 
-    assign xbar_device_soc = xbar_device_rd_soc_mmom | xbar_device_wr_soc_uart16550 ;
+    assign xbar_device_soc = xbar_device_rd_soc_mmom | xbar_device_wr_soc_uart16550 |
+                                xbar_device_wr_soc_sdram | xbar_device_rd_soc_sdram ;
 
     assign xbar_device_clint = xbar_device_rd_clint;
 

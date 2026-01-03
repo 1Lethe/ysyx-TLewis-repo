@@ -87,6 +87,8 @@ parameter MROM_MMIO_BASE      = 32'h2000_0000;
 parameter MROM_MMIO_SIZE      = 32'h0000_0fff;
 parameter UART16550_MMIO_BASE = 32'h1000_0000;
 parameter UART16550_MMIO_SIZE = 32'h0000_0fff;
+parameter SDRAM_MMIO_BASE     = 32'h0f00_0000;
+parameter SDRAM_MMIO_SIZE     = 32'h0000_1fff;
 parameter CLINT_MMIO_BASE     = 32'ha000_0048;
 parameter CLINT_MMIO_SIZE     = 32'h0000_0008;
 
@@ -573,6 +575,8 @@ ysyx_24120013_axi_bridge #(
     .MROM_MMIO_SIZE     (MROM_MMIO_SIZE     ),
     .UART16550_MMIO_BASE(UART16550_MMIO_BASE),
     .UART16550_MMIO_SIZE(UART16550_MMIO_SIZE),
+    .SDRAM_MMIO_BASE    (SDRAM_MMIO_BASE    ),
+    .SDRAM_MMIO_SIZE    (SDRAM_MMIO_SIZE    ),
     .CLINT_MMIO_BASE    (CLINT_MMIO_BASE    ),
     .CLINT_MMIO_SIZE    (CLINT_MMIO_SIZE    )
 )u_ysyx_24120013_axi_bridge(
