@@ -65,6 +65,7 @@ config TARGET_NATIVE_ELF
 config TARGET_SHARE
   bool "Shared object (used as REF for differential testing)"
 config TARGET_SHARE_YSYXSOC
+  depends on TARGET_SHARE
   bool "Shared object (used as REF for **ysyxSoC** differential testing)"
 config TARGET_AM
   bool "Application on Abstract-Machine (DON'T CHOOSE)"

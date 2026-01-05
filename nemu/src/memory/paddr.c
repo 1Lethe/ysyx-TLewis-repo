@@ -21,6 +21,8 @@
 /*  NOTE: 为ysyxSoC的difftest情况，使用NEMU作为REF的访存机制解释
  *  在使用NEMU作为NPC在ysyxSoC环境下difftest的REF时，由于NPC的访存地址并不一定 > 0x80000000 （链接脚本确定）
  *  我们将NEMU的内存基地址CONFIG_MBASE = 0x0，CONFIG_MSIZE = 0xc0000000 （与ysyxSoC的内存映射位置有关，可能需更大）
+ *  还需要将PC_OFFSET = 0x20000000 (MROM偏移地址，后续可能还需修改)
+ *  并启用E拓展
  *  对于近3GB的寻址空间，我们为了让NEMU内存分配合理：
  *  必须打开NEMU menuconfig中的"使用 malloc 分配内存",将内存分配在堆区，否则会链接失败（.bss过长 > 2GB）
  *  此外还要关闭"使用随机数初始化内存"，在不使用随机数初始化时，借助计算机的虚拟内存映射机制，
@@ -30,7 +32,7 @@
  *  在NEMU中，PC被初始化为RESET_VECTOR -> (PMEM_LEFT + CONFIG_PC_RESET_OFFSET) <isa>/init.c中
  *  PMEM_LEFT -> PMEM_LEFT  ((paddr_t)CONFIG_MBASE) = 0x0，即在DUT中我们需要将目标程序复制到NEMU中的0x0位置。
  * 
- *  NOTE: 在native环境下，正确设置 CONFIG_MBASE = 0x80000000; CONFIG_MSIZE = 0x8000000; 
+ *  NOTE: 在native环境下，正确设置 CONFIG_MBASE = 0x80000000; CONFIG_MSIZE = 0x8000000; PC_OFFSET = 0x0;
  *  “using garray”; "using random".
  */
 
