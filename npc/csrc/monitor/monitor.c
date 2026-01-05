@@ -64,11 +64,11 @@ long load_img() {
 
     fseek(fp, 0, SEEK_END);
     // TODO: 实现分段加载
-    long size = ftell(fp) - MROM_BASE;
+    long size = ftell(fp);
 
     printf("The image is %s, size = %ld.\n", img_file, size);
 
-    fseek(fp, MROM_BASE, SEEK_SET);
+    fseek(fp, 0x0, SEEK_SET);
 #ifndef USE_SOC
     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
 #else

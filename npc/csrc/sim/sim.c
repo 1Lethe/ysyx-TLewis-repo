@@ -68,9 +68,19 @@ void update_simenv_cpu_state(void) {
 }
 
 extern "C" void sim_hardware_fault_handle(int NO, int arg0) {
-    if(NO == 1) {
-        Assert(0, "ACCESS MEMORY FAULT 0x%x.ABORT.", arg0);
-    }else {
-        assert(0);
+    switch (NO)
+    {
+    case FAULT_ADDR_DECODE:
+        Assert(0, "Physical Address Decode Error(MMIO/Memory not mapped). ADDR:0x%08x", arg0);
+        break;
+    case FAULT_ADDR_MISALIGN:
+        Assert(0, "Load/Store Address Misalignment Exception. ADDR:0x%08x", arg0);
+        break;
+    case FAULT_AXI_RESP:
+        Assert(0, "AXI Bus Transaction Failed (xRESP != OKAY). ADDR:0x%08x", arg0);
+        break;
+    default:
+        Assert(0, "Unknown Hardware Fault Triggered. Fault type ID:%d, DATA: 0x%08x", NO, arg0);
+        break;
     }
 }

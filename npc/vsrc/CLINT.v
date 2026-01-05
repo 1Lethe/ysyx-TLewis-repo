@@ -21,10 +21,12 @@ module ysyx_24120013_CLINT #(
     /* device CLINT regs */
     reg [63:0] clint_mtime;
 
+    // NOTE: sim_read_RTC函数会调用mmio_read函数，导致difftest被跳过
+    // 只在需要RTCb数据时调用该函数
     always @(posedge aclk) begin
         if(areset_n) begin
             clint_mtime <= 64'b0;
-        end else begin
+        end else if(clint_rreq) begin
             clint_mtime[31:0]  <= sim_read_RTC(CLINT_MMIO_BASE);
             clint_mtime[63:32] <= sim_read_RTC(CLINT_MMIO_BASE + 32'h4);
         end

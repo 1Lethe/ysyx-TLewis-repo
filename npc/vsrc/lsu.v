@@ -168,4 +168,34 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     assign mem_rdata = simplebus_lsu_mem_rd_data;
     assign mem_rvalid = simplebus_lsu_mem_rd_complete;
 
+    // 处理不对齐访存
+    always @(posedge clk) begin
+        if(simplebus_lsu_mem_wr_req) begin
+            if((mem_wtype[1] == 1'b1 && mem_waddr[0] != 1'b0) || 
+                (mem_wtype[2] == 1'b1 && mem_waddr[1:0] != 2'b00)) begin
+                    sim_hardware_fault_handle(2, simplebus_lsu_mem_wr_addr);
+            end
+        end
+        if(simplebus_lsu_mem_rd_req) begin
+            if((mem_rtype[1] == 1'b1 && mem_raddr[0] != 1'b0) || 
+                (mem_rtype[2] == 1'b1 && mem_raddr[1:0] != 2'b00)) begin
+                    sim_hardware_fault_handle(2, simplebus_lsu_mem_rd_addr);
+                end
+        end
+    end
+
+    // resp != 0
+    always @(posedge clk) begin
+        if(mem_wcomplete) begin
+            if(simplebus_lsu_mem_wr_resp != 2'b00) begin
+                sim_hardware_fault_handle(3, simplebus_lsu_mem_wr_addr);
+            end
+        end
+        if(mem_rvalid) begin
+            if(simplebus_lsu_mem_rd_resp != 2'b00) begin
+                sim_hardware_fault_handle(3, simplebus_lsu_mem_rd_addr);
+            end
+        end
+    end
+
 endmodule

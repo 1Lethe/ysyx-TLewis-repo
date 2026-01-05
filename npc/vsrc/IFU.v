@@ -39,9 +39,19 @@ module ysyx_24120013_IFU #(MEM_WIDTH = 32,DATA_WIDTH = 32)(
 
     assign simplebus_ifu_mem_rd_req = inst_fetch_enable;
     assign simplebus_ifu_mem_rd_addr = pc;
+    assign simplebus_ifu_mem_rd_size = 3'b010; // always 4 bytes
     assign simplebus_ifu_mem_rd_prot = 3'b100;
     assign rdata_inst = simplebus_ifu_mem_rd_data;
     assign rvalid_inst = simplebus_ifu_mem_rd_complete;
+
+    // resp != 0
+    always @(posedge clk) begin
+        if(rvalid_inst) begin
+            if(simplebus_ifu_mem_rd_resp != 2'b00) begin
+                sim_hardware_fault_handle(3, simplebus_ifu_mem_rd_addr);
+            end
+        end
+    end
 
     assign inst_fetch = rdata_inst;
     assign inst_is_valid = rvalid_inst | inst_buffer_enable;

@@ -614,7 +614,7 @@ ysyx_24120013_axi_bridge #(
     .m_axi_ifu_mem_arvalid(m_axi_ifu_mem_arvalid  ),
     .s_axi_ifu_mem_arready(s_axi_ifu_mem_arready  ),
     .m_axi_ifu_mem_araddr (m_axi_ifu_mem_araddr   ),
-    .m_axi_ifu_mem_arsize (m_axi_lsu_mem_arsize   ),
+    .m_axi_ifu_mem_arsize (m_axi_ifu_mem_arsize   ),
     .m_axi_ifu_mem_arprot (m_axi_ifu_mem_arprot   ),
 
     .s_axi_ifu_mem_rvalid (s_axi_ifu_mem_rvalid   ),

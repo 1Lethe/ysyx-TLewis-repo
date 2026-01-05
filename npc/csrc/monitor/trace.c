@@ -1,4 +1,5 @@
 #include "common.h"
+#include "cpu-exec.h"
 #include "trace.h"
 
 char *iringbuf[IRING_BUF_SIZE];
@@ -16,15 +17,11 @@ extern Elf32_Shdr shdr_strtab;
 extern Elf32_Shdr shdr_symtab;
 
 void assert_fail_msg(void){
-  /*
-    printf("PC = 0x%x\n", SIM_MODULE_NAME->pc);
-    reg_display(SIM_MODULE_NAME);
+    printf("PC = 0x%x\n", cpu.pc);
+    reg_display();
     IFDEF(EN_ITRACE, iring_display());
     IFDEF(EN_ITEACE, iring_free());
     IFDEF(EN_DUMP_WAVE, tfp_close());
-  */
-    printf("fix me in assert_fail_msg");
-    return ;
 }
 
 void iring_display(void){
