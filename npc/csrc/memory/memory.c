@@ -142,7 +142,7 @@ uint32_t mrom_read(uint32_t addr,uint32_t len) {
 extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
 
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-    *data = mrom_read(addr, sizeof(uint32_t));
+    *data = mrom_read(addr & ~0x3u, sizeof(uint32_t));
 }
 
 #endif

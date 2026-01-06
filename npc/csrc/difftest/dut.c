@@ -158,6 +158,7 @@ bool difftest_step(uint32_t pc, uint32_t npc) {
 
   if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
+    printf("DIFFTEST skipping (remove me in slient mode)\n");
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
     is_skip_ref = false;
     return true;

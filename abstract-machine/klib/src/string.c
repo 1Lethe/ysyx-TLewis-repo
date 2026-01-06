@@ -4,6 +4,13 @@
 #include <stdio.h>
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 //#define KLIB_DEBUG
+#define KLIB_STOP_PANIC
+
+#ifdef KLIB_STOP_PANIC
+#define panic_klib(s) /* nothing */
+#else
+#define panic_klib(s) panic(s)
+#endif
 
 size_t strlen(const char *s) {
   size_t len = 0;
@@ -22,14 +29,14 @@ size_t strlen(const char *s) {
 
 char *strcpy(char *dst, const char *src) {
   if(dst == NULL || src == NULL){
-    panic("dst or src is NULL.");
+    panic_klib("dst or src is NULL.");
   }
 
   char *original_dst = dst;
 
   size_t srclen = strlen(src);
   if((dst > src && dst < src + srclen) || (dst < src && src < dst + srclen)){
-    panic("dst and src overlap.");
+    panic_klib("dst and src overlap.");
   }
 
   while((*dst++ = *src++) != '\0');
@@ -41,7 +48,7 @@ char *strcpy(char *dst, const char *src) {
 
 char *strncpy(char *dst, const char *src, size_t n) {
   if(dst == NULL || src == NULL){
-    panic("dst or src is NULL.");
+    panic_klib("dst or src is NULL.");
   }
 
   char *original_dst = dst;
@@ -62,13 +69,13 @@ char *strncpy(char *dst, const char *src, size_t n) {
 
 char *strcat(char *dst, const char *src) {
   if(dst == NULL || src == NULL){
-    panic("dst or src is NULL.");
+    panic_klib("dst or src is NULL.");
   }
 
   size_t srclen = strlen(src);
   size_t dstlen = strlen(dst);
   if((dst > src && dst < src + srclen) || (src > dst && src < dst + dstlen)){
-    panic("dst and src overlap.");
+    panic_klib("dst and src overlap.");
   }
 
   char *original_dst = dst;
@@ -86,7 +93,7 @@ char *strcat(char *dst, const char *src) {
 
 int strcmp(const char *s1, const char *s2) {
   if(s1 == NULL || s2 == NULL){
-    panic("s1 or s2 is NULL.");
+    panic_klib("s1 or s2 is NULL.");
   }
 
   int result = 0;
@@ -109,7 +116,7 @@ int strcmp(const char *s1, const char *s2) {
 
 int strncmp(const char *s1, const char *s2, size_t n) {
   if(s1 == NULL || s2 == NULL){
-    panic("s1 or s2 is NULL.");
+    panic_klib("s1 or s2 is NULL.");
   }
 
   int result = 0;
@@ -133,7 +140,7 @@ int strncmp(const char *s1, const char *s2, size_t n) {
 
 void *memset(void *s, int c, size_t n) {
   if(s == NULL){
-    panic("s is NULL.");
+    panic_klib("s is NULL.");
   }
 
   uint8_t *ptr = (uint8_t *)s;
@@ -146,13 +153,13 @@ void *memset(void *s, int c, size_t n) {
 
 void *memmove(void *dst, const void *src, size_t n) {
   if(dst == NULL || src == NULL){
-    panic("dst or src is NULL.");
+    panic_klib("dst or src is NULL.");
   }
   if(n == 0) return dst;
 
   uint8_t *temp = (uint8_t *)malloc(n);
   if(temp == NULL){
-    panic("failed to malloc.");
+    panic_klib("failed to malloc.");
   }
   uint8_t *original_temp = temp;
   uint8_t *ptr_src = (uint8_t *)src;
@@ -171,11 +178,11 @@ void *memmove(void *dst, const void *src, size_t n) {
 
 void *memcpy(void *out, const void *in, size_t n) {
   if(out == NULL || in == NULL){
-    panic("out or in is NULL.");
+    panic_klib("out or in is NULL.");
   }
 
   if((in < out && out < in + n) || (in > out && in < out + n)){
-    panic("out and in overlap.");
+    panic_klib("out and in overlap.");
   }
 
   uint8_t *ptr_out = (uint8_t *)out;
@@ -189,7 +196,7 @@ void *memcpy(void *out, const void *in, size_t n) {
 
 int memcmp(const void *s1, const void *s2, size_t n) {
   if(s1 == NULL || s2 == NULL){
-    panic("s1 or s2 is NULL.");
+    panic_klib("s1 or s2 is NULL.");
   }
 
   uint8_t *s1_ptr = (uint8_t *)s1;
