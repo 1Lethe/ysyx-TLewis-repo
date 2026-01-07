@@ -85,11 +85,11 @@ parameter DATA_WIDTH = 32;
 
 /* DEVICE MMIO CONFIG */
 parameter MROM_MMIO_BASE      = 32'h2000_0000;
-parameter MROM_MMIO_SIZE      = 32'h0000_0fff;
+parameter MROM_MMIO_SIZE      = 32'h0000_1000;
 parameter UART16550_MMIO_BASE = 32'h1000_0000;
-parameter UART16550_MMIO_SIZE = 32'h0000_0fff;
+parameter UART16550_MMIO_SIZE = 32'h0000_1000;
 parameter SDRAM_MMIO_BASE     = 32'h0f00_0000;
-parameter SDRAM_MMIO_SIZE     = 32'h0000_1fff;
+parameter SDRAM_MMIO_SIZE     = 32'h0000_2000;
 parameter CLINT_MMIO_BASE     = 32'ha000_0048;
 parameter CLINT_MMIO_SIZE     = 32'h0000_0008;
 
