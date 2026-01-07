@@ -250,6 +250,7 @@ module ysyx_24120013_axi_bridge
     wire xbar_device_rd_soc_mmom;
 
     wire xbar_device_wr_soc_uart16550;
+    wire xbar_device_rd_soc_uart16550;
 
     wire xbar_device_wr_soc_sdram;
     wire xbar_device_rd_soc_sdram;
@@ -261,6 +262,8 @@ module ysyx_24120013_axi_bridge
 
     assign xbar_device_wr_soc_uart16550 = (m_awvalid) ? (m_awaddr >= UART16550_MMIO_BASE && 
                                            m_awaddr < UART16550_MMIO_BASE + UART16550_MMIO_SIZE) : 1'b0;
+    assign xbar_device_rd_soc_uart16550 = (m_arvalid) ? (m_araddr >= UART16550_MMIO_BASE && 
+                                           m_araddr < UART16550_MMIO_BASE + UART16550_MMIO_SIZE) : 1'b0;
 
     assign xbar_device_wr_soc_sdram = (m_awvalid) ? (m_awaddr >= SDRAM_MMIO_BASE && 
                                         m_awaddr < SDRAM_MMIO_BASE + SDRAM_MMIO_SIZE) : 1'b0;
@@ -271,10 +274,19 @@ module ysyx_24120013_axi_bridge
     assign xbar_device_rd_clint = (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && 
                                   m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
 
-    assign xbar_device_soc = xbar_device_rd_soc_mmom | xbar_device_wr_soc_uart16550 |
-                                xbar_device_wr_soc_sdram | xbar_device_rd_soc_sdram ;
+    assign xbar_device_soc = xbar_device_rd_soc_mmom | xbar_device_wr_soc_uart16550 | xbar_device_rd_soc_uart16550 |
+                            xbar_device_wr_soc_sdram | xbar_device_rd_soc_sdram ;
 
     assign xbar_device_clint = xbar_device_rd_clint;
+
+    // REF不存在这些设备，跳过difftest
+    always @(posedge aclk) begin
+        if(m_arvalid) begin
+            if(xbar_device_rd_soc_uart16550) begin
+                sim_difftest_skip();
+            end
+        end
+    end
 
     // 处理访存越界异常
     always @(posedge aclk) begin

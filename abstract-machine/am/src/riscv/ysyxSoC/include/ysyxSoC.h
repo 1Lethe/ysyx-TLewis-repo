@@ -5,8 +5,14 @@
 
 #include ISA_H
 
-#define UART16550_PORT      0x10000000
-#define UART16550_RB_ADDR   (UART16550_PORT + 0)
+#define UART16550_PORT           0x10000000
+#define UART16550_RB_ADDR        (UART16550_PORT + 0x0) // Receiver Buffer
+#define UART16550_THR_ADDR       (UART16550_PORT + 0x0) // Transmitter Holding Register (THR)
+#define UART16550_FCR_ADDR       (UART16550_PORT + 0x2) // FIFO Control Register (FCR)
+#define UART16550_LCR_ADDR       (UART16550_PORT + 0x3) // Line Control Register (LCR) 
+#define UART16550_LSR_ADDR       (UART16550_PORT + 0x5) // Line Status Register (LSR)
+#define UART16550_DL_LSB_ADDR    (UART16550_PORT + 0x0) // Divisor Latches LSB
+#define UART16550_DL_MSB_ADDR    (UART16550_PORT + 0x1) // Divisor Latches MSB
 
 #define RTC_ADDR          0xa0000048
 

@@ -1,5 +1,6 @@
 import "DPI-C" function int sim_read_RTC(input int raddr);
 import "DPI-C" function void sim_hardware_fault_handle(input int NO,input int arg0);
+import "DPI-C" function void sim_difftest_skip ();
 import "DPI-C" function void halt ();
 
 `include "cpu_defines.v"

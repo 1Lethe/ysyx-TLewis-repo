@@ -2,6 +2,7 @@
 #include "sim.h"
 #include "cpu-exec.h"
 #include "svdpi.h"
+#include "difftest.h"
 
 static bool sim_stop_flag = false;
 
@@ -83,4 +84,8 @@ extern "C" void sim_hardware_fault_handle(int NO, int arg0) {
         Assert(0, "Unknown Hardware Fault Triggered. Fault type ID:%d, DATA: 0x%08x", NO, arg0);
         break;
     }
+}
+
+extern "C" void sim_difftest_skip(void) {
+    difftest_skip_ref();
 }
