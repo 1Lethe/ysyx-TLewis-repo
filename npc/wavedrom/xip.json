@@ -1,0 +1,23 @@
+{ signal:[
+        // 顶层信号
+        { name: "clock",     wave: "p..................."}, 
+        { name: "top_addr",  wave: "2.x2.............x2.", data:["", "flash_addr"]}, 
+        { name: "top_psel",  wave: "0.x1.............x0."},
+        { name: "top_write", wave: "0.x1.............x0."},
+        { name: "top_enable",wave: "0.x01............x0."},
+        { name: "top_wdata", wave: "2.x2.............x2.", data:["", "flash_data"]},
+        { name: "top_pready",wave: "0.x0............1x0."},
+
+        // XIP生成信号
+        { name: "xip_start", wave: "0..10..............."},
+        { name: "xip_end",   wave: "0...............10.."},
+        { name: "is_xip",    wave: "0...1............0.."},
+        { name: "xip_state", wave: "0...2...2...2...|0..", data:["set_divider", "set_ss", "set ..."]},
+        { name: "xip_addr",  wave: "2...2...2...2....2..", data:["", "divider_addr", "ss_addr", "..."]}, 
+        { name: "xip_psel",  wave: "0...1............0.."},
+        { name: "xip_write", wave: "0...1............0.."},
+        { name: "xip_enable",wave: "0....1..01..01...0.."},
+        { name: "xip_wdata", wave: "2...2...2...2....2..", data:["", "divider_data", "ss_data", ".."]},
+        { name: "xip_pready",wave: "0......10..10...10.."},
+    ]
+}

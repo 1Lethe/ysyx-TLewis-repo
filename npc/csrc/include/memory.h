@@ -28,8 +28,11 @@ void init_mem(void);
 
 #else /* USE_SOC */
 
-#define MROM_SIZE   0x00000fff
+#define MROM_SIZE   0x00001000
 #define MROM_BASE   0x20000000
+
+#define FLASH_SIZE  0x10000000
+#define FLASH_BASE  0x30000000
 
 static inline bool guest_in_mrom(uint32_t addr) {
   return (addr >= MROM_BASE) && (addr < MROM_SIZE + MROM_BASE);
@@ -42,6 +45,10 @@ static inline bool host_in_mrom(uint32_t addr) {
 void init_mrom(void);
 uint8_t* wr_mrom_addr(uint32_t addr);
 uint8_t* rd_mrom_addr(uint32_t addr);
+
+uint8_t* wr_flash_addr(uint32_t addr);
+uint8_t* rd_flash_addr(uint32_t addr);
+void flash_write(uint32_t addr, int len, uint32_t data);
 #endif
 
 uint32_t host_read(void *addr, int len);

@@ -60,8 +60,7 @@ INCFLAGS = $(addprefix -I, $(INC_PATH))
 CXXFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 
 sim:$(VSRCS) $(VER_SIM_C_PATH)
-	rm -rf $(WAVE_DIR)
-	mkdir ./wave
+	rm -f $(WAVE_DIR)/*.fst
 	$(call git_commit, "sim RTL")
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
 		--top-module $(TOPNAME) $^ \
@@ -107,7 +106,7 @@ STA_DIR = $(PROJ_PATH)/sta_result
 clean: 
 	rm -rf $(BUILD_DIR)
 	rm -rf $(STA_DIR)/*
-	rm -rf $(WAVE_DIR)/*
+	rm -f $(WAVE_DIR)/*.fst
 	@echo "Clean all complete."
 
 count :

@@ -7,8 +7,12 @@ module ysyx_24120013_axi_bridge
         MROM_MMIO_SIZE,
         UART16550_MMIO_BASE,
         UART16550_MMIO_SIZE,
-        SDRAM_MMIO_BASE,
-        SDRAM_MMIO_SIZE,
+        SPI_MASTER_MMIO_BASE,
+        SPI_MASTER_MMIO_SIZE,
+        SRAM_MMIO_BASE,
+        SRAM_MMIO_SIZE,
+        FLASH_MMIO_BASE,
+        FLASH_MMIO_SIZE,
         CLINT_MMIO_BASE,
         CLINT_MMIO_SIZE
       )(
@@ -252,8 +256,14 @@ module ysyx_24120013_axi_bridge
     wire xbar_device_wr_soc_uart16550;
     wire xbar_device_rd_soc_uart16550;
 
-    wire xbar_device_wr_soc_sdram;
-    wire xbar_device_rd_soc_sdram;
+    wire xbar_device_wr_soc_spimaster;
+    wire xbar_device_rd_soc_spimaster;
+
+    wire xbar_device_wr_soc_sram;
+    wire xbar_device_rd_soc_sram;
+
+    wire xbar_device_wr_soc_flash;
+    wire xbar_device_rd_soc_flash;
 
     wire xbar_device_rd_clint;
 
@@ -265,24 +275,36 @@ module ysyx_24120013_axi_bridge
     assign xbar_device_rd_soc_uart16550 = (m_arvalid) ? (m_araddr >= UART16550_MMIO_BASE && 
                                            m_araddr < UART16550_MMIO_BASE + UART16550_MMIO_SIZE) : 1'b0;
 
-    assign xbar_device_wr_soc_sdram = (m_awvalid) ? (m_awaddr >= SDRAM_MMIO_BASE && 
-                                        m_awaddr < SDRAM_MMIO_BASE + SDRAM_MMIO_SIZE) : 1'b0;
+    assign xbar_device_wr_soc_spimaster = (m_awvalid) ? (m_awaddr >= SPI_MASTER_MMIO_BASE && 
+                                           m_awaddr < SPI_MASTER_MMIO_BASE + SPI_MASTER_MMIO_SIZE) : 1'b0;
+    assign xbar_device_rd_soc_spimaster = (m_arvalid) ? (m_araddr >= SPI_MASTER_MMIO_BASE && 
+                                           m_araddr < SPI_MASTER_MMIO_BASE + SPI_MASTER_MMIO_SIZE) : 1'b0;
 
-    assign xbar_device_rd_soc_sdram = (m_arvalid) ? (m_araddr >= SDRAM_MMIO_BASE && 
-                                        m_araddr < SDRAM_MMIO_BASE + SDRAM_MMIO_SIZE) : 1'b0;
+    assign xbar_device_wr_soc_sram = (m_awvalid) ? (m_awaddr >= SRAM_MMIO_BASE && 
+                                        m_awaddr < SRAM_MMIO_BASE + SRAM_MMIO_SIZE) : 1'b0;
+    assign xbar_device_rd_soc_sram = (m_arvalid) ? (m_araddr >= SRAM_MMIO_BASE && 
+                                        m_araddr < SRAM_MMIO_BASE + SRAM_MMIO_SIZE) : 1'b0;
+
+    assign xbar_device_wr_soc_flash = (m_awvalid) ? (m_awaddr >= FLASH_MMIO_BASE && 
+                                        m_awaddr < FLASH_MMIO_BASE + FLASH_MMIO_SIZE) : 1'b0;
+    assign xbar_device_rd_soc_flash = (m_arvalid) ? (m_araddr >= FLASH_MMIO_BASE && 
+                                        m_araddr < FLASH_MMIO_BASE + FLASH_MMIO_SIZE) : 1'b0;
 
     assign xbar_device_rd_clint = (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && 
                                   m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
 
     assign xbar_device_soc = xbar_device_rd_soc_mmom | xbar_device_wr_soc_uart16550 | xbar_device_rd_soc_uart16550 |
-                            xbar_device_wr_soc_sdram | xbar_device_rd_soc_sdram ;
+                            xbar_device_wr_soc_spimaster | xbar_device_rd_soc_spimaster |
+                            xbar_device_wr_soc_sram | xbar_device_rd_soc_sram | xbar_device_wr_soc_flash | xbar_device_rd_soc_flash;
 
     assign xbar_device_clint = xbar_device_rd_clint;
 
     // REF不存在这些设备，跳过difftest
+    wire is_difftest_skip;
+    assign is_difftest_skip = xbar_device_rd_soc_uart16550 | xbar_device_rd_soc_spimaster;
     always @(posedge aclk) begin
         if(m_arvalid) begin
-            if(xbar_device_rd_soc_uart16550) begin
+            if(is_difftest_skip) begin
                 sim_difftest_skip();
             end
         end

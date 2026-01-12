@@ -9,7 +9,7 @@ module ysyx_24120013_PC #(DATA_WIDTH = 32)(
 
 always @(posedge clk) begin
     if(rst)
-        pc <= 32'h20000000;
+        pc <= 32'h30000000;
     else if(next_inst_flag) begin
         pc <= pc_jmp_val;
     end else begin

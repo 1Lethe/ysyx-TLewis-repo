@@ -56,6 +56,6 @@ word_t map_read(paddr_t addr, int len, IOMap *map);
 void map_write(paddr_t addr, int len, word_t data, IOMap *map);
 
 #define SERIAL_MMIO 0xa00003f8
-#define RTC_MMIO    0xa0000048
+#define RTC_MMIO    0x02000000
 
 #endif

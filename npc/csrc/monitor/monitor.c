@@ -63,7 +63,7 @@ long load_img() {
     assert(fp != NULL);
 
     fseek(fp, 0, SEEK_END);
-    // TODO: 实现分段加载
+
     long size = ftell(fp);
 
     printf("The image is %s, size = %ld.\n", img_file, size);
@@ -72,7 +72,7 @@ long load_img() {
 #ifndef USE_SOC
     int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
 #else
-    int ret = fread(wr_mrom_addr(0), size, 1, fp);
+    int ret = fread(wr_flash_addr(0x0), size, 1, fp);
 #endif
 
     assert(ret == 1);
@@ -132,13 +132,13 @@ void monitor_init(int argc, char *argv[]){
     img_size = load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
     init_log(log_file);
-  
+
     extern void init_scope();
     init_scope();
     IFDEF(EN_ITRACE, init_disasm());
     IFDEF(EN_ITRACE, iring_init());
     IFDEF(EN_FTRACE, ftrace_init());
     IFDEF(EN_DEVICE, init_device());
-    IFDEF(EN_DIFFTEST, init_difftest(diff_so_file, MROM_SIZE, difftest_port));
+    IFDEF(EN_DIFFTEST, init_difftest(diff_so_file, img_size, difftest_port));
     Log("Welcome to riscv32e-NPC-Tlewis!");
 }

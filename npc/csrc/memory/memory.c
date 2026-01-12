@@ -114,6 +114,7 @@ extern "C" void sim_pmem_write(int waddr, int wdata, char wmask) {
 #else
 
 static uint8_t mrom_memory[MROM_SIZE] __attribute((aligned(4096))) = {};
+static uint8_t flash_memory[FLASH_SIZE] __attribute((aligned(4096))) = {};
 
 void init_mrom() {
   IFDEF(CONFIG_MEM_RANDOM, memset(mrom_memory, rand(), MROM_SIZE));
@@ -127,22 +128,43 @@ uint8_t* rd_mrom_addr(uint32_t addr) { return mrom_memory + addr - MROM_BASE;}
 
 /* We use this function to "make a mask" and store our program in MROM */
 void mrom_write(uint32_t addr, int len, uint32_t data) {
-    assert((addr >= MROM_BASE && addr + len < MROM_BASE + MROM_SIZE));
+    assert((addr >= 0x0 && addr + len < MROM_SIZE));
     IFDEF(EN_MTRACE,printf("MROM write addr 0x%x len %d value 0x%x\n", addr, len, data));
     host_write(wr_mrom_addr(addr), len, data);
 }
 
-uint32_t mrom_read(uint32_t addr,uint32_t len) {
-    assert((addr >= MROM_BASE && addr + len < MROM_BASE + MROM_SIZE));
+uint32_t mrom_read_skel(uint32_t addr,uint32_t len) {
+    Assert((addr >= MROM_BASE && addr + len < MROM_BASE + MROM_SIZE), "stop");
     uint32_t ret = host_read(rd_mrom_addr(addr), len);
     IFDEF(EN_MTRACE, printf("MROM read addr 0x%x value 0x%08x\n", addr, ret));
     return ret;
 }
 
-extern "C" void flash_read(int32_t addr, int32_t *data) { assert(0); }
+uint8_t* wr_flash_addr(uint32_t addr) { return flash_memory + addr; } 
+uint8_t* rd_flash_addr(uint32_t addr) { return flash_memory + addr; } 
+
+/* We use this function to "program the flash" (like programmer) */
+void flash_write(uint32_t addr, int len, uint32_t data) {
+    assert((addr >= 0x0 && addr + len < FLASH_SIZE));
+    IFDEF(EN_MTRACE,printf("FLASH write addr 0x%x len %d value 0x%x\n", addr, len, data));
+    host_write(wr_flash_addr(addr), len, data);
+}
+
+uint32_t flash_read_skel(uint32_t addr,uint32_t len) {
+    assert((addr >= 0x0 && addr + len < FLASH_SIZE));
+    uint32_t ret = host_read(rd_flash_addr(addr), len);
+    IFDEF(EN_MTRACE, printf("FLASH read addr 0x%x value 0x%08x\n", addr, ret));
+    return ret;
+}
+
+extern "C" void flash_read(int32_t addr, int32_t *data) {
+    // FIXME:
+    *data = flash_read_skel(addr & ~0x3u, sizeof(uint32_t));
+    //printf("im called 0x%08x data:0x%08x\n", addr, *data); 
+}
 
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
-    *data = mrom_read(addr & ~0x3u, sizeof(uint32_t));
+    *data = mrom_read_skel(addr & ~0x3u, sizeof(uint32_t));
 }
 
 #endif

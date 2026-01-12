@@ -16,7 +16,7 @@
 #include <memory.h>
 #include <device/map.h>
 
-#define IO_SPACE_MAX (32 * 1024 * 1024)
+#define IO_SPACE_MAX (32 * 1024)
 
 static uint8_t *io_space = NULL;
 static uint8_t *p_space = NULL;
@@ -32,7 +32,6 @@ uint8_t* new_space(int size) {
 }
 
 static void check_bound(IOMap *map, paddr_t addr) {
-  //printf("Fixme in check_bound\n");
   if (map == NULL) {
     //Assert(map != NULL, "address (" FMT_PADDR ") is out of bound at pc = " FMT_WORD, addr, SIM_MODULE_NAME->pc);
   } else {
