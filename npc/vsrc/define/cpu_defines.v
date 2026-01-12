@@ -13,6 +13,9 @@
 `define ysyx_24120013_MEPC    12'h341
 `define ysyx_24120013_MCAUSE  12'h342
 
+`define ysyx_24120013_MVENDORID 12'hF11
+`define ysyx_24120013_MARCHID   12'hF12
+
 `define ysyx_24120013_USE_CPP_SIM_ENV
 
 `endif

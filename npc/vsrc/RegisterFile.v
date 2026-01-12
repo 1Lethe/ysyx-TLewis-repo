@@ -43,6 +43,9 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
     reg [DATA_WIDTH-1:0] mepc;
     reg [DATA_WIDTH-1:0] mcause;
 
+    reg [DATA_WIDTH-1:0] mvendorid;
+    reg [DATA_WIDTH-1:0] marchid;
+
 `ifdef ysyx_24120013_USE_CPP_SIM_ENV
     assign rf_difftest = rf;
     assign mstatus_difftest = mstatus;
@@ -55,6 +58,8 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
     wire is_mtvec_r;
     wire is_mepc_r;
     wire is_mcause_r;
+    wire is_mvendorid_r;
+    wire is_marchid_r;
 
     always @(posedge clk) begin
         if(wen) begin
@@ -97,14 +102,25 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         end
     end
 
+    always @(posedge clk) begin
+        if(rst) begin
+            mvendorid <= 32'h79737978; // ascii "ysyx"
+            marchid   <= 32'd24120013; // my ysyx number 24120013
+        end
+    end
+
     assign is_mstatus_r = (csr_raddr == `ysyx_24120013_MSTATUS);
     assign is_mtvec_r   = (csr_raddr == `ysyx_24120013_MTVEC  );
     assign is_mepc_r    = (csr_raddr == `ysyx_24120013_MEPC   );
     assign is_mcause_r  = (csr_raddr == `ysyx_24120013_MCAUSE );
+    assign is_mvendorid_r = (csr_raddr == `ysyx_24120013_MVENDORID);
+    assign is_marchid_r   = (csr_raddr == `ysyx_24120013_MARCHID  );
 
     assign csr_rdata = ({DATA_WIDTH{is_mstatus_r}} & mstatus ) |
                        ({DATA_WIDTH{is_mtvec_r}}   & mtvec   ) |
                        ({DATA_WIDTH{is_mepc_r}}    & mepc    ) |
-                       ({DATA_WIDTH{is_mcause_r}}  & mcause  );
+                       ({DATA_WIDTH{is_mcause_r}}  & mcause  ) |
+                       ({DATA_WIDTH{is_mvendorid_r}}  & mvendorid ) |
+                       ({DATA_WIDTH{is_marchid_r}}    & marchid );
 
 endmodule

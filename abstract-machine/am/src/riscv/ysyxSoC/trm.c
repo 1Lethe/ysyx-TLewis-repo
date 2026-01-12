@@ -36,6 +36,41 @@ static void UART16550_init(void) {
   outb(UART16550_FCR_ADDR, 0xC0);
 }
 
+// print ysyx_24120013
+static void YSYX_welcome(void) {
+  uint32_t mvendorid_val;
+  uint32_t marchid_val;
+  asm volatile("csrrs %0, mvendorid, zero" : "=r"(mvendorid_val));
+  asm volatile("csrrs %0, marchid,   zero" : "=r"(marchid_val));
+
+  putstr("Hello YSYX!");
+  putch((mvendorid_val >> 24) & 0xFF); // 提取 0x79 -> 'y'
+  putch((mvendorid_val >> 16) & 0xFF); // 提取 0x73 -> 's'
+  putch((mvendorid_val >> 8)  & 0xFF); // 提取 0x79 -> 'y'
+  putch((mvendorid_val)       & 0xFF); // 提取 0x78 -> 'x'
+
+  putch('_');
+
+  if (marchid_val == 0) {
+      putch('0');
+  } else {
+    char buf[12]; 
+    int i = 0;
+    uint32_t temp = marchid_val;
+
+    // 逐位提取 (从低位到高位)
+    while (temp > 0) {
+      buf[i++] = (temp % 10) + '0'; // 取余并转 ASCII
+      temp /= 10;                   // 移位
+    }
+    while (i > 0) {
+      putch(buf[--i]);
+    }
+  }
+
+  putch('\n');
+}
+
 void putch(char ch) {
   // 轮询等待串口FIFO为空
   while(((uint8_t)inb(UART16550_LSR_ADDR) & 0x40) != 0x40);
@@ -51,6 +86,8 @@ void halt(int code) {
 void _trm_init() {
   heap_ptr_reset();
   UART16550_init();
+
+  YSYX_welcome();
 
   int ret = main(mainargs);
   halt(ret);

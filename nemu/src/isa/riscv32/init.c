@@ -32,6 +32,10 @@ static void restart() {
 
   /* The zero register is always 0. */
   cpu.gpr[0] = 0;
+
+  /* Set mvendorid and marchid in CSR as ysyx_24120013. */
+  cpu.mvendorid = 0x79737978; // ascii of "ysyx"
+  cpu.marchid = 24120013;
 }
 
 void init_isa() {

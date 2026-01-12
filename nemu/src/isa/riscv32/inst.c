@@ -25,7 +25,7 @@
 #define CSRw csr_write
 
 enum {
-  TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B,
+  TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B, TYPE_CSR,
   TYPE_N, // none
 };
 
@@ -49,18 +49,21 @@ enum {
           (BITS(i, 30, 21) ), 20) << 1); \
   } while(0)
 
+#define immCSR() do { *imm = (word_t)(BITS(i, 31, 20)); } while(0);
+
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst;
   int rs1 = BITS(i, 19, 15);
   int rs2 = BITS(i, 24, 20);
   *rd     = BITS(i, 11, 7);
   switch (type) {
-    case TYPE_I: src1R();          immI(); break;
-    case TYPE_U:                   immU(); break;
-    case TYPE_S: src1R(); src2R(); immS(); break;
-    case TYPE_J:                   immJ(); break;
-    case TYPE_R: src1R(); src2R();         break;
-    case TYPE_B: src1R(); src2R(); immB(); break;
+    case TYPE_I:    src1R();          immI();   break;
+    case TYPE_U:                      immU();   break;
+    case TYPE_S:    src1R(); src2R(); immS();   break;
+    case TYPE_J:                      immJ();   break;
+    case TYPE_R:    src1R(); src2R();           break;
+    case TYPE_B:    src1R(); src2R(); immB();   break;
+    case TYPE_CSR : src1R();          immCSR(); break; // only for CSR inst
     case TYPE_N: break;
     default: panic("unsupported type = %d", type);
   }
@@ -139,8 +142,8 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 101 ????? 01100 11", divu   , R, R(rd) = (src2 != 0) ? (word_t)((uint64_t)src1 / (uint64_t)src2) : ~0x0);
 
   /* Zicsr extension */
-  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, word_t t = CSRr(imm); CSRw(imm, src1); R(rd) = t);
-  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, word_t t = CSRr(imm); CSRw(imm, src1 | t); R(rd) = t);
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , CSR, word_t t = CSRr(imm); CSRw(imm, src1); R(rd) = t);
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , CSR, word_t t = CSRr(imm); CSRw(imm, src1 | t); R(rd) = t);
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc = CSRr(CSR_MEPC));
 
   /* Invaild inst Every inst put above. */

@@ -49,10 +49,12 @@ word_t isa_reg_str2val(const char *s, bool *success) {
 
 void csr_write(word_t addr, word_t data) {
   switch(addr){
-    case CSR_MSTATUS : CSR_wr(mstatus, data); break;
-    case CSR_MTVEC   : CSR_wr(mtvec  , data); break;
-    case CSR_MEPC    : CSR_wr(mepc   , data); break;
-    case CSR_MCAUSE  : CSR_wr(mcause , data); break;
+    case CSR_MSTATUS  : CSR_wr(mstatus  , data  ); break;
+    case CSR_MTVEC    : CSR_wr(mtvec    , data  ); break;
+    case CSR_MEPC     : CSR_wr(mepc     , data  ); break;
+    case CSR_MCAUSE   : CSR_wr(mcause   , data  ); break;
+    case CSR_MVENDORID: CSR_wr(mvendorid, data  ); break;
+    case CSR_MARCHID  : CSR_wr(marchid  , data  ); break;
     default : panic("unsupported write CSR addr 0x%x", addr);
   }
   IFDEF(CONFIG_CSRTRACE, printf("CSRTRACE wr addr 0x%x data 0x%x\n", addr, data);)
@@ -61,10 +63,12 @@ void csr_write(word_t addr, word_t data) {
 word_t csr_read(word_t addr) {
   word_t ret = 0;
   switch(addr){
-    case CSR_MSTATUS : ret = CSR(mstatus); break;
-    case CSR_MTVEC   : ret = CSR(mtvec);   break;
-    case CSR_MEPC    : ret = CSR(mepc);    break;
-    case CSR_MCAUSE  : ret = CSR(mcause);  break;
+    case CSR_MSTATUS   : ret = CSR(mstatus);   break;
+    case CSR_MTVEC     : ret = CSR(mtvec);     break;
+    case CSR_MEPC      : ret = CSR(mepc);      break;
+    case CSR_MCAUSE    : ret = CSR(mcause);    break;
+    case CSR_MVENDORID : ret = CSR(mvendorid); break;
+    case CSR_MARCHID   : ret = CSR(marchid);   break;
     default : panic("unsupported read CSR addr 0x%x", addr);
   }
   IFDEF(CONFIG_CSRTRACE, printf("CSRTRACE rd addr 0x%x data 0x%x\n", addr, ret);)

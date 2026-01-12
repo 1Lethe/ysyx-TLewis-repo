@@ -39,7 +39,9 @@ enum{
   CSR_MSTATUS = 0x300,
   CSR_MTVEC   = 0x305,
   CSR_MEPC    = 0x341,
-  CSR_MCAUSE  = 0X342
+  CSR_MCAUSE  = 0X342,
+  CSR_MVENDORID = 0xf11,
+  CSR_MARCHID = 0xf12
 };
 void csr_write(word_t addr, word_t data);
 word_t csr_read(word_t addr);
