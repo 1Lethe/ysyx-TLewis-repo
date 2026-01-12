@@ -11,26 +11,6 @@ int main(const char *args);
 Area heap = RANGE(&_heap_start, &_heap_end);
 static const char mainargs[MAINARGS_MAX_LEN] = MAINARGS_PLACEHOLDER; // defined in CFLAGS
 
-static void bootloader(void) {
-  extern char _data_vma_start;
-  extern char _data_vma_end;
-  extern char _data_lma_start;
-
-  extern char _bss_vma_start;
-  extern char _bss_vma_end;
-
-  volatile char *src = &_data_lma_start;
-  volatile char *dst = &_data_vma_start;
-  while(dst < &_data_vma_end) {
-    *dst++ = *src++;
-  }
-
-  dst = &_bss_vma_start;
-  while(dst < &_bss_vma_end) {
-    *dst++ = 0;
-  }
-}
-
 static void UART16550_init(void) {
 /*
   Set the Line Control Register to the desired line control parameters. Set bit 7 to ‘1’ 
@@ -70,7 +50,6 @@ void halt(int code) {
 
 void _trm_init() {
   heap_ptr_reset();
-  bootloader();
   UART16550_init();
 
   int ret = main(mainargs);
