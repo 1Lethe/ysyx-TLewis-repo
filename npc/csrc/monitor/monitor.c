@@ -129,6 +129,7 @@ void init_disasm();
 void monitor_init(int argc, char *argv[]){
     parse_args(argc, argv);
     init_mrom();
+    init_flash();
     img_size = load_img();
     parse_elf(&shdr_strtab, &shdr_symtab);
     init_log(log_file);

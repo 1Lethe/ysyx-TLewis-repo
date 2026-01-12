@@ -140,6 +140,11 @@ uint32_t mrom_read_skel(uint32_t addr,uint32_t len) {
     return ret;
 }
 
+void init_flash() {
+  IFDEF(CONFIG_MEM_RANDOM, memset(flash_memory, rand(), FLASH_SIZE));
+  Log("NPC flash init.");
+}
+
 uint8_t* wr_flash_addr(uint32_t addr) { return flash_memory + addr; } 
 uint8_t* rd_flash_addr(uint32_t addr) { return flash_memory + addr; } 
 
@@ -158,9 +163,7 @@ uint32_t flash_read_skel(uint32_t addr,uint32_t len) {
 }
 
 extern "C" void flash_read(int32_t addr, int32_t *data) {
-    // FIXME:
     *data = flash_read_skel(addr & ~0x3u, sizeof(uint32_t));
-    //printf("im called 0x%08x data:0x%08x\n", addr, *data); 
 }
 
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 

@@ -46,6 +46,7 @@ void init_mrom(void);
 uint8_t* wr_mrom_addr(uint32_t addr);
 uint8_t* rd_mrom_addr(uint32_t addr);
 
+void init_flash();
 uint8_t* wr_flash_addr(uint32_t addr);
 uint8_t* rd_flash_addr(uint32_t addr);
 void flash_write(uint32_t addr, int len, uint32_t data);
