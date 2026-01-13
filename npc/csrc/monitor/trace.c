@@ -1,6 +1,7 @@
 #include "common.h"
 #include "cpu-exec.h"
 #include "trace.h"
+#include "disasm.h"
 
 char *iringbuf[IRING_BUF_SIZE];
 int iring_index = 0;

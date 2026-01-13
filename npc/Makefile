@@ -7,11 +7,21 @@ INC_PATH ?=
 SOC_PERIP_PATH = $(YSYX_HOME)/ysyxSoC/perip
 SOC_BUILD_PATH = $(YSYX_HOME)/ysyxSoC/build
 
+NPROC := $(shell nproc)
+
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc --trace-fst --autoflush\
+VERILATOR_CFLAGS += -MMD --build -cc --trace-fst\
 					-O3 --x-assign fast --x-initial fast --noassert --no-timing --timescale "1ns/1ns" \
-					-I./vsrc -I./vsrc/define -I$(YSYX_HOME)/ysyxSoC/perip/uart16550/rtl -I$(YSYX_HOME)/ysyxSoC/perip/spi/rtl \
-					--verilate-jobs 8
+					-j $(NPROC)\
+					--threads 1 \
+					--threads-dpi all \
+					--instr-count-dpi 1 \
+					-I./vsrc \
+					-I./vsrc/define \
+					-I$(YSYX_HOME)/ysyxSoC/perip/uart16550/rtl \
+					-I$(YSYX_HOME)/ysyxSoC/perip/spi/rtl \
+					-CFLAGS "-O3 -march=native" \
+					-LDFLAGS "-fuse-ld=lld"  
 
 INC_PATH += $(NPC_HOME)/csrc/include
 INC_PATH += $(NPC_HOME)/capstone/repo/include
