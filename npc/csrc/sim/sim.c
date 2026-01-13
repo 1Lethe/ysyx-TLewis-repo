@@ -29,8 +29,15 @@ void sim_init(int argc, char** argv){
     tfp = new VerilatedFstC;
     contextp->traceEverOn(true);
     SIM_MODULE_NAME->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
-    tfp->open("/home/tonglewis/ysyx-workbench/npc/wave/wave.fst");
-#endif
+
+#ifdef WAVE_OUTPUT_FILE // defined in Makefile
+    tfp->open(STR(WAVE_OUTPUT_FILE));
+    Log("FST trace is written to %s", STR(WAVE_OUTPUT_FILE));
+#else
+    Assert(0, "not defined WAVE_OUTPUT_FILE. stop sim!");
+#endif /* WAVE_OUTPUT_FILE */
+
+#endif /* EN_DUMP_WAVE */
 }
 
 void dump_wave(SIM_MODULE* top){
@@ -49,7 +56,9 @@ bool is_sim_continue(void){
 }
 
 void tfp_close(void){
+#ifdef EN_DUMP_WAVE
     tfp->close();
+#endif
 }
 
 void init_scope(void) {

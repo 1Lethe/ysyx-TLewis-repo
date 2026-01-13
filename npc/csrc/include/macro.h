@@ -97,6 +97,10 @@
 #define unlikely(cond) __builtin_expect(cond, 0)
 #endif
 
+// use STR(...path) => "path"
+#define XSTR(x) #x
+#define STR(x) XSTR(x)
+
 // for AM IOE
 #define io_read(reg) \
   ({ reg##_T __io_param; \

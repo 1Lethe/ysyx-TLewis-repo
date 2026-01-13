@@ -20,6 +20,10 @@
 
 #include "disasm.h"
 
+// use STR(...path) => "path"
+#define XSTR(x) #x
+#define STR(x) XSTR(x)
+
 static size_t (*cs_disasm_dl)(csh handle, const uint8_t *code,
     size_t code_size, uint64_t address, size_t count, cs_insn **insn);
 static void (*cs_free_dl)(cs_insn *insn, size_t count);
@@ -28,7 +32,7 @@ static csh handle;
 
 void init_disasm() {
   void *dl_handle;
-  dl_handle = dlopen("/home/tonglewis/ysyx-workbench/npc/capstone/repo/libcapstone.so.5", RTLD_LAZY);
+  dl_handle = dlopen(STR(CAPSTONE_SO_PATH), RTLD_LAZY);
   assert(dl_handle);
 
   cs_err (*cs_open_dl)(cs_arch arch, cs_mode mode, csh *handle) = NULL;
