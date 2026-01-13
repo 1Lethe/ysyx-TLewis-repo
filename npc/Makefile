@@ -87,6 +87,7 @@ COMMON_LDFLAGS = -lreadline -ldl -fuse-ld=lld
 # 注意：V_INC_FLAGS 只能放在这里
 VERILATOR_FLAGS = --cc --exe --build \
                   --no-assert --no-timing --timescale "1ns/1ns" \
+				  --trace-fst \
                   --x-assign fast --x-initial fast \
                   -j $(NPROC) \
                   --threads 1 --threads-dpi all --instr-count-dpi 1 \
