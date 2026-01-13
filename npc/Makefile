@@ -14,7 +14,6 @@ BUILD_DIR = $(NPC_HOME)/build
 OBJ_DIR   = $(BUILD_DIR)/obj_dir
 WAVE_DIR  = $(NPC_HOME)/wave
 
-# 定义不同的输出文件名，防止互相覆盖
 BIN_SIM     = $(BUILD_DIR)/$(TOPNAME)
 BIN_NVBOARD = $(BUILD_DIR)/$(TOPNAME)
 
