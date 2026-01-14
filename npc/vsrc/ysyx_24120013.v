@@ -1,9 +1,11 @@
+`include "define/cpu_defines.v"
+
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
 import "DPI-C" function int sim_read_RTC(input int raddr);
 import "DPI-C" function void sim_hardware_fault_handle(input int NO,input int arg0);
 import "DPI-C" function void sim_difftest_skip ();
 import "DPI-C" function void halt ();
-
-`include "cpu_defines.v"
+`endif
 
 module ysyx_24120013 (
     input clock,
@@ -94,6 +96,8 @@ parameter SRAM_MMIO_BASE      = 32'h0f00_0000;
 parameter SRAM_MMIO_SIZE      = 32'h0000_2000;
 parameter FLASH_MMIO_BASE     = 32'h3000_0000;
 parameter FLASH_MMIO_SIZE     = 32'h1000_0000;
+parameter PSRAM_MMIO_BASE     = 32'h8000_0000;
+parameter PSRAM_MMIO_SIZE     = 32'h1000_0000;
 parameter CLINT_MMIO_BASE     = 32'h0200_0000;
 parameter CLINT_MMIO_SIZE     = 32'h0001_0000;
 
@@ -581,11 +585,13 @@ ysyx_24120013_axi_bridge #(
     .UART16550_MMIO_BASE(UART16550_MMIO_BASE),
     .UART16550_MMIO_SIZE(UART16550_MMIO_SIZE),
     .SPI_MASTER_MMIO_BASE(SPI_MASTER_MMIO_BASE),
-    .SPI_MASTER_MMIO_SIZE(SPI_MASTER_MMIO_BASE),
+    .SPI_MASTER_MMIO_SIZE(SPI_MASTER_MMIO_SIZE),
     .SRAM_MMIO_BASE     (SRAM_MMIO_BASE    ),
     .SRAM_MMIO_SIZE     (SRAM_MMIO_SIZE    ),
     .FLASH_MMIO_BASE    (FLASH_MMIO_BASE    ),
     .FLASH_MMIO_SIZE    (FLASH_MMIO_SIZE    ),
+    .PSRAM_MMIO_BASE    (PSRAM_MMIO_BASE    ),
+    .PSRAM_MMIO_SIZE    (PSRAM_MMIO_SIZE    ),
     .CLINT_MMIO_BASE    (CLINT_MMIO_BASE    ),
     .CLINT_MMIO_SIZE    (CLINT_MMIO_SIZE    )
 )u_ysyx_24120013_axi_bridge(
