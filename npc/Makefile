@@ -10,6 +10,7 @@ default: sim
 # 1. 全局配置与工具 (Global Config & Tools)
 # ==============================================================================
 TOPNAME   = ysyxSoCFull
+NPC_TOPNAME = ysyx_24120013
 BUILD_DIR = $(NPC_HOME)/build
 OBJ_DIR   = $(BUILD_DIR)/obj_dir
 WAVE_DIR  = $(NPC_HOME)/wave
@@ -46,9 +47,12 @@ WAVE_FILE_PATH = $(abspath $(WAVE_DIR)/wave.fst)
 # ==============================================================================
 
 # 3.1 Verilog 源文件
-VSRCS = $(shell find $(abspath ./vsrc) -name "*.v") \
-        $(shell find $(abspath $(YSYX_HOME)/ysyxSoC/perip) -name "*.v") \
-        $(YSYX_HOME)/ysyxSoC/build/ysyxSoCFull.v
+VSRCS_NPC = $(shell find $(abspath ./vsrc) -name "*.v")
+
+VSRCS_YSYXSOC = $(shell find $(abspath $(YSYX_HOME)/ysyxSoC/perip) -name "*.v") \
+        		$(YSYX_HOME)/ysyxSoC/build/ysyxSoCFull.v
+
+VSRCS = $(VSRCS_NPC) $(VSRCS_YSYXSOC)
 
 # 3.2 外部依赖 (Filelist)
 include $(NPC_HOME)/csrc/utils/filelist.mk
@@ -91,6 +95,9 @@ VERILATOR_FLAGS = --cc --exe --build \
                   -j $(NPROC) \
                   --threads 1 --threads-dpi all --instr-count-dpi 1 \
                   $(V_INC_FLAGS)
+
+VERILATOR_LINTONLY_FLAGS  = --lint-only -Wall $(V_INC_FLAGS)
+VERILATOR_LINTONLY_FLAGS += -Wno-DECLFILENAME -Wno-EOFNEWLINE
 
 # ==============================================================================
 # 5. 构建规则 (Build Rules)
@@ -135,6 +142,11 @@ run: nvboard
 	@echo "Running NVBoard..."
 	$(BIN_NVBOARD)
 
+lint-only: $(VSRCS_NPC)
+	@echo "Link Check..."
+	$(VERILATOR) $(VERILATOR_LINTONLY_FLAGS) \
+		--top-module $(NPC_TOPNAME) $^ 
+
 # ==============================================================================
 # 6. 辅助工具规则 (Utils)
 # ==============================================================================
@@ -176,7 +188,7 @@ PROJ_PATH = $(NPC_HOME)
 
 DESIGN ?= ysyx_24120013
 SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
-RTL_FILES ?= $(shell find $(abspath ./vsrc) -name "*.v")
+RTL_FILES ?= $(VSRCS_NPC)
 export CLK_FREQ_MHZ ?= 100
 
 RESULT_DIR = $(PROJ_PATH)/sta_result/$(DESIGN)-$(CLK_FREQ_MHZ)MHz
