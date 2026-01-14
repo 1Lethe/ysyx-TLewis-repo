@@ -43,32 +43,13 @@ static void YSYX_welcome(void) {
   asm volatile("csrrs %0, mvendorid, zero" : "=r"(mvendorid_val));
   asm volatile("csrrs %0, marchid,   zero" : "=r"(marchid_val));
 
-  putstr("Hello YSYX!");
-  putch((mvendorid_val >> 24) & 0xFF); // 提取 0x79 -> 'y'
-  putch((mvendorid_val >> 16) & 0xFF); // 提取 0x73 -> 's'
-  putch((mvendorid_val >> 8)  & 0xFF); // 提取 0x79 -> 'y'
-  putch((mvendorid_val)       & 0xFF); // 提取 0x78 -> 'x'
+  char ysyx_buff[4];
+  ysyx_buff[0] = (char)((mvendorid_val >> 24) & 0xFF);
+  ysyx_buff[1] = (char)((mvendorid_val >> 16) & 0xFF);
+  ysyx_buff[2] = (char)((mvendorid_val >> 8 ) & 0xFF);
+  ysyx_buff[3] = (char)((mvendorid_val      ) & 0xFF);
 
-  putch('_');
-
-  if (marchid_val == 0) {
-      putch('0');
-  } else {
-    char buf[12]; 
-    int i = 0;
-    uint32_t temp = marchid_val;
-
-    // 逐位提取 (从低位到高位)
-    while (temp > 0) {
-      buf[i++] = (temp % 10) + '0'; // 取余并转 ASCII
-      temp /= 10;                   // 移位
-    }
-    while (i > 0) {
-      putch(buf[--i]);
-    }
-  }
-
-  putch('\n');
+  printf("Hello YSYX! %s_%d\n", ysyx_buff, marchid_val);
 }
 
 void putch(char ch) {
