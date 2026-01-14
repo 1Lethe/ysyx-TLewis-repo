@@ -1,3 +1,4 @@
+`include "define/cpu_defines.v"
 module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     input clk,
     input rst,
@@ -44,7 +45,7 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     wire [DATA_WIDTH-1:0] sh_maskd_data;
     wire [DATA_WIDTH-1:0] sb_maskd_data;
 
-    wire [DATA_WIDTH-1:0] mem_wdata_align;
+    (* keep *) wire [DATA_WIDTH-1:0] mem_wdata_align;
 
     assign is_sb_mem = (mem_wtype[0] == 1'b1);
     assign is_sh_align_mem = (mem_wtype[1] == 1'b1 && mem_waddr[0] == 1'b0);
@@ -168,6 +169,7 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     assign mem_rdata = simplebus_lsu_mem_rd_data;
     assign mem_rvalid = simplebus_lsu_mem_rd_complete;
 
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
     // 处理不对齐访存
     always @(posedge clk) begin
         if(simplebus_lsu_mem_wr_req) begin
@@ -197,5 +199,6 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
             end
         end
     end
+`endif
 
 endmodule

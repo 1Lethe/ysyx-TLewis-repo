@@ -1,8 +1,8 @@
 module ysyx_24120013_CLINT #(
         MEM_WIDTH = 32, 
         DATA_WIDTH = 32,
-        CLINT_MMIO_BASE,
-        CLINT_MMIO_SIZE
+        CLINT_MMIO_BASE = 32'h0200_0000,
+        CLINT_MMIO_SIZE = 32'h0001_0000
     )(
         input aclk,
         input areset_n,
@@ -12,7 +12,7 @@ module ysyx_24120013_CLINT #(
         input [MEM_WIDTH-1:0] m_araddr,
         input [2:0] m_arprot,
 
-        output wire s_rvalid,
+        output reg s_rvalid,
         input m_rready,
         output reg [DATA_WIDTH-1:0] s_rdata,
         output reg [1:0] s_rresp
@@ -21,6 +21,7 @@ module ysyx_24120013_CLINT #(
     /* device CLINT regs */
     reg [63:0] clint_mtime;
 
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
     // NOTE: sim_read_RTC函数会调用mmio_read函数，导致difftest被跳过
     // 只在需要RTCb数据时调用该函数
     always @(posedge aclk) begin
@@ -31,6 +32,17 @@ module ysyx_24120013_CLINT #(
             clint_mtime[63:32] <= sim_read_RTC(CLINT_MMIO_BASE + 32'h4);
         end
     end
+`else
+    // NOTE:我们不使用此always块，仅为了通过yosys综合
+    always @(posedge aclk) begin
+        if(areset_n) begin
+            clint_mtime <= 64'b0;
+        end else if(clint_rreq) begin
+            clint_mtime[31:0]  <= 32'b0;
+            clint_mtime[63:32] <= 32'b0;
+        end
+    end
+`endif
 
     parameter RESP_OKAY = 2'b00;
 

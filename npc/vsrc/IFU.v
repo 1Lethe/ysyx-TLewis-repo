@@ -44,6 +44,7 @@ module ysyx_24120013_IFU #(MEM_WIDTH = 32,DATA_WIDTH = 32)(
     assign rdata_inst = simplebus_ifu_mem_rd_data;
     assign rvalid_inst = simplebus_ifu_mem_rd_complete;
 
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
     // resp != 0
     always @(posedge clk) begin
         if(rvalid_inst) begin
@@ -52,6 +53,7 @@ module ysyx_24120013_IFU #(MEM_WIDTH = 32,DATA_WIDTH = 32)(
             end
         end
     end
+`endif
 
     assign inst_fetch = rdata_inst;
     assign inst_is_valid = rvalid_inst | inst_buffer_enable;

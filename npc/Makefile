@@ -174,9 +174,9 @@ count_noempty:
 # For sta
 PROJ_PATH = $(NPC_HOME)
 
-DESIGN ?= $(TOPNAME)
+DESIGN ?= ysyx_24120013
 SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
-RTL_FILES ?= $(VSRCS)
+RTL_FILES ?= $(shell find $(abspath ./vsrc) -name "*.v")
 export CLK_FREQ_MHZ ?= 100
 
 RESULT_DIR = $(PROJ_PATH)/sta_result/$(DESIGN)-$(CLK_FREQ_MHZ)MHz
@@ -199,4 +199,4 @@ $(TIMING_RPT): $(SCRIPT_DIR)/sta.tcl $(SDC_FILE) $(NETLIST_FIXED_V)
 	./bin/iEDA -script $^ $(DESIGN) 2>&1 | tee $(RESULT_DIR)/sta.log
 
 clean_sta:
-	rm -rf $(PROJ_PATH)/sta_result/*
+	rm -rf $(PROJ_PATH)/sta_result

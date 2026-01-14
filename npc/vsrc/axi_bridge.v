@@ -3,18 +3,20 @@ module ysyx_24120013_axi_bridge
         MEM_WIDTH = 32, 
         DATA_WIDTH = 32,
 
-        MROM_MMIO_BASE,
-        MROM_MMIO_SIZE,
-        UART16550_MMIO_BASE,
-        UART16550_MMIO_SIZE,
-        SPI_MASTER_MMIO_BASE,
-        SPI_MASTER_MMIO_SIZE,
-        SRAM_MMIO_BASE,
-        SRAM_MMIO_SIZE,
-        FLASH_MMIO_BASE,
-        FLASH_MMIO_SIZE,
-        CLINT_MMIO_BASE,
-        CLINT_MMIO_SIZE
+        MROM_MMIO_BASE       = 32'h2000_0000,
+        MROM_MMIO_SIZE       = 32'h0000_1000,
+        UART16550_MMIO_BASE  = 32'h1000_0000,
+        UART16550_MMIO_SIZE  = 32'h0000_1000,
+        SPI_MASTER_MMIO_BASE = 32'h1000_1000,
+        SPI_MASTER_MMIO_SIZE = 32'h0000_1000,
+        SRAM_MMIO_BASE       = 32'h0f00_0000,
+        SRAM_MMIO_SIZE       = 32'h0000_2000,
+        FLASH_MMIO_BASE      = 32'h3000_0000,
+        FLASH_MMIO_SIZE      = 32'h1000_0000,
+        PSRAM_MMIO_BASE      = 32'h8000_0000,
+        PSRAM_MMIO_SIZE      = 32'h1000_0000,
+        CLINT_MMIO_BASE      = 32'h0200_0000,
+        CLINT_MMIO_SIZE      = 32'h0001_0000
       )(
         input aclk,
         input areset,
@@ -265,6 +267,9 @@ module ysyx_24120013_axi_bridge
     wire xbar_device_wr_soc_flash;
     wire xbar_device_rd_soc_flash;
 
+    wire xbar_device_wr_soc_psram;
+    wire xbar_device_rd_soc_psram;
+
     wire xbar_device_rd_clint;
 
     assign xbar_device_rd_soc_mmom = (m_arvalid) ? (m_araddr >= MROM_MMIO_BASE && 
@@ -290,15 +295,23 @@ module ysyx_24120013_axi_bridge
     assign xbar_device_rd_soc_flash = (m_arvalid) ? (m_araddr >= FLASH_MMIO_BASE && 
                                         m_araddr < FLASH_MMIO_BASE + FLASH_MMIO_SIZE) : 1'b0;
 
+    assign xbar_device_wr_soc_psram = (m_awvalid) ? (m_awaddr >= PSRAM_MMIO_BASE && 
+                                        m_awaddr < PSRAM_MMIO_BASE + PSRAM_MMIO_SIZE) : 1'b0;
+    assign xbar_device_rd_soc_psram = (m_arvalid) ? (m_araddr >= PSRAM_MMIO_BASE && 
+                                        m_araddr < PSRAM_MMIO_BASE + PSRAM_MMIO_SIZE) : 1'b0;
+
     assign xbar_device_rd_clint = (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && 
                                   m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
 
     assign xbar_device_soc = xbar_device_rd_soc_mmom | xbar_device_wr_soc_uart16550 | xbar_device_rd_soc_uart16550 |
                             xbar_device_wr_soc_spimaster | xbar_device_rd_soc_spimaster |
-                            xbar_device_wr_soc_sram | xbar_device_rd_soc_sram | xbar_device_wr_soc_flash | xbar_device_rd_soc_flash;
+                            xbar_device_wr_soc_sram | xbar_device_rd_soc_sram | 
+                            xbar_device_wr_soc_flash | xbar_device_rd_soc_flash |
+                            xbar_device_wr_soc_psram | xbar_device_rd_soc_psram;
 
     assign xbar_device_clint = xbar_device_rd_clint;
 
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
     // REF不存在这些设备，跳过difftest
     wire is_difftest_skip;
     assign is_difftest_skip = xbar_device_rd_soc_uart16550 | xbar_device_rd_soc_spimaster;
@@ -318,6 +331,7 @@ module ysyx_24120013_axi_bridge
             end
         end
     end
+`endif
 
     // 用于处理 AXI 握手过程中的地址阶段后的数据/响应阶段选通
     always @(posedge aclk) begin

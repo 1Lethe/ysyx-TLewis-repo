@@ -1,4 +1,4 @@
-`include "cpu_defines.v"
+`include "define/cpu_defines.v"
 module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         input clk,
         input rst,

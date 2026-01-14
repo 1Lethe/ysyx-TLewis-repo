@@ -363,8 +363,8 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                          (is_ecall)         |
                          (is_mret);
 
-    assign reg_raddr1 = (alu_src1_reg | bru_src1_reg | ecu_src1_reg == 1'b1) ? rs1 : {ADDR_WIDTH{1'b0}};
-    assign reg_raddr2 = (alu_src2_reg | mmu_src2_reg == 1'b1) ? rs2 : {ADDR_WIDTH{1'b0}};
+    assign reg_raddr1 = (alu_src1_reg | bru_src1_reg | ecu_src1_reg == 1'b1) ? rs1[ADDR_WIDTH-1:0] : {ADDR_WIDTH{1'b0}};
+    assign reg_raddr2 = (alu_src2_reg | mmu_src2_reg == 1'b1) ? rs2[ADDR_WIDTH-1:0] : {ADDR_WIDTH{1'b0}};
     assign alu_src1 = (alu_src1_pc == 1'b1) ? pc : reg_rdata1;
     assign alu_src2 = (alu_src2_imm == 1'b1) ? imm : 
                       (alu_src2_plus4 == 1'b1) ? 4 : 
@@ -373,6 +373,6 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
     assign csr_raddr = ({`ysyx_24120013_CSR_ADDR_WIDTH{is_csrrs | is_csrrw}} & csr                  ) |
                        ({`ysyx_24120013_CSR_ADDR_WIDTH{is_ecall}}            & `ysyx_24120013_MTVEC ) |
                        ({`ysyx_24120013_CSR_ADDR_WIDTH{is_mret }}            & `ysyx_24120013_MEPC  );
-    assign wr_reg_des = (not_wr_reg == 1'b1) ? {ADDR_WIDTH{1'b0}} : rd;
+    assign wr_reg_des = (not_wr_reg == 1'b1) ? {ADDR_WIDTH{1'b0}} : rd[ADDR_WIDTH-1:0];
 
 endmodule

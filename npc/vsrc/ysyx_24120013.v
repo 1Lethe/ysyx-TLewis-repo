@@ -80,7 +80,7 @@ module ysyx_24120013 (
     );
 
 parameter MEM_WIDTH = 32;
-parameter ADDR_WIDTH = 5;
+parameter ADDR_WIDTH = 4;
 parameter DATA_WIDTH = 32;
 
 /* DEVICE MMIO CONFIG */

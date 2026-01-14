@@ -1,4 +1,4 @@
-`include "cpu_defines.v"
+`include "define/cpu_defines.v"
 
 module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
@@ -96,9 +96,11 @@ module ysyx_24120013_EXU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
     assign csr_wen = ecu_csr_wen & ex_shakehand;
 
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
     always @(*) begin
         if(break_ctrl) halt();
     end
+`endif
 
     wire branch_less;
     wire branch_zero;
