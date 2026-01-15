@@ -143,7 +143,7 @@ run: nvboard
 	$(BIN_NVBOARD)
 
 lint-only: $(VSRCS_NPC)
-	@echo "Link Check..."
+	@echo "Lint Check..."
 	$(VERILATOR) $(VERILATOR_LINTONLY_FLAGS) \
 		--top-module $(NPC_TOPNAME) $^ 
 
