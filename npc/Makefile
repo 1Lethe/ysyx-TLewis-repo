@@ -1,8 +1,8 @@
 # ==============================================================================
 # 0. 伪目标定义 (Phony Targets)
 # ==============================================================================
-.PHONY: default sim nvboard run clean count count_noempty
-.PHONY: syn fix-fanout sta clean_sta
+.PHONY: default sim nvboard run lint-only clean count count_noempty
+.PHONY: sta clean_sta
 
 default: sim
 
