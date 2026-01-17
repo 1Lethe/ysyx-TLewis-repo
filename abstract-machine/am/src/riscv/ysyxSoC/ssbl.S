@@ -1,11 +1,31 @@
-.section entry, "ax"
-.globl _start
-.type _start, @function
+.section .ssbl, "ax"
+.globl _ssbl
+.type _ssbl, @function
 
-_start:
-    # 1. 基础环境初始化
-    mv s0, zero                 # 初始化帧指针 (s0/fp = x8, RV32E可用)
-    la sp, _stack_pointer       # 初始化栈指针 (sp = x2, RV32E可用)
+_ssbl:
+    la a0, _text_lma_start      # 源地址 (LMA)
+    la a1, _text_vma_start      # 目的地址 (VMA)
+    la a2, _text_vma_end        # 结束地址
+    bgeu a1, a2, copy_text_end  # 检查空段
+copy_text_loop:
+    lb a3, 0(a0)
+    sb a3, 0(a1)
+    addi a0, a0, 1
+    addi a1, a1, 1
+    bltu a1, a2, copy_text_loop
+copy_text_end:
+
+    la a0, _rodata_lma_start    # 源地址 (LMA)
+    la a1, _rodata_vma_start    # 目的地址 (VMA)
+    la a2, _rodata_vma_end      # 结束地址
+    bgeu a1, a2, copy_rodata_end
+copy_rodata_loop:
+    lb a3, 0(a0)
+    sb a3, 0(a1)
+    addi a0, a0, 1
+    addi a1, a1, 1
+    bltu a1, a2, copy_rodata_loop
+copy_rodata_end:
 
     # 2. 搬运 .data 段 (LMA -> VMA)
     la a0, _data_lma_start      # a0 = 源地址 (src)

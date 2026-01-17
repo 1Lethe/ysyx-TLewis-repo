@@ -34,6 +34,9 @@ void init_mem(void);
 #define FLASH_SIZE  0x10000000
 #define FLASH_BASE  0x30000000
 
+#define PSRAM_SIZE  0x20000000
+#define PSRAM_BASE  0x80000000
+
 static inline bool guest_in_mrom(uint32_t addr) {
   return (addr >= MROM_BASE) && (addr < MROM_SIZE + MROM_BASE);
 }

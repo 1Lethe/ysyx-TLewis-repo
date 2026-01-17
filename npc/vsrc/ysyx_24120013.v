@@ -97,7 +97,7 @@ parameter SRAM_MMIO_SIZE      = 32'h0000_2000;
 parameter FLASH_MMIO_BASE     = 32'h3000_0000;
 parameter FLASH_MMIO_SIZE     = 32'h1000_0000;
 parameter PSRAM_MMIO_BASE     = 32'h8000_0000;
-parameter PSRAM_MMIO_SIZE     = 32'h1000_0000;
+parameter PSRAM_MMIO_SIZE     = 32'h2000_0000;
 parameter CLINT_MMIO_BASE     = 32'h0200_0000;
 parameter CLINT_MMIO_SIZE     = 32'h0001_0000;
 

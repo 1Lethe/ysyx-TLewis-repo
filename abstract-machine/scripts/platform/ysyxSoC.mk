@@ -1,4 +1,5 @@
-AM_SRCS := riscv/ysyxSoC/start.S \
+AM_SRCS := riscv/ysyxSoC/fsbl.S \
+		   riscv/ysyxSoC/ssbl.S \
            riscv/ysyxSoC/trm.c \
            riscv/ysyxSoC/ioe.c \
            riscv/ysyxSoC/timer.c \
@@ -12,7 +13,6 @@ CFLAGS    += -fdata-sections -ffunction-sections
 CFLAGS    += -I$(AM_HOME)/am/src/riscv/ysyxSoC/include
 LDSCRIPTS += $(AM_HOME)/scripts/linker_ysyxSoC.ld
 LDFLAGS   += --defsym=_entry_offset=0x0
-LDFLAGS   += --defsym=_heap_size=0x200
 LDFLAGS   += --gc-sections -e _start
 NPCFLAGS  += -b --elf=$(IMAGE).elf --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so --port=1234 -l $(shell dirname $(IMAGE).elf)/NPC-log.txt $(IMAGE).bin
 

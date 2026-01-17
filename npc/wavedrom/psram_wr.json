@@ -1,0 +1,32 @@
+{ signal:[
+        {name:"sck",          wave:"0.P....................."},
+        {name:"ce_n",         wave:"10.....................1", phase:-0.6},
+        {name:"dio[0]",       wave:"z0.1..0..22222222222222z", phase:-0.5, data:["20", "16","12","8","4","0"]},
+        {name:"dio[1]",       wave:"z........22222222222222z", phase:-0.5, data:["21", "17","13","9","5","1"]},
+        {name:"dio[2]",       wave:"z........22222222222222z", phase:-0.5, data:["22", "18","14","10","6","2"]},
+        {name:"dio[3]",       wave:"z........22222222222222z", phase:-0.5, data:["23", "19","15","11","7","3"]},
+        {                     node:".x.......a.....b.c.d.e.f", phase:-0.5},
+        {name:"curr_state",   wave:"2..2......2.....2........2", data:["IDLE", "INST", "ADDR","WDATA"]},
+        {name:"next_state",   wave:"2.2......2.....2.........2", data:["IDLE", "INST", "ADDR","WDATA"]},
+
+        {name:"inst_cnt",     wave:"0.22222222...............", data:[1,2,3,4,5,6,7,8]},
+        {name:"inst_buff",    wave:"0.22222222...............", data:["8'b0","8'b0","8'h1","8'h3", "8'h7","8'hE","8'h1C","8'h38"]},
+        {name:"inst_valid",   wave:"0........1..............."},
+
+        {name:"addr_cnt",     wave:"0.........222222..2.2.2.2", data:[1,2,3,4,5,6]},
+        {name:"addr_buff",    wave:"0.........222222.........",  data:[]},
+        {name:"addr_valid",   wave:"0..............1........."},
+
+        {name:"data_cnt",     wave:"0...............222222220", data:[1,2,1,2,1,2,1,2]},
+        {name:"data_buff",    wave:"0...............222222220", data:['upper','word','upper','word']},
+        {name:"data_valid",   wave:"0................10101010"},
+    ],
+    head:{
+        text:'PSRAM WR diagram (38h)',
+        tick:-2,
+        every:1
+    },
+    edge:[
+        'x<->a inst','a<->b 24bit addr'
+    ]
+}

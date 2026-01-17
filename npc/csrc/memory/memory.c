@@ -115,6 +115,7 @@ extern "C" void sim_pmem_write(int waddr, int wdata, char wmask) {
 
 static uint8_t mrom_memory[MROM_SIZE] __attribute((aligned(4096))) = {};
 static uint8_t flash_memory[FLASH_SIZE] __attribute((aligned(4096))) = {};
+static uint8_t psram_memory[PSRAM_SIZE] __attribute((aligned(4096))) = {};
 
 void init_mrom() {
   IFDEF(CONFIG_MEM_RANDOM, memset(mrom_memory, rand(), MROM_SIZE));
@@ -162,12 +163,37 @@ uint32_t flash_read_skel(uint32_t addr,uint32_t len) {
     return ret;
 }
 
+uint8_t* wr_psram_addr(uint32_t addr) { return psram_memory + addr; } 
+uint8_t* rd_psram_addr(uint32_t addr) { return psram_memory + addr; } 
+
+void psram_write_skel(uint32_t addr, int len, uint32_t data) {
+    assert((addr >= 0x0 && addr + len < PSRAM_SIZE));
+    IFDEF(EN_MTRACE,printf("PSRAM write addr 0x%x len %d value 0x%x\n", addr, len, data));
+    host_write(wr_psram_addr(addr), len, data);
+}
+
+uint32_t psram_read_skel(uint32_t addr,uint32_t len) {
+    assert((addr >= 0x0 && addr + len < PSRAM_SIZE));
+    uint32_t ret = host_read(rd_psram_addr(addr), len);
+    IFDEF(EN_MTRACE, printf("PSRAM read addr 0x%x value 0x%08x\n", addr, ret));
+    return ret;
+}
+
 extern "C" void flash_read(int32_t addr, int32_t *data) {
     *data = flash_read_skel(addr & ~0x3u, sizeof(uint32_t));
 }
 
 extern "C" void mrom_read(int32_t addr, int32_t *data) { 
     *data = mrom_read_skel(addr & ~0x3u, sizeof(uint32_t));
+}
+
+// 总是往地址为`waddr`的1字节写入`wdata`
+extern "C" void psram_write(int32_t waddr, char wdata) {
+    psram_write_skel(waddr, 1, wdata);
+}
+
+extern "C" void psram_read(int addr, int *data) { 
+    *data = psram_read_skel(addr & ~0x3u, sizeof(uint32_t));
 }
 
 #endif

@@ -14,7 +14,7 @@ module ysyx_24120013_axi_bridge
         FLASH_MMIO_BASE      = 32'h3000_0000,
         FLASH_MMIO_SIZE      = 32'h1000_0000,
         PSRAM_MMIO_BASE      = 32'h8000_0000,
-        PSRAM_MMIO_SIZE      = 32'h1000_0000,
+        PSRAM_MMIO_SIZE      = 32'ha000_0000,
         CLINT_MMIO_BASE      = 32'h0200_0000,
         CLINT_MMIO_SIZE      = 32'h0001_0000
       )(
