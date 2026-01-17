@@ -689,4 +689,20 @@ ysyx_24120013_axi_bridge #(
     .mem_access_flag      (mem_access_flag        )
 );
 
+assign io_slave_awready = 1'b0;
+
+assign io_slave_wready  = 1'b0;
+
+assign io_slave_bvalid  = 1'b0;
+assign io_slave_bresp   = 2'b00;
+assign io_slave_bid     = 4'h0;
+
+assign io_slave_arready = 1'b0;
+
+assign io_slave_rvalid  = 1'b0;
+assign io_slave_rresp   = 2'b00;
+assign io_slave_rdata   = {DATA_WIDTH{1'b0}};
+assign io_slave_rlast   = 1'b0;
+assign io_slave_rid     = 4'h0;
+
 endmodule

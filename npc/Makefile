@@ -142,6 +142,7 @@ run: nvboard
 	@echo "Running NVBoard..."
 	$(BIN_NVBOARD)
 
+# --- 规则 D: 仅对NPC Verilog代码进行Lint ---
 lint-only: $(VSRCS_NPC)
 	@echo "Lint Check..."
 	$(VERILATOR) $(VERILATOR_LINTONLY_FLAGS) \
@@ -189,26 +190,15 @@ PROJ_PATH = $(NPC_HOME)
 DESIGN ?= ysyx_24120013
 SDC_FILE ?= $(PROJ_PATH)/sdc/top.sdc
 RTL_FILES ?= $(VSRCS_NPC)
-export CLK_FREQ_MHZ ?= 100
+export CLK_FREQ_MHZ ?= 400
 
-RESULT_DIR = $(PROJ_PATH)/sta_result/$(DESIGN)-$(CLK_FREQ_MHZ)MHz
-SCRIPT_DIR = $(PROJ_PATH)/scripts
-NETLIST_SYN_V   = $(RESULT_DIR)/$(DESIGN).netlist.syn.v
-NETLIST_FIXED_V = $(RESULT_DIR)/$(DESIGN).netlist.fixed.v
-TIMING_RPT = $(RESULT_DIR)/$(DESIGN).rpt
-
-syn: $(NETLIST_SYN_V)
-$(NETLIST_SYN_V): $(RTL_FILES) $(SCRIPT_DIR)/yosys.tcl
-	mkdir -p $(@D)
-	echo tcl $(SCRIPT_DIR)/yosys.tcl $(DESIGN) \"$(RTL_FILES)\" $@ | yosys -l $(@D)/yosys.log -s -
-
-fix-fanout: $(NETLIST_FIXED_V)
-$(NETLIST_FIXED_V): $(SCRIPT_DIR)/fix-fanout.tcl $(SDC_FILE) $(NETLIST_SYN_V)
-	./bin/iEDA -script $^ $(DESIGN) $@ 2>&1 | tee $(RESULT_DIR)/fix-fanout.log
-
-sta: $(TIMING_RPT)
-$(TIMING_RPT): $(SCRIPT_DIR)/sta.tcl $(SDC_FILE) $(NETLIST_FIXED_V)
-	./bin/iEDA -script $^ $(DESIGN) 2>&1 | tee $(RESULT_DIR)/sta.log
+sta :
+	$(if $(YOSYS_STA_PATH),,$(error YOSYS_STA_PATH is not set))
+	mkdir -p $(NPC_HOME)/sta_result
+	make -C $(YOSYS_STA_PATH) sta \
+		DESIGN=$(DESIGN) SDC_FILE=$(SDC_FILE) \
+		CLK_FREQ_MHZ=$(CLK_FREQ_MHZ) CLK_PORT_NAME=clock O=/home/tonglewis/ysyx-workbench/npc/sta_result \
+		RTL_FILES="$(RTL_FILES)"
 
 clean_sta:
 	rm -rf $(PROJ_PATH)/sta_result
