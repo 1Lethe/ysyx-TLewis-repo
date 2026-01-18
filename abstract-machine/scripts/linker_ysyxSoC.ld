@@ -1,10 +1,4 @@
-ENTRY(_start)
-PHDRS { 
-  fsbl PT_LOAD;
-  ssbl PT_LOAD;
-  text PT_LOAD; 
-  data PT_LOAD; 
-}
+ENTRY(_fsbl_main)
 
 MEMORY {
   mrom(rx)   : ORIGIN = 0x20000000, LENGTH = 4K
@@ -17,75 +11,67 @@ SECTIONS {
 
   . = ORIGIN(flash) + _entry_offset;
   .fsbl : {
-  . = ALIGN(4);
-    KEEP(*(.fsbl))
-  } > flash AT > flash : fsbl
+    KEEP(*(.fsbl.entry))
+  } > flash AT > flash
 
   . = ORIGIN(sram);
   .ssbl : {
-  . = ALIGN(4);
-  _ssbl_vma_start = .;
-    KEEP(*(.ssbl))
-  . = ALIGN(4);
-  _ssbl_vma_end = .;
-  } > sram AT > flash : ssbl
+    _ssbl_vma_start = .;
+    KEEP(*(.ssbl.entry))
+    . = ALIGN(8);
+    _ssbl_vma_end = .;
+  } > sram AT > flash
   _ssbl_lma_start = LOADADDR(.ssbl);
 
   . = ALIGN(16);
   _stack_bottom = .;
   . = ORIGIN(sram) + LENGTH(sram);
   _stack_top = .;
-  _stack_size = _stack_top - _stack_bottom;
   _stack_pointer = .;
 
   . = ORIGIN(psram);
+
   .text : {
-  . = ALIGN(4);
-  _text_vma_start = .;
-    KEEP(*(.text*))
-  . = ALIGN(4);
-  _text_vma_end = .;
-  } > psram AT > flash : text
+    _text_vma_start = .;
+    *(.text*)
+    . = ALIGN(8);
+    _text_vma_end = .;
+  } > psram AT > flash
   _text_lma_start = LOADADDR(.text);
-  etext = .;
-  _etext = .;
 
   .rodata : {
-  . = ALIGN(4);
-  _rodata_vma_start = .;
-    KEEP(*(.rodata*))
+    _rodata_vma_start = .;
+    *(.rodata*)
     *(.srodata*)
-  . = ALIGN(4);
-  _rodata_vma_end = .;
-  } > psram AT > flash : text
+    . = ALIGN(8);
+    _rodata_vma_end = .;
+  } > psram AT > flash
   _rodata_lma_start = LOADADDR(.rodata);
 
   .data : {
-  _data_vma_start = .;
-    KEEP(*(.data*))
+    _data_vma_start = .;
+    *(.data*)
     *(.sdata*)
-  . = ALIGN(4);
-  _data_vma_end = .;
-  } > psram AT > flash : data
+    . = ALIGN(8);
+    _data_vma_end = .;
+  } > psram AT > flash
   _data_lma_start = LOADADDR(.data);
   edata = .;
   _data = .;
 
   .bss : {
-  . = ALIGN(4);
-	_bss_vma_start = .;
-    KEEP(*(.bss*))
+    _bss_vma_start = .;
+    *(.bss*)
     *(.sbss*)
     *(.scommon)
-  . = ALIGN(4);
-  _bss_vma_end = .;
-  } > psram : data
+    . = ALIGN(8);
+    _bss_vma_end = .;
+  } > psram
 
-  . = ALIGN(4);
+  . = ALIGN(8);
   _heap_start = .;
   . = ORIGIN(psram) + LENGTH(psram);
-  _heap_end = . ;
+  _heap_end = ORIGIN(psram) + LENGTH(psram);
   end = .;
   _end = .;
-
 }

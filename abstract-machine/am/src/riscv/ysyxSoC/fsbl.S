@@ -1,9 +1,8 @@
-.section .fsbl, "ax"
-.globl _start
-.type _start, @function
+.section .fsbl.entry, "ax"
+.globl _fsbl_main
+.type _fsbl_main, @function
 
-
-_start:
+_fsbl_main:
     # 1. 基础环境初始化
     mv s0, zero                 # 初始化帧指针 (s0/fp = x8, RV32E可用)
     la sp, _stack_pointer       # 初始化栈指针 (sp = x2, RV32E可用)
@@ -21,6 +20,5 @@ copy_ssbl_loop:
     bltu a1, a2, copy_ssbl_loop
 
 copy_ssbl_done:
-    la t0, _ssbl_vma_start  
-    jr t0
+    call _ssbl_main
 

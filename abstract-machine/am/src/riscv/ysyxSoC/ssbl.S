@@ -1,8 +1,8 @@
-.section .ssbl, "ax"
-.globl _ssbl
-.type _ssbl, @function
+.section .ssbl.entry, "ax"
+.globl _ssbl_main
+.type _ssbl_main, @function
 
-_ssbl:
+_ssbl_main:
     la a0, _text_lma_start      # 源地址 (LMA)
     la a1, _text_vma_start      # 目的地址 (VMA)
     la a2, _text_vma_end        # 结束地址
