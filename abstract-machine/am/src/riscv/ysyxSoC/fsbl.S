@@ -13,10 +13,10 @@ _fsbl_main:
     la a2, _ssbl_vma_end        # 结束边界：SRAM 中的结束位置
     # 3. 执行搬运循环
 copy_ssbl_loop:
-    lb a3, 0(a0)                # Load Word: 从 Flash 读取指令/数据
-    sb a3, 0(a1)                # Store Word: 写入 SRAM
-    addi a0, a0, 1              # 源指针后移 4 字节
-    addi a1, a1, 1              # 目的指针后移 4 字节
+    lw a3, 0(a0)                # Load Word: 从 Flash 读取指令/数据
+    sw a3, 0(a1)                # Store Word: 写入 SRAM
+    addi a0, a0, 4              # 源指针后移 4 字节
+    addi a1, a1, 4              # 目的指针后移 4 字节
     bltu a1, a2, copy_ssbl_loop
 
 copy_ssbl_done:

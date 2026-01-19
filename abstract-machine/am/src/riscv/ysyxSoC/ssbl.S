@@ -8,10 +8,10 @@ _ssbl_main:
     la a2, _text_vma_end        # 结束地址
     bgeu a1, a2, copy_text_end  # 检查空段
 copy_text_loop:
-    lb a3, 0(a0)
-    sb a3, 0(a1)
-    addi a0, a0, 1
-    addi a1, a1, 1
+    lw a3, 0(a0)
+    sw a3, 0(a1)
+    addi a0, a0, 4
+    addi a1, a1, 4
     bltu a1, a2, copy_text_loop
 copy_text_end:
 
@@ -20,10 +20,10 @@ copy_text_end:
     la a2, _rodata_vma_end      # 结束地址
     bgeu a1, a2, copy_rodata_end
 copy_rodata_loop:
-    lb a3, 0(a0)
-    sb a3, 0(a1)
-    addi a0, a0, 1
-    addi a1, a1, 1
+    lw a3, 0(a0)
+    sw a3, 0(a1)
+    addi a0, a0, 4
+    addi a1, a1, 4
     bltu a1, a2, copy_rodata_loop
 copy_rodata_end:
 
@@ -34,10 +34,10 @@ copy_rodata_end:
     # 检查是否需要搬运 (防止空段导致错误)
     bgeu a1, a2, copy_data_end  # 如果 dst >= end，直接跳过
 copy_data_loop:
-    lb a3, 0(a0)                # 从 src 加载一个字节到 a3
-    sb a3, 0(a1)                # 将 a3 存储到 dst
-    addi a0, a0, 1              # src++
-    addi a1, a1, 1              # dst++
+    lw a3, 0(a0)                # 从 src 加载一个字节到 a3
+    sw a3, 0(a1)                # 将 a3 存储到 dst
+    addi a0, a0, 4              # src++
+    addi a1, a1, 4              # dst++
     bltu a1, a2, copy_data_loop # 如果 dst < end，继续循环
 
 copy_data_end:
@@ -46,8 +46,8 @@ copy_data_end:
     la a2, _bss_vma_end         # a2 = 结束地址 (end)
     bgeu a1, a2, clear_bss_end  # 如果 dst >= end，直接跳过
 clear_bss_loop:
-    sb zero, 0(a1)              # 写入 0 (利用 zero 寄存器)
-    addi a1, a1, 1              # dst++
+    sw zero, 0(a1)              # 写入 0 (利用 zero 寄存器)
+    addi a1, a1, 4              # dst++
     bltu a1, a2, clear_bss_loop # 如果 dst < end，继续循环
 clear_bss_end:
     # 4. 跳转到 C 运行时环境
