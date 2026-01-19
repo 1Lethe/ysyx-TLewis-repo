@@ -11,7 +11,7 @@ AM_SRCS := riscv/ysyxSoC/fsbl.S \
 
 CFLAGS    += -fdata-sections -ffunction-sections
 CFLAGS    += -I$(AM_HOME)/am/src/riscv/ysyxSoC/include
-LDSCRIPTS += $(AM_HOME)/scripts/linker_ysyxSoC.ld
+# LDSCRIPTS 在riscv32e-ysyxSoC.mk / riscv32e-ysyxSoC-rtt.mk 中指定
 LDFLAGS   += --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _fsbl_main
 NPCFLAGS  += -b --elf=$(IMAGE).elf --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so --port=1234 -l $(shell dirname $(IMAGE).elf)/NPC-log.txt $(IMAGE).bin
