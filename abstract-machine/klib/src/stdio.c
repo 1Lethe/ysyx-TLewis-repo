@@ -61,6 +61,7 @@ int vsnprintf(char *out, size_t size, const char *fmt, va_list ap) {
                 EMIT((char)c);
                 break;
             }
+            case 'l': // TODO: 完成长度修饰符%ld等的情况 
             case 'd': 
             case 'x': 
             case 'p': {
