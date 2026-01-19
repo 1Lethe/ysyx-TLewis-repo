@@ -13,6 +13,13 @@
 //#define EN_DUMP_WAVE 1
 #define CONFIG_MEM_RANDOM 1
 
+// 每N条指令输出一次，以观察程序运行进度(默认为N=百万条)
+#define EN_PRINT_EVERY_INST 1
+#define PRINT_INST_TIME     1000000
+// 当程序指令保持N个周期时，报错并停止
+#define EN_STOP_WHEN_DEADLOOP   1
+#define STOP_DEADLOOP_MAX       1000
+
 #define USE_SOC 1
 
 // 启用硬件的内存映射，关闭仿真环境的sim_pmem_write映射

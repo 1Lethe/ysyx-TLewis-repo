@@ -131,7 +131,7 @@ end
 export "DPI-C" function get_rf_value;
 export "DPI-C" function get_csr_value;
 export "DPI-C" function get_pc_value;
-export "DPI-C" function is_check_difftest;
+export "DPI-C" function is_exec_new_inst;
 
 function int get_rf_value(int idx);
     return rf_difftest[idx];
@@ -145,7 +145,7 @@ function int get_pc_value();
     return pc_difftest;
 endfunction
 
-function logic is_check_difftest();
+function logic is_exec_new_inst();
     return difftest_check_flag;
 endfunction
 
