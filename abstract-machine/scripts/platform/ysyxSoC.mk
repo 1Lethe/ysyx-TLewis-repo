@@ -15,7 +15,8 @@ CFLAGS    += -I$(AM_HOME)/am/src/riscv/ysyxSoC/include
 LDFLAGS   += --orphan-handling=error
 LDFLAGS   += --defsym=_entry_offset=0x0
 LDFLAGS   += --gc-sections -e _fsbl_main
-NPCFLAGS  += -b --elf=$(IMAGE).elf --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so --port=1234 -l $(shell dirname $(IMAGE).elf)/NPC-log.txt $(IMAGE).bin
+NPCFLAGS  += $(if $(filter 1, $(BATCH)), -b)
+NPCFLAGS  += --elf=$(IMAGE).elf --diff=$(NEMU_HOME)/build/riscv32-nemu-interpreter-so --port=1234 -l $(shell dirname $(IMAGE).elf)/NPC-log.txt $(IMAGE).bin
 
 MAINARGS_MAX_LEN = 64
 MAINARGS_PLACEHOLDER = The insert-arg rule in Makefile will insert mainargs here.
