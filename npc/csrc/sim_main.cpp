@@ -19,13 +19,7 @@ int main(int argc, char** argv) {
 
     monitor_init(argc, argv);
 
-#ifdef USE_TESTBENCH
-    while(!contextp->gotFinish() && sim_time >= 0){   
-        dump_wave(SIM_MODULE_NAME);
-    }
-#else
     sdb_mainloop();
-#endif
 
     IFDEF(EN_ITRACE, iring_free());
     IFDEF(EN_DUMP_WAVE, tfp_close());

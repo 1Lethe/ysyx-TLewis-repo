@@ -17,4 +17,5 @@ enum { DIFFTEST_TO_DUT, DIFFTEST_TO_REF };
 void init_difftest(char *ref_so_file, long img_size, int port);
 void difftest_skip_ref();
 bool difftest_step(uint32_t pc, uint32_t npc);
+void difftest_step_noncheck(void);
 #endif

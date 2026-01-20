@@ -13,6 +13,8 @@
 #define FAULT_AXI_RESP      3  // AXI总线响应错误 (Bus Error)
 
 void sim_init(int argc, char **argv);
+void trace_fst_init(void);
+bool is_fst_trace_enable(void);
 void dump_wave(SIM_MODULE* top);
 bool is_sim_continue(void);
 void update_simenv_cpu_state(void);

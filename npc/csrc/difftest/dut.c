@@ -122,10 +122,18 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
   void (*ref_difftest_init)(int) = (void (*)(int))dlsym(handle, "difftest_init");
   assert(ref_difftest_init);
 
-  Log("Differential testing: %s", ANSI_FMT("ON", ANSI_FG_GREEN));
+  Log("Differential testing: %s", ANSI_FMT("Initialized", ANSI_FG_GREEN));
   Log("The result of every instruction will be compared with %s. "
       "This will help you a lot for debugging, but also significantly reduce the performance. "
       "If it is not necessary, you can turn it off in menuconfig.", ref_so_file);
+
+  extern void diff_check_switch (bool state);
+#ifdef EN_DIFFTEST_AFTER_INIT
+  Log("enable EN_DIFFTEST_AFTER_INIT. difftest begin after %s.", ANSI_FMT("TRM init", ANSI_FG_RED));
+  diff_check_switch(false);
+#else
+  diff_check_switch(true);
+#endif
 
   ref_difftest_init(port);
   ref_difftest_memcpy(0x30000000, wr_flash_addr(0x0), img_size, DIFFTEST_TO_REF);
@@ -169,6 +177,15 @@ bool difftest_step(uint32_t pc, uint32_t npc) {
 
   return checkregs(&ref_r, pc);
 }
+
+void difftest_step_noncheck(void) {
+  if (is_skip_ref) {
+    ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+    is_skip_ref = false;
+  }
+  ref_difftest_exec(1);
+}
+
 #else
 void difftest_skip_ref() {
 }

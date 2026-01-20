@@ -9,15 +9,93 @@ static uint64_t inst_exec_time = 0;
 
 static int one_inst_cycle_time = 0;
 
+static bool trm_init_complete = false;
+
+bool difftest_check_on = false;
+
 extern char *diff_so_file;
 extern long img_size;
 extern int difftest_port;
 
 void device_update();
 
+#ifdef EN_DIFFTEST
+void diff_check_switch (bool state) {
+    difftest_check_on = state;
+    if(state) {
+        simple_Log("Difftest %s",ANSI_FMT("ON", ANSI_FG_GREEN));
+    }else {
+        simple_Log("Difftest %s",ANSI_FMT("OFF", ANSI_FG_RED));
+    }
+}
+#endif
+
+#ifdef DETECT_TRM_INIT
+
+static void updata_trm_init_complete_flag (void) {
+    if(read_trm_init_complete_flag()) {
+        simple_Log("NPC detect mvendorid CSR read");
+        simple_Log("NPC detect %s",ANSI_FMT("AM trm init COMPLETE", ANSI_FG_GREEN));
+        trm_init_complete = true;
+
+#if defined(EN_DUMP_WAVE) && defined(EN_DUMP_WAVE_AFTER_INIT) 
+        trace_fst_init();
+#endif
+
+#if defined(EN_DIFFTEST) && defined(EN_DIFFTEST_AFTER_INIT) 
+        diff_check_switch(true);
+#endif
+    }
+}
+
+#endif /* DETECT_TRM_INIT */
+
+#ifdef EN_PRINT_EVERY_INST
+static void print_exec_inst_time (int max) {
+    if(inst_exec_time == max){
+        inst_exec_hit_time += 1;
+        inst_exec_time = 0;
+        uint64_t inst_sum = inst_exec_time + inst_exec_hit_time * max;
+        simple_Log("Hit %d inst record.Has exec %ld inst.", max, inst_sum);
+    }
+}
+#endif
+
+#ifdef STOP_DEADLOOP_MAX
+static void inst_cycle_stop (void) {
+    if(one_inst_cycle_time == STOP_DEADLOOP_MAX) {
+        simple_Log("Inst not update for %d cycle.Sim stop.", STOP_DEADLOOP_MAX);
+        assert_fail_msg();
+        halt();
+    }
+}
+#endif
+
+#ifdef EN_CHECK_STACK_OVERFLOW
+static void check_stack_overflow (int sp) {
+    if(!(sp >= STACK_BOTTOM && sp < STACK_TOP)) {
+        Log("SP = 0x%x not in stack [0x%08x,0x%08x) (set in SRAM), might stack overflow.", sp, STACK_BOTTOM, STACK_TOP);
+        assert_fail_msg();
+        halt();
+    }
+}
+#endif
+
+static void dump_wave_wrapper (SIM_MODULE* top) {
+#ifdef EN_DUMP_WAVE_AFTER_INIT
+    if(trm_init_complete) {
+#else
+    if(true) {
+#endif
+        dump_wave(top);
+    }
+}
+
 void single_cycle(SIM_MODULE* top){
-    top->clock = 0;top->eval();dump_wave(top);
-    top->clock = 1;top->eval();dump_wave(top);
+    top->clock = 0;top->eval();
+    IFDEF(EN_DUMP_WAVE, dump_wave_wrapper(top);)
+    top->clock = 1;top->eval();
+    IFDEF(EN_DUMP_WAVE, dump_wave_wrapper(top);)
 }
 
 void cycle(SIM_MODULE* top, uint64_t n){
@@ -27,31 +105,22 @@ void cycle(SIM_MODULE* top, uint64_t n){
         update_simenv_cpu_state();
 
         if(is_exec_new_inst()){
-            inst_exec_time += 1;
-            one_inst_cycle_time = 0;
-#ifdef EN_PRINT_EVERY_INST
-            if(inst_exec_time == PRINT_INST_TIME){
-                inst_exec_hit_time += 1;
-                inst_exec_time = 0;
-                uint64_t inst_sum = inst_exec_time + inst_exec_hit_time * PRINT_INST_TIME;
-                simple_Log("Hit %d inst record.Has exec %ld inst.", PRINT_INST_TIME, inst_sum);
-            }
-#endif
+            IFDEF(DETECT_TRM_INIT, if(!trm_init_complete) updata_trm_init_complete_flag();)
+            IFDEF(EN_PRINT_EVERY_INST , inst_exec_time += 1; print_exec_inst_time(PRINT_INST_TIME);)
+            IFDEF(STOP_DEADLOOP_MAX, one_inst_cycle_time = 0;)
+            IFDEF(EN_CHECK_STACK_OVERFLOW, if(trm_init_complete) check_stack_overflow(cpu.gpr[2]);)
 #ifdef EN_DIFFTEST
-            if(!difftest_step(cpu.pc, cpu.pc)){
-                assert_fail_msg();
-                halt();
+            if(difftest_check_on) {
+                if(!difftest_step(cpu.pc, cpu.pc)){
+                    assert_fail_msg();
+                    halt();
+                }
+            } else {
+                difftest_step_noncheck();
             }
 #endif
         }else{
-#ifdef STOP_DEADLOOP_MAX
-            one_inst_cycle_time++;
-            if(one_inst_cycle_time == STOP_DEADLOOP_MAX) {
-                simple_Log("Inst not update for %d cycle.Sim stop.", STOP_DEADLOOP_MAX);
-                assert_fail_msg();
-                halt();
-            }
-#endif
+            IFDEF(STOP_DEADLOOP_MAX,one_inst_cycle_time++; inst_cycle_stop();)
         }
         IFDEF(EN_ITRACE, iring(cpu.pc, pmem_read(cpu.pc, 4)));
         IFDEF(EN_FTRACE, ftrace(cpu.pc));

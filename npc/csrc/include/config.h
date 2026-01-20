@@ -1,8 +1,7 @@
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
-//If you want to use testbench just keep this #define otherwise delete it
-//#define USE_TESTBENCH
+// TODO: 适配menuconfig
 
 //#define EN_ITRACE 1
 //#define EN_MTRACE 1
@@ -19,6 +18,30 @@
 // 当程序指令保持N个周期时，报错并停止
 #define EN_STOP_WHEN_DEADLOOP   1
 #define STOP_DEADLOOP_MAX       1000
+
+// 通过检测对mvendorid CSR的读操作判断AM是否完成TRM init
+#define DETECT_TRM_INIT 1
+
+#ifdef DETECT_TRM_INIT
+
+// 显式检查栈溢出
+// 在接入SoC时，我们将栈分配在SRAM中，只需检查reg(sp) > SRAM_BASE (if not then stack overflow) 
+// 但注意ssbl也分配在SRAM中，但正常情况栈应该可以安全的覆盖这部分(?)
+//#define EN_CHECK_STACK_OVERFLOW 1
+#define STACK_BOTTOM SRAM_BASE
+#define STACK_TOP    SRAM_BASE + SRAM_SIZE
+
+#ifdef EN_DUMP_WAVE
+// 启用仅当TRM init完成后才记录波形功能，减小运行负担，不适用裸机程序 (依赖EN_DUMP_WAVE & DETECT_TRM_INIT)
+#define EN_DUMP_WAVE_AFTER_INIT
+#endif /* EN_DUMP_WAVE */
+
+#ifdef EN_DIFFTEST
+// 启用仅当TRM init完成后才开始difftest,适合调试功能bug时 (依赖EN_DIFFTEST & DETECT_TRM_INIT)
+#define EN_DIFFTEST_AFTER_INIT
+#endif /* EN_DIFFTEST */
+
+#endif /* DETECT_TRM_INIT */
 
 #define USE_SOC 1
 

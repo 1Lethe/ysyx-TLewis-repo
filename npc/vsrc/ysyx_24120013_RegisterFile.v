@@ -26,6 +26,7 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
         output wire [DATA_WIDTH-1:0] mtvec_difftest,
         output wire [DATA_WIDTH-1:0] mepc_difftest,
         output wire [DATA_WIDTH-1:0] mcause_difftest,
+        output reg is_trm_init_end,
         `endif
 
         input ex_is_valid,
@@ -108,6 +109,13 @@ module ysyx_24120013_RegisterFile #(ADDR_WIDTH = 5, DATA_WIDTH = 32) (
             marchid   <= 32'd24120013; // my ysyx number 24120013
         end
     end
+
+    `ifdef ysyx_24120013_USE_CPP_SIM_ENV
+    always @(posedge clk) begin
+        if(rst) is_trm_init_end <= 1'b0;
+        else if(is_mvendorid_r) is_trm_init_end <= 1'b1;
+    end
+    `endif
 
     assign is_mstatus_r = (csr_raddr == `ysyx_24120013_MSTATUS);
     assign is_mtvec_r   = (csr_raddr == `ysyx_24120013_MTVEC  );

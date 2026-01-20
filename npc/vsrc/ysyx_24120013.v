@@ -114,6 +114,8 @@ wire [DATA_WIDTH-1:0] csr_difftest [3:0];
 
 reg difftest_check_flag;
 
+wire is_trm_init_end;
+
 assign csr_difftest[0] = mstatus_difftest;
 assign csr_difftest[1] = mtvec_difftest;
 assign csr_difftest[2] = mepc_difftest;
@@ -132,6 +134,7 @@ export "DPI-C" function get_rf_value;
 export "DPI-C" function get_csr_value;
 export "DPI-C" function get_pc_value;
 export "DPI-C" function is_exec_new_inst;
+export "DPI-C" function read_trm_init_complete_flag;
 
 function int get_rf_value(int idx);
     return rf_difftest[idx];
@@ -147,6 +150,10 @@ endfunction
 
 function logic is_exec_new_inst();
     return difftest_check_flag;
+endfunction
+
+function read_trm_init_complete_flag();
+    return is_trm_init_end;
 endfunction
 
 `endif
@@ -374,6 +381,7 @@ ysyx_24120013_RegisterFile #(
     .mtvec_difftest  (mtvec_difftest  ),
     .mepc_difftest   (mepc_difftest   ),
     .mcause_difftest (mcause_difftest ),
+    .is_trm_init_end (is_trm_init_end ),
 `endif
     .ex_is_valid     (ex_is_valid     ),
     .wb_is_ready     (wb_is_ready     ),

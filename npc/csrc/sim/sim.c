@@ -4,6 +4,7 @@
 #include "svdpi.h"
 #include "difftest.h"
 
+static bool fst_trace_enable_flag = false;
 static bool sim_stop_flag = false;
 
 VerilatedContext* contextp = NULL;
@@ -21,11 +22,7 @@ void halt(void){
     sim_stop_flag = true;
 }
 
-void sim_init(int argc, char** argv){
-    contextp = new VerilatedContext;
-    contextp->commandArgs(argc, argv);
-    SIM_MODULE_NAME = new SIM_MODULE{contextp};
-#ifdef EN_DUMP_WAVE
+void trace_fst_init(void) {
     tfp = new VerilatedFstC;
     contextp->traceEverOn(true);
     SIM_MODULE_NAME->trace(tfp, 99);  // Trace 99 levels of hierarchy (or see below)
@@ -36,15 +33,25 @@ void sim_init(int argc, char** argv){
 #else
     Assert(0, "not defined WAVE_OUTPUT_FILE. stop sim!");
 #endif /* WAVE_OUTPUT_FILE */
+    fst_trace_enable_flag = true;
+}
 
+bool is_fst_trace_enable(void) {
+    return fst_trace_enable_flag;
+}
+
+void sim_init(int argc, char** argv){
+    contextp = new VerilatedContext;
+    contextp->commandArgs(argc, argv);
+    SIM_MODULE_NAME = new SIM_MODULE{contextp};
+#if defined(EN_DUMP_WAVE) && !defined(EN_DUMP_WAVE_AFTER_INIT) 
+    trace_fst_init();
 #endif /* EN_DUMP_WAVE */
 }
 
 void dump_wave(SIM_MODULE* top){
-#ifdef EN_DUMP_WAVE
     tfp->dump(contextp->time());
     contextp->timeInc(1);
-#endif
 }
 
 bool is_sim_continue(void){
