@@ -1,3 +1,5 @@
+`include "define/cpu_defines.v"
+
 module ysyx_24120013_ECU #(ADDR_WIDTH = 5, DATA_WIDTH = 32)(
         input clk,
         input rst,
