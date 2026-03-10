@@ -72,9 +72,9 @@ static void inst_cycle_stop (void) {
 #endif
 
 #ifdef EN_CHECK_STACK_OVERFLOW
-static void check_stack_overflow (int sp) {
-    if(!(sp >= STACK_BOTTOM && sp < STACK_TOP)) {
-        Log("SP = 0x%x not in stack [0x%08x,0x%08x) (set in SRAM), might stack overflow.", sp, STACK_BOTTOM, STACK_TOP);
+static void check_stack_overflow (uint32_t sp) {
+    if(sp < STACK_BOTTOM) {
+        Log("SP = 0x%08x invalid (0 ,0x%08x) . (set in SRAM), might stack overflow.", sp, STACK_BOTTOM);
         assert_fail_msg();
         halt();
     }

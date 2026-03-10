@@ -25,9 +25,10 @@
 #ifdef DETECT_TRM_INIT
 
 // 显式检查栈溢出
-// 在接入SoC时，我们将栈分配在SRAM中，只需检查reg(sp) > SRAM_BASE (if not then stack overflow) 
+// 在接入SoC时，我们将栈分配在SRAM中，
+// 而发生线程切换时sp也可能指向数据段，即需要检查栈指针sp的正确位置 >= STACK_BOTTOM
 // 但注意ssbl也分配在SRAM中，但正常情况栈应该可以安全的覆盖这部分(?)
-//#define EN_CHECK_STACK_OVERFLOW 1
+#define EN_CHECK_STACK_OVERFLOW 1
 #define STACK_BOTTOM SRAM_BASE
 #define STACK_TOP    SRAM_BASE + SRAM_SIZE
 
