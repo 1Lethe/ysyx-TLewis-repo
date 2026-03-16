@@ -15,6 +15,8 @@ module ysyx_24120013_axi_bridge
         FLASH_MMIO_SIZE      = 32'h1000_0000,
         PSRAM_MMIO_BASE      = 32'h8000_0000,
         PSRAM_MMIO_SIZE      = 32'ha000_0000,
+        SDRAM_MMIO_BASE      = 32'ha000_0000,
+        SDRAM_MMIO_SIZE      = 32'h2000_0000,
         CLINT_MMIO_BASE      = 32'h0200_0000,
         CLINT_MMIO_SIZE      = 32'h0001_0000
       )(
@@ -270,6 +272,9 @@ module ysyx_24120013_axi_bridge
     wire xbar_device_wr_soc_psram;
     wire xbar_device_rd_soc_psram;
 
+    wire xbar_device_wr_soc_sdram;
+    wire xbar_device_rd_soc_sdram;
+
     wire xbar_device_rd_clint;
 
     assign xbar_device_rd_soc_mmom = (m_arvalid) ? (m_araddr >= MROM_MMIO_BASE && 
@@ -300,6 +305,11 @@ module ysyx_24120013_axi_bridge
     assign xbar_device_rd_soc_psram = (m_arvalid) ? (m_araddr >= PSRAM_MMIO_BASE && 
                                         m_araddr < PSRAM_MMIO_BASE + PSRAM_MMIO_SIZE) : 1'b0;
 
+    assign xbar_device_wr_soc_sdram = (m_awvalid) ? (m_awaddr >= SDRAM_MMIO_BASE && 
+                                        m_awaddr < SDRAM_MMIO_BASE + SDRAM_MMIO_SIZE) : 1'b0;
+    assign xbar_device_rd_soc_sdram = (m_arvalid) ? (m_araddr >= SDRAM_MMIO_BASE && 
+                                        m_araddr < SDRAM_MMIO_BASE + SDRAM_MMIO_SIZE) : 1'b0;
+
     assign xbar_device_rd_clint = (m_arvalid) ? (m_araddr >= CLINT_MMIO_BASE && 
                                   m_araddr < CLINT_MMIO_BASE + CLINT_MMIO_SIZE) : 1'b0;
 
@@ -307,7 +317,8 @@ module ysyx_24120013_axi_bridge
                             xbar_device_wr_soc_spimaster | xbar_device_rd_soc_spimaster |
                             xbar_device_wr_soc_sram | xbar_device_rd_soc_sram | 
                             xbar_device_wr_soc_flash | xbar_device_rd_soc_flash |
-                            xbar_device_wr_soc_psram | xbar_device_rd_soc_psram;
+                            xbar_device_wr_soc_psram | xbar_device_rd_soc_psram |
+                            xbar_device_wr_soc_sdram | xbar_device_rd_soc_sdram;
 
     assign xbar_device_clint = xbar_device_rd_clint;
 

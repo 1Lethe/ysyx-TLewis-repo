@@ -5,6 +5,7 @@ MEMORY {
   flash(rx)  : ORIGIN = 0x30000000, LENGTH = 16M
   sram(rwx)  : ORIGIN = 0x0f000000, LENGTH = 8K
   psram(rwx) : ORIGIN = 0x80000000, LENGTH = 4M
+  sdram(rwx) : ORIGIN = 0xa0000000, LENGTH = 1024M
 }
 
 SECTIONS {
@@ -29,14 +30,14 @@ SECTIONS {
   _stack_top = .;
   _stack_pointer = .;
 
-  . = ORIGIN(psram);
+  . = ORIGIN(sdram);
 
   .text : {
     _text_vma_start = .;
     *(.text*)
     . = ALIGN(8);
     _text_vma_end = .;
-  } > psram AT > flash
+  } > sdram AT > flash
   _text_lma_start = LOADADDR(.text);
 
   .rodata : {
@@ -45,7 +46,7 @@ SECTIONS {
     *(.srodata*)
     . = ALIGN(8);
     _rodata_vma_end = .;
-  } > psram AT > flash
+  } > sdram AT > flash
   _rodata_lma_start = LOADADDR(.rodata);
 
   .data : {
@@ -82,7 +83,7 @@ SECTIONS {
     *(.sdata*)
     . = ALIGN(8);
     _data_vma_end = .;
-  } > psram AT > flash
+  } > sdram AT > flash
   _data_lma_start = LOADADDR(.data);
   edata = .;
   _data = .;
@@ -105,12 +106,12 @@ SECTIONS {
     *(.scommon)
     . = ALIGN(8);
     _bss_vma_end = .;
-  } > psram
+  } > sdram
 
-  . = ALIGN(8);
+  . = ORIGIN(psram);
   _heap_start = .;
   . = ORIGIN(psram) + LENGTH(psram);
-  _heap_end = ORIGIN(psram) + LENGTH(psram);
+  _heap_end = .;
   end = .;
   _end = .;
 

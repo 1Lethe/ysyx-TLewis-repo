@@ -1,0 +1,13 @@
+{ signal:[
+        { name: "clk",         wave: "ppppppppppppppppppp"},
+        { name: "inst",        wave: "x2222222x.2x.......", "phase":0.6, data:["ACT","NOP","NOP","WR","NOP","NOP","NOP","RD"]},
+        { name: "A",           wave: "22xx2xxxxx2x.......", "phase":0.6},
+        { name: "A10",         wave: "22xx2xxxxx2x.......", "phase":0.6},
+        { name: "BA",          wave: "22xx2xxxxx2x.......", "phase":0.6},
+        { name: "DQ(in)",      wave: "xxxx2222xxxxx2222x.", "phase":0.6},
+
+        { name: "state",       wave: "22..2...2.2..2...2", data:["IDLE","ACT", "WR","IDLE","RD_CAS","RD", "IDLE"]},
+        { name: "cas_cnt",     wave: "0.........2220....", data:[0,1,2]},
+        { name: "inc_index",   wave: "0..22220....22220",  data:[0,1,2,3,0,1,2,3]},
+    ]
+}
