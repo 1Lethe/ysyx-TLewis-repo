@@ -23,6 +23,7 @@ void assert_fail_msg(void){
     IFDEF(EN_ITRACE, iring_display());
     IFDEF(EN_ITEACE, iring_free());
     IFDEF(EN_DUMP_WAVE, tfp_close());
+    nvboard_quit();
 }
 
 void iring_display(void){

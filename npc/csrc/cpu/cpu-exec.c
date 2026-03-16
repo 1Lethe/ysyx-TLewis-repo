@@ -125,6 +125,7 @@ void cycle(SIM_MODULE* top, uint64_t n){
         IFDEF(EN_ITRACE, iring(cpu.pc, pmem_read(cpu.pc, 4)));
         IFDEF(EN_FTRACE, ftrace(cpu.pc));
         device_update();
+        nvboard_update();
     }
 }
 

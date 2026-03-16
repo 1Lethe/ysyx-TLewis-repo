@@ -31,7 +31,7 @@ image: image-dep
 	@$(OBJCOPY) -S -O binary $(IMAGE).elf $(IMAGE).bin
 
 run: insert-arg
-	$(MAKE) -C $(NPC_HOME) ISA=$(ISA) sim IMG=$(IMAGE).bin
+	$(MAKE) -C $(NPC_HOME) ISA=$(ISA) run IMG=$(IMAGE).bin
 	$(NPC_HOME)/build/ysyxSoCFull $(NPCFLAGS)
 
 .PHONY: insert-arg

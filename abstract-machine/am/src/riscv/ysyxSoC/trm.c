@@ -36,12 +36,26 @@ static void UART16550_init(void) {
   outb(UART16550_FCR_ADDR, 0xC0);
 }
 
+static void seg_display_hex_style(uint32_t num) {
+    uint64_t bcd = 0;
+    for (int i = 0; i < 32; i++) {
+        for (int j = 0; j < 32; j += 4) {
+            if (((bcd >> j) & 0xF) >= 5) {
+                bcd += (3ULL << j);
+            }
+        }
+        bcd = (bcd << 1) | ((num >> (31 - i)) & 1);
+    }
+    outl(GPIO_CTRL_SEG, (uint32_t)bcd);
+}
+
 // print ysyx_24120013
 static void YSYX_welcome(void) {
   uint32_t mvendorid_val;
   uint32_t marchid_val;
   asm volatile("csrrs %0, mvendorid, zero" : "=r"(mvendorid_val));
   asm volatile("csrrs %0, marchid,   zero" : "=r"(marchid_val));
+  seg_display_hex_style(marchid_val);
 
   char ysyx_buff[4];
   ysyx_buff[0] = (char)((mvendorid_val >> 24) & 0xFF);

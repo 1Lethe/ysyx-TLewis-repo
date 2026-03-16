@@ -35,7 +35,8 @@ V_INC_FLAGS = $(addprefix -I, $(V_INC_DIRS))
 
 # [Type B] C/C++ Include Paths (供 GCC 编译 .cpp 使用)
 C_INC_DIRS = $(NPC_HOME)/csrc/include \
-             $(NPC_HOME)/capstone/repo/include
+             $(NPC_HOME)/capstone/repo/include \
+			 $(NVBOARD_HOME)/usr/include
 
 C_INC_FLAGS = $(addprefix -I, $(C_INC_DIRS))
 
@@ -62,14 +63,11 @@ include ../Makefile
 
 # 3.3 C++ 源文件分类
 # 自动生成的绑定文件
-SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+# [SIM] 纯仿真用的 C++
+CSRCS_SIM = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) )
 
-# [SIM] 纯仿真用的 C++ (排除 NVBoard 相关)
-CSRCS_SIM = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "nvboard.cpp")
-
-# [NVBOARD] UI 仿真用的 C++ (排除纯仿真主函数, 包含自动绑定)
-CSRCS_NVBOARD = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \) ! -name "sim_main.cpp")
-CSRCS_NVBOARD += $(SRC_AUTO_BIND)
+# [NVBOARD] UI 仿真用的 C++
+CSRCS_NVBOARD = $(shell find $(abspath ./csrc) \( -name "*.c" -or -name "*.cc" -or -name "*.cpp" \))
 
 # ==============================================================================
 # 4. 编译参数配置 (Compilation Flags)
@@ -85,6 +83,7 @@ COMMON_CFLAGS += -DWAVE_OUTPUT_FILE=$(WAVE_FILE_PATH)
 
 # 4.2 链接器参数 (LDFLAGS)
 COMMON_LDFLAGS = -lreadline -ldl -fuse-ld=lld
+NVBOARD_LDFLAGS = -lSDL2 -lSDL2_ttf -lSDL2_image
 
 # 4.3 Verilator 核心参数
 # 注意：V_INC_FLAGS 只能放在这里
@@ -124,7 +123,6 @@ sim: $(VSRCS) $(CSRCS_SIM)
 	@echo "Sim Build Complete. Run: $(BIN_SIM)"
 
 # --- 规则 C: NVBoard 仿真 (NVBoard Target) ---
-# 引入 NVBoard 标准脚本
 include $(NVBOARD_HOME)/scripts/nvboard.mk
 
 nvboard: $(VSRCS) $(CSRCS_NVBOARD) $(NVBOARD_ARCHIVE)
@@ -140,7 +138,6 @@ nvboard: $(VSRCS) $(CSRCS_NVBOARD) $(NVBOARD_ARCHIVE)
 # --- 规则 D: 运行 NVBoard ---
 run: nvboard
 	@echo "Running NVBoard..."
-	$(BIN_NVBOARD)
 
 # --- 规则 D: 仅对NPC Verilog代码进行Lint ---
 lint-only: $(VSRCS_NPC)

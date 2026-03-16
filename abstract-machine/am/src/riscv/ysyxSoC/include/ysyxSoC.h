@@ -23,6 +23,12 @@
 #define SPI_MASTER_DIVIDER       (SPI_MASTER_PORT + 0x14)
 #define SPI_MASTER_SS            (SPI_MASTER_PORT + 0x18)
 
+#define GPIO_CTRL_PORT           0x10002000
+#define GPIO_CTRL_REG            (GPIO_CTRL_PORT + 0x0)
+#define GPIO_CTRL_SW             (GPIO_CTRL_PORT + 0x4)
+#define GPIO_CTRL_SEG            (GPIO_CTRL_PORT + 0x8)
+#define GPIO_CTRL_RESERVE        (GPIO_CTRL_PORT + 0x0)
+
 #define RTC_ADDR          0x02000000
 
 #define cpu_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
