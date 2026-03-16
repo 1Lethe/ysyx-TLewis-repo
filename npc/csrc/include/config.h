@@ -42,6 +42,10 @@
 #define EN_DIFFTEST_AFTER_INIT
 #endif /* EN_DIFFTEST */
 
+#ifdef USE_NVBOARD
+#define EN_UPDATE_NVBOARD_AFTER_INIT
+#endif /* USE_NVBOARD */
+
 #endif /* DETECT_TRM_INIT */
 
 #define USE_SOC 1

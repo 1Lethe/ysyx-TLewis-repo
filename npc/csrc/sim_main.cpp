@@ -11,8 +11,6 @@
 
 #include <stdio.h>
 
-#include "nvboard/auto_bind.h"
-
 int main(int argc, char** argv) {
 
     sim_init(argc, argv);
@@ -21,13 +19,10 @@ int main(int argc, char** argv) {
 
     monitor_init(argc, argv);
 
-    nvboard_bind_all_pins(SIM_MODULE_NAME);
-    nvboard_init();
-
     sdb_mainloop();
 
     IFDEF(EN_ITRACE, iring_free());
     IFDEF(EN_DUMP_WAVE, tfp_close());
-    nvboard_quit();
+    IFDEF(USE_NVBOARD, nvboard_quit());
     return 0;
 }                                                     

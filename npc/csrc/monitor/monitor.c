@@ -1,4 +1,5 @@
 #include "common.h"
+#include "nvboard/auto_bind.h"
 #include "monitor.h"
 #include "difftest.h"
 
@@ -124,6 +125,17 @@ static void parse_elf(Elf32_Shdr *shdr_strtab_ret, Elf32_Shdr *shdr_symtab_ret){
   return ;
 }
 
+#ifdef USE_NVBOARD // defined in CFLAGS
+void nvboard_bind_init(void) {
+    nvboard_bind_all_pins(SIM_MODULE_NAME);
+    nvboard_init();
+    Log("NVBoard Init.");
+#ifdef EN_UPDATE_NVBOARD_AFTER_INIT
+    Log("EN_UPDATE_NVBOARD_AFTER_INIT is enable.NVBoard not update until AM trm init.");
+#endif 
+}
+#endif /* USE_NVBOARD */
+
 void init_disasm();
 
 void monitor_init(int argc, char *argv[]){
@@ -141,5 +153,7 @@ void monitor_init(int argc, char *argv[]){
     IFDEF(EN_FTRACE, ftrace_init());
     IFDEF(EN_DEVICE, init_device());
     IFDEF(EN_DIFFTEST, init_difftest(diff_so_file, img_size, difftest_port));
+    IFDEF(USE_NVBOARD, nvboard_bind_init());
+
     Log("Welcome to riscv32e-NPC-Tlewis!");
 }

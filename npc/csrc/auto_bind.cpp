@@ -1,6 +1,7 @@
 #include <nvboard.h>
 #include "VysyxSoCFull.h"
 
+#ifdef USE_NVBOARD
 void nvboard_bind_all_pins(VysyxSoCFull* top) {
 	nvboard_bind_pin( &top->externalPins_vga_vsync, 1, VGA_VSYNC);
 	nvboard_bind_pin( &top->externalPins_vga_hsync, 1, VGA_HSYNC);
@@ -24,3 +25,6 @@ void nvboard_bind_all_pins(VysyxSoCFull* top) {
 	nvboard_bind_pin( &top->externalPins_uart_tx, 1, UART_TX);
 	nvboard_bind_pin( &top->externalPins_uart_rx, 1, UART_RX);
 }
+#else
+void nvboard_bind_all_pins(VysyxSoCFull* top);
+#endif

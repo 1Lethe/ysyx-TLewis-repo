@@ -91,6 +91,16 @@ static void dump_wave_wrapper (SIM_MODULE* top) {
     }
 }
 
+static void update_nvboard_wrapper(void) {
+#ifdef EN_UPDATE_NVBOARD_AFTER_INIT
+    if(trm_init_complete) {
+#else
+    if(true) {
+#endif
+        nvboard_update();
+    }
+}
+
 void single_cycle(SIM_MODULE* top){
     top->clock = 0;top->eval();
     IFDEF(EN_DUMP_WAVE, dump_wave_wrapper(top);)
@@ -125,7 +135,7 @@ void cycle(SIM_MODULE* top, uint64_t n){
         IFDEF(EN_ITRACE, iring(cpu.pc, pmem_read(cpu.pc, 4)));
         IFDEF(EN_FTRACE, ftrace(cpu.pc));
         device_update();
-        nvboard_update();
+        IFDEF(USE_NVBOARD, update_nvboard_wrapper());
     }
 }
 
