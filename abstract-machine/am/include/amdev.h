@@ -49,6 +49,8 @@ enum {
   AM_KEYS(AM_KEY_NAMES)
 };
 
+#define MAP(c, f) c(f)
+
 // GPU
 
 #define AM_GPU_TEXTURE  1

@@ -11,6 +11,8 @@ module ysyx_24120013_axi_bridge
         SPI_MASTER_MMIO_SIZE = 32'h0000_1000,
         GPIO_CTRL_MMIO_BASE  = 32'h1000_2000,
         GPIO_CTRL_MMIO_SIZE  = 32'h0000_0010,
+        PS2_CTRL_MMIO_BASE   = 32'h1001_1000,
+        PS2_CTRL_MMIO_SIZE   = 32'h0000_0008,
         SRAM_MMIO_BASE       = 32'h0f00_0000,
         SRAM_MMIO_SIZE       = 32'h0000_2000,
         FLASH_MMIO_BASE      = 32'h3000_0000,
@@ -267,6 +269,9 @@ module ysyx_24120013_axi_bridge
 
     wire xbar_device_wr_soc_gpio_ctrl;
     wire xbar_device_rd_soc_gpio_ctrl;
+ 
+    wire xbar_device_wr_soc_ps2_ctrl;
+    wire xbar_device_rd_soc_ps2_ctrl;
 
     wire xbar_device_wr_soc_sram;
     wire xbar_device_rd_soc_sram;
@@ -300,6 +305,11 @@ module ysyx_24120013_axi_bridge
     assign xbar_device_rd_soc_gpio_ctrl = (m_arvalid) ? (m_araddr >= GPIO_CTRL_MMIO_BASE && 
                                         m_araddr < GPIO_CTRL_MMIO_BASE + GPIO_CTRL_MMIO_SIZE) : 1'b0;
 
+    assign xbar_device_wr_soc_ps2_ctrl = (m_awvalid) ? (m_awaddr >= PS2_CTRL_MMIO_BASE && 
+                                        m_awaddr < PS2_CTRL_MMIO_BASE + PS2_CTRL_MMIO_SIZE) : 1'b0;
+    assign xbar_device_rd_soc_ps2_ctrl = (m_arvalid) ? (m_araddr >= PS2_CTRL_MMIO_BASE && 
+                                        m_araddr < PS2_CTRL_MMIO_BASE + PS2_CTRL_MMIO_SIZE) : 1'b0;
+
     assign xbar_device_wr_soc_sram = (m_awvalid) ? (m_awaddr >= SRAM_MMIO_BASE && 
                                         m_awaddr < SRAM_MMIO_BASE + SRAM_MMIO_SIZE) : 1'b0;
     assign xbar_device_rd_soc_sram = (m_arvalid) ? (m_araddr >= SRAM_MMIO_BASE && 
@@ -326,6 +336,7 @@ module ysyx_24120013_axi_bridge
     assign xbar_device_soc = xbar_device_rd_soc_mmom | xbar_device_wr_soc_uart16550 | xbar_device_rd_soc_uart16550 |
                             xbar_device_wr_soc_spimaster | xbar_device_rd_soc_spimaster |
                             xbar_device_wr_soc_gpio_ctrl | xbar_device_rd_soc_gpio_ctrl |
+                            xbar_device_wr_soc_ps2_ctrl | xbar_device_rd_soc_ps2_ctrl |
                             xbar_device_wr_soc_sram | xbar_device_rd_soc_sram | 
                             xbar_device_wr_soc_flash | xbar_device_rd_soc_flash |
                             xbar_device_wr_soc_psram | xbar_device_rd_soc_psram |
@@ -338,7 +349,8 @@ module ysyx_24120013_axi_bridge
     wire is_difftest_skip;
     assign is_difftest_skip = xbar_device_rd_soc_uart16550 | 
                               xbar_device_rd_soc_spimaster | 
-                              xbar_device_rd_soc_gpio_ctrl;
+                              xbar_device_rd_soc_gpio_ctrl |
+                              xbar_device_rd_soc_ps2_ctrl;
     always @(posedge aclk) begin
         if(m_arvalid) begin
             if(is_difftest_skip) begin

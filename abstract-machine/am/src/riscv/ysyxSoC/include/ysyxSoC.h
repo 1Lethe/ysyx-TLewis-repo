@@ -29,6 +29,8 @@
 #define GPIO_CTRL_SEG            (GPIO_CTRL_PORT + 0x8)
 #define GPIO_CTRL_RESERVE        (GPIO_CTRL_PORT + 0x0)
 
+#define PS2_CTRL_PORT            0x10011000
+
 #define RTC_ADDR          0x02000000
 
 #define cpu_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
