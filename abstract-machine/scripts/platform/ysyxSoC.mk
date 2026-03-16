@@ -3,6 +3,7 @@ AM_SRCS := riscv/ysyxSoC/fsbl.S \
            riscv/ysyxSoC/trm.c \
            riscv/ysyxSoC/ioe.c \
            riscv/ysyxSoC/timer.c \
+           riscv/ysyxSoC/uart.c \
            riscv/ysyxSoC/input.c \
            riscv/ysyxSoC/cte.c \
            riscv/ysyxSoC/trap.S \
