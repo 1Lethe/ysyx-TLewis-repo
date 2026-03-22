@@ -5,6 +5,7 @@ AM_SRCS := riscv/ysyxSoC/fsbl.S \
            riscv/ysyxSoC/timer.c \
            riscv/ysyxSoC/uart.c \
            riscv/ysyxSoC/input.c \
+           riscv/ysyxSoC/gpu.c \
            riscv/ysyxSoC/cte.c \
            riscv/ysyxSoC/trap.S \
            platform/dummy/vme.c \

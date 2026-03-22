@@ -31,7 +31,15 @@
 
 #define PS2_CTRL_PORT            0x10011000
 
-#define RTC_ADDR          0x02000000
+#define VGA_FBUF_ADDR            0x21000000
+#define VGA_SYNC_ADDR            0x211FFFF0
+
+#define RTC_ADDR                 0x02000000
+
+// SCREEN
+#define VGA_SCREEN_WIDTH         640
+#define VGA_SCREEN_HEIGHT        480
+#define VGA_SCREEN_VMEM_SIZE     VGA_SCREEN_WIDTH*VGA_SCREEN_HEIGHT*sizeof(uint32_t)
 
 #define cpu_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
 

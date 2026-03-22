@@ -34,7 +34,7 @@
 
 #ifdef EN_DUMP_WAVE
 // 启用仅当TRM init完成后才记录波形功能，减小运行负担，不适用裸机程序 (依赖EN_DUMP_WAVE & DETECT_TRM_INIT)
-//#define EN_DUMP_WAVE_AFTER_INIT
+#define EN_DUMP_WAVE_AFTER_INIT
 #endif /* EN_DUMP_WAVE */
 
 #ifdef EN_DIFFTEST
