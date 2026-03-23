@@ -3,6 +3,7 @@
 #include "cpu-exec.h"
 #include "svdpi.h"
 #include "difftest.h"
+#include "perf_cnt.h"
 
 static bool fst_trace_enable_flag = false;
 static bool sim_stop_flag = false;
@@ -57,7 +58,10 @@ void dump_wave(SIM_MODULE* top){
 bool is_sim_continue(void){
     bool ret = (!contextp->gotFinish() && sim_stop_flag == false);
     if(!ret){
-        Log("Sim stop.cycle time = %ld", get_cycle_time());
+        Log("Sim stop.cycle time = %ld.IPC = %f.", 
+            get_cycle_time(), (float)get_inst_num() / (float)get_cycle_time());
+        IFDEF(PRINT_PERF_SUMMARY, print_perf_summary();)
+        IFDEF(PRINT_PERF_CNT, perf_cnt_print_all();)
     }
     return ret;
 }

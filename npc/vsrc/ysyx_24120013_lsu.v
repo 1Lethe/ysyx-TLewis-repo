@@ -201,4 +201,11 @@ module ysyx_24120013_lsu #(MEM_WIDTH = 32, DATA_WIDTH = 32)(
     end
 `endif
 
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
+    always @(posedge clk) begin
+        if(mem_wcomplete) perf_cnt_add(`ysyx_24120013_PERF_LSU_WRITE, 1);
+        if(mem_rvalid) perf_cnt_add(`ysyx_24120013_PERF_LSU_GET, 1);
+    end
+`endif
+
 endmodule

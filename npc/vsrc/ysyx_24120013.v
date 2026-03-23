@@ -5,6 +5,7 @@ import "DPI-C" function int sim_read_RTC(input int raddr);
 import "DPI-C" function void sim_hardware_fault_handle(input int NO,input int arg0);
 import "DPI-C" function void sim_difftest_skip ();
 import "DPI-C" function void halt ();
+import "DPI-C" function void perf_cnt_add(input int cnt_id, input int num);
 `endif
 
 module ysyx_24120013 (
@@ -164,6 +165,56 @@ function read_trm_init_complete_flag();
     return is_trm_init_end;
 endfunction
 
+wire [5:0] IDU_decode_type;
+reg id_is_valid_r;
+wire idu_decode_finish;
+
+always @(posedge clock) begin
+    if(reset)
+        id_is_valid_r <= 1'b0;
+    else
+        id_is_valid_r <= id_is_valid;
+end
+
+assign idu_decode_finish = id_is_valid & ~id_is_valid_r;
+
+always @(posedge clock) begin
+    if(idu_decode_finish) begin
+        perf_cnt_add(`ysyx_24120013_PERF_IDU_DECODE, 1);
+        if(IDU_decode_type[0]) perf_cnt_add(`ysyx_24120013_PERF_IDU_CALC_TYPE, 1);
+        if(IDU_decode_type[1]) perf_cnt_add(`ysyx_24120013_PERF_IDU_IMM_TYPE, 1);
+        if(IDU_decode_type[2]) perf_cnt_add(`ysyx_24120013_PERF_IDU_BRANCH_TYPE, 1);
+        if(IDU_decode_type[3]) perf_cnt_add(`ysyx_24120013_PERF_IDU_LOAD_TYPE, 1);
+        if(IDU_decode_type[4]) perf_cnt_add(`ysyx_24120013_PERF_IDU_SAVE_TYPE, 1);
+        if(IDU_decode_type[5]) perf_cnt_add(`ysyx_24120013_PERF_IDU_CSR_TYPE, 1);
+    end
+end
+
+always @(posedge clock) begin
+    if(IDU_decode_type[0]) perf_cnt_add(`ysyx_24120013_PERF_IDU_CALC_CYCLE, 1);
+    if(IDU_decode_type[1]) perf_cnt_add(`ysyx_24120013_PERF_IDU_IMM_CYCLE, 1);
+    if(IDU_decode_type[2]) perf_cnt_add(`ysyx_24120013_PERF_IDU_BRANCH_CYCLE, 1);
+    if(IDU_decode_type[3]) perf_cnt_add(`ysyx_24120013_PERF_IDU_LOAD_CYCLE, 1);
+    if(IDU_decode_type[4]) perf_cnt_add(`ysyx_24120013_PERF_IDU_SAVE_CYCLE, 1);
+    if(IDU_decode_type[5]) perf_cnt_add(`ysyx_24120013_PERF_IDU_CSR_CYCLE, 1);
+end
+
+reg ex_is_valid_r;
+wire exu_exec_finish;
+
+always @(posedge clock) begin
+    if(reset)
+        ex_is_valid_r <= 1'b0;
+    else
+        ex_is_valid_r <= ex_is_valid;
+end
+
+assign exu_exec_finish = ex_is_valid & ~ex_is_valid_r;
+
+always @(posedge clock) begin
+    if(exu_exec_finish) perf_cnt_add(`ysyx_24120013_PERF_EXU_FINISH_CALC, 1);
+end
+
 `endif
 
 wire pc_jmp_en;
@@ -194,7 +245,13 @@ wire        simplebus_ifu_mem_rd_complete;
 
 ysyx_24120013_IFU #(
     .MEM_WIDTH  (MEM_WIDTH ),
-    .DATA_WIDTH (DATA_WIDTH)
+    .DATA_WIDTH (DATA_WIDTH),
+    .SRAM_MMIO_BASE     (SRAM_MMIO_BASE    ),
+    .SRAM_MMIO_SIZE     (SRAM_MMIO_SIZE    ),
+    .FLASH_MMIO_BASE    (FLASH_MMIO_BASE    ),
+    .FLASH_MMIO_SIZE    (FLASH_MMIO_SIZE    ),
+    .SDRAM_MMIO_BASE    (SDRAM_MMIO_BASE    ),
+    .SDRAM_MMIO_SIZE    (SDRAM_MMIO_SIZE    )
 ) u_ysyx_24120013_IFU(
     .clk      	                  (clock                    ),
     .rst      	                  (reset                    ),
@@ -344,6 +401,9 @@ ysyx_24120013_IDU #(
     .id_is_ready    (id_is_ready     ),
     .ex_is_ready    (ex_is_ready     ),
     .id_is_valid    (id_is_valid     )
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
+    , .IDU_decode_type (IDU_decode_type)
+`endif
 );
 
 // output declaration of module ysyx_24120013_RegisterFile

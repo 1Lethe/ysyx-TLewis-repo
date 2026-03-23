@@ -12,6 +12,10 @@
 //#define EN_DUMP_WAVE 1
 #define CONFIG_MEM_RANDOM 1
 
+
+#define PRINT_PERF_SUMMARY 1 // 打印性能表现
+#define PRINT_PERF_CNT 1     // 打印性能计数器
+
 // 每N条指令输出一次，以观察程序运行进度(默认为N=百万条)
 #define EN_PRINT_EVERY_INST 1
 #define PRINT_INST_TIME     1000000
@@ -34,7 +38,7 @@
 
 #ifdef EN_DUMP_WAVE
 // 启用仅当TRM init完成后才记录波形功能，减小运行负担，不适用裸机程序 (依赖EN_DUMP_WAVE & DETECT_TRM_INIT)
-#define EN_DUMP_WAVE_AFTER_INIT
+//#define EN_DUMP_WAVE_AFTER_INIT
 #endif /* EN_DUMP_WAVE */
 
 #ifdef EN_DIFFTEST

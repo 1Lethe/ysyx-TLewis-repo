@@ -45,11 +45,34 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
 
         input ex_is_ready, 
         output wire id_is_valid
+
+    `ifdef ysyx_24120013_USE_CPP_SIM_ENV
+        , output wire [5:0] IDU_decode_type 
+    `endif
     );
 
     /* Shake hand signal */
     assign id_is_ready = ~rst ;
     assign id_is_valid = inst_is_valid;
+
+`ifdef ysyx_24120013_USE_CPP_SIM_ENV
+    wire IDU_calc_type;
+    wire IDU_imm_type;
+    wire IDU_branch_type;
+    wire IDU_load_type;
+    wire IDU_save_type;
+    wire IDU_csr_type;
+
+    assign IDU_calc_type = opcode_is_imm | opcode_is_calc;
+    assign IDU_imm_type  = opcode_is_lui | opcode_is_auipc;
+    assign IDU_branch_type = opcode_is_jal | opcode_is_jalr | opcode_is_branch;
+    assign IDU_load_type = opcode_is_load;
+    assign IDU_save_type = opcode_is_save;
+    assign IDU_csr_type = opcode_is_csr;
+
+    assign IDU_decode_type = {IDU_csr_type, IDU_save_type, IDU_load_type, 
+                              IDU_branch_type, IDU_imm_type, IDU_calc_type};
+`endif
 
     /* Decoder opcode parameter */
     parameter OPC_IMM_C  = 7'b0010011; // immediate calc
@@ -374,5 +397,6 @@ module ysyx_24120013_IDU #(MEM_WIDTH = 32, ADDR_WIDTH = 5, DATA_WIDTH = 32)(
                        ({`ysyx_24120013_CSR_ADDR_WIDTH{is_ecall}}            & `ysyx_24120013_MTVEC ) |
                        ({`ysyx_24120013_CSR_ADDR_WIDTH{is_mret }}            & `ysyx_24120013_MEPC  );
     assign wr_reg_des = (not_wr_reg == 1'b1) ? {ADDR_WIDTH{1'b0}} : rd[ADDR_WIDTH-1:0];
+
 
 endmodule
