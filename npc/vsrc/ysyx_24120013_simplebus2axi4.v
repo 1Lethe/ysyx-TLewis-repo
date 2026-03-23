@@ -92,9 +92,7 @@ module ysyx_24120013_simplebus2axi4 #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
     always @(posedge clk) begin
         if(rst) begin
             m_axi_bready <= 1'b0;
-        end else if(bshakehand) begin
-            m_axi_bready <= 1'b0;
-        end else if(s_axi_bvalid) begin
+        end else begin
             m_axi_bready <= 1'b1;
         end
     end
@@ -142,9 +140,7 @@ module ysyx_24120013_simplebus2axi4 #(MEM_WIDTH = 32, DATA_WIDTH = 32) (
     always @(posedge clk) begin
         if(rst) begin
             m_axi_rready <= 1'b0;
-        end else if(rshakehand) begin
-            m_axi_rready <= 1'b0;
-        end else if(s_axi_rvalid) begin
+        end else begin
             m_axi_rready <= 1'b1;
         end
     end
