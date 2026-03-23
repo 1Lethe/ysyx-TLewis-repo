@@ -83,22 +83,18 @@ static void check_stack_overflow (uint32_t sp) {
 
 static void dump_wave_wrapper (SIM_MODULE* top) {
 #ifdef EN_DUMP_WAVE_AFTER_INIT
-    if(trm_init_complete) {
+    if(trm_init_complete) dump_wave(top);
 #else
-    if(true) {
+    dump_wave(top);
 #endif
-        dump_wave(top);
-    }
 }
 
 static void update_nvboard_wrapper(void) {
 #ifdef EN_UPDATE_NVBOARD_AFTER_INIT
-    if(trm_init_complete) {
+    if(trm_init_complete) nvboard_update();
 #else
-    if(true) {
+    nvboard_update();
 #endif
-        nvboard_update();
-    }
 }
 
 void single_cycle(SIM_MODULE* top){
@@ -115,8 +111,9 @@ void cycle(SIM_MODULE* top, uint64_t n){
         update_simenv_cpu_state();
 
         if(is_exec_new_inst()){
+            inst_exec_time += 1; 
             IFDEF(DETECT_TRM_INIT, if(!trm_init_complete) updata_trm_init_complete_flag();)
-            IFDEF(EN_PRINT_EVERY_INST , inst_exec_time += 1; print_exec_inst_time(PRINT_INST_TIME);)
+            IFDEF(EN_PRINT_EVERY_INST , print_exec_inst_time(PRINT_INST_TIME);)
             IFDEF(STOP_DEADLOOP_MAX, one_inst_cycle_time = 0;)
             IFDEF(EN_CHECK_STACK_OVERFLOW, if(trm_init_complete) check_stack_overflow(cpu.gpr[2]);)
 #ifdef EN_DIFFTEST
@@ -141,6 +138,10 @@ void cycle(SIM_MODULE* top, uint64_t n){
 
 uint64_t get_cycle_time(void) {
     return cycle_time;
+}
+
+uint64_t get_inst_num(void) {
+    return inst_exec_time;
 }
 
 // NOTE: 在这里注意Verilog的冒险行为！即若在时钟上升沿修改数据，会发生数据冒险，结果往往不正常。
